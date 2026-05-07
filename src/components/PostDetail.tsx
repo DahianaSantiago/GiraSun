@@ -4,14 +4,6 @@ import { ImageSlot } from "./ImageSlot";
 import { LikeButton } from "./LikeButton";
 import type { Post } from "@/lib/content";
 
-const slugify = (s: string) =>
-  s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-
 const SHARE_ICON = (
   <svg
     width="14"
@@ -68,7 +60,6 @@ export function PostDetail({
 }) {
   const indexHref = post.type === "cuento" ? "/cuentos" : "/escritos";
   const indexLabel = post.type === "cuento" ? "los cuentos" : "los escritos";
-  const tocLabel = post.type === "cuento" ? "En este cuento" : "En este escrito";
 
   return (
     <div className="container">
@@ -77,24 +68,27 @@ export function PostDetail({
           <Link className="back" href={indexHref}>
             ← Volver a {indexLabel}
           </Link>
-          <div className="cat">
-            {post.tag} · {post.readingMinutes} min de lectura
-          </div>
+          <div className="cat">{post.readingMinutes} min de lectura</div>
           {post.titleHTML ? (
             <h1 dangerouslySetInnerHTML={{ __html: post.titleHTML }} />
           ) : (
             <h1>{post.title}</h1>
           )}
           <div className="ornament">·</div>
-          {post.dek ? <p className="dek">{post.dek}</p> : null}
 
-          <div className="byline">
-            <div className="avatar">G</div>
-            <div>
-              <div className="who">GiraSun</div>
-              <div className="meta">
-                {post.dateLabel} · {post.cat}
-              </div>
+          <div
+            className="byline"
+            style={{ justifyContent: "flex-start", paddingLeft: 0, paddingRight: 0 }}
+          >
+            <div
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "var(--ink-muted)",
+              }}
+            >
+              {post.dateLabel} · {post.cat}
             </div>
           </div>
 
@@ -119,18 +113,6 @@ export function PostDetail({
             <button type="button" aria-label="Email" disabled style={{ opacity: 0.6 }}>
               {EMAIL_ICON}
             </button>
-          </div>
-
-          <div className="toc">
-            <div className="toc-head">{tocLabel}</div>
-            <div className="toc-rule" />
-            <ol>
-              {post.sections.map((s) => (
-                <li key={s}>
-                  <a href={`#${slugify(s)}`}>{s}</a>
-                </li>
-              ))}
-            </ol>
           </div>
         </aside>
 
