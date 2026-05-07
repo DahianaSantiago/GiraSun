@@ -4,6 +4,8 @@ import { PostDetail } from "@/components/PostDetail";
 import { PostBody } from "@/components/mdx/PostBody";
 import { findPost, getPostsByType } from "@/lib/content";
 import { postArticleSchema, postUrl } from "@/lib/seo";
+import { getLikeCount, hasLiked } from "@/lib/firebase/likes";
+import { getSession } from "@/lib/firebase/session";
 
 type Params = Promise<{ slug: string }>;
 
@@ -39,13 +41,25 @@ export default async function CuentoDetailPage({ params }: { params: Params }) {
   const nextPost = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : undefined;
   const next = nextPost ? { href: `/cuentos/${nextPost.slug}`, title: nextPost.title } : undefined;
 
+  const session = await getSession();
+  const [likeCount, initialLiked] = await Promise.all([
+    getLikeCount("cuento", post.slug),
+    session ? hasLiked("cuento", post.slug, session.uid) : Promise.resolve(false),
+  ]);
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postArticleSchema(post)) }}
       />
-      <PostDetail post={post} body={<PostBody source={post.body} />} next={next} />
+      <PostDetail
+        post={post}
+        body={<PostBody source={post.body} />}
+        next={next}
+        likeCount={likeCount}
+        initialLiked={initialLiked}
+      />
     </>
   );
 }
