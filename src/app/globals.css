@@ -1583,7 +1583,7 @@ img {
   display: grid;
   grid-template-columns: 200px 1fr;
   gap: 24px;
-  align-items: stretch;
+  align-items: start;
   background: var(--bg-soft);
   border-radius: var(--radius-m);
   overflow: hidden;
@@ -1598,6 +1598,8 @@ img {
   aspect-ratio: 6 / 1;
   background: var(--bg-card-blush);
   position: relative;
+  align-self: start;
+  width: 100%;
 }
 .story-row h3 {
   font-family: var(--font-display);
