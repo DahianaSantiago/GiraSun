@@ -15,7 +15,7 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "simple-git-hooks"
+    "prepare": "node scripts/setup-hooks.mjs"
   },
   "dependencies": {
     "next": "16.2.5",
