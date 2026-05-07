@@ -105,7 +105,7 @@ export function PostIndex({
               <div className="stories-grid">
                 {featured ? (
                   <Link href={hrefFor(featured.type, featured.slug)} className="story-card feature">
-                    <div className="thumb" style={{ aspectRatio: "4/3" }}>
+                    <div className="thumb">
                       <span className="featured-pill">Destacado</span>
                       <ImageSlot
                         src={featured.heroSrc}
