@@ -115,9 +115,7 @@ export function PostIndex({
                       />
                     </div>
                     <div className="body">
-                      <div className="featured-tag">
-                        {featured.tag} · {featured.readingMinutes} min de lectura
-                      </div>
+                      <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
                       {featured.titleHTML ? (
                         <h3 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
                       ) : (
@@ -125,16 +123,16 @@ export function PostIndex({
                       )}
                       <p className="featured-excerpt">{featured.excerpt}</p>
                       <div
-                        className="byline"
-                        style={{ marginTop: "auto", borderTop: "none", padding: "18px 0 0" }}
+                        style={{
+                          marginTop: "auto",
+                          paddingTop: 18,
+                          fontSize: 11,
+                          letterSpacing: "0.18em",
+                          textTransform: "uppercase",
+                          color: "var(--ink-muted)",
+                        }}
                       >
-                        <div className="avatar">G</div>
-                        <div>
-                          <div className="who">GiraSun</div>
-                          <div className="meta">
-                            {featured.dateLabel} · {featured.cat}
-                          </div>
-                        </div>
+                        {featured.dateLabel} · {featured.cat}
                       </div>
                     </div>
                   </Link>
@@ -151,9 +149,7 @@ export function PostIndex({
                         />
                       </div>
                       <div className="body">
-                        <div className="featured-tag">
-                          {p.tag} · {p.readingMinutes} min de lectura
-                        </div>
+                        <div className="featured-tag">{p.readingMinutes} min de lectura</div>
                         {p.titleHTML ? (
                           <h3 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
                         ) : (
@@ -161,21 +157,16 @@ export function PostIndex({
                         )}
                         <p className="featured-excerpt">{p.excerpt}</p>
                         <div
-                          className="byline"
                           style={{
                             marginTop: "auto",
-                            borderTop: "none",
-                            padding: "18px 0 0",
-                            marginBottom: 0,
+                            paddingTop: 18,
+                            fontSize: 11,
+                            letterSpacing: "0.18em",
+                            textTransform: "uppercase",
+                            color: "var(--ink-muted)",
                           }}
                         >
-                          <div className="avatar">G</div>
-                          <div>
-                            <div className="who">GiraSun</div>
-                            <div className="meta">
-                              {p.dateLabel} · {p.cat}
-                            </div>
-                          </div>
+                          {p.dateLabel} · {p.cat}
                         </div>
                       </div>
                     </Link>
@@ -198,9 +189,7 @@ export function PostIndex({
                           />
                         </div>
                         <div className="body">
-                          <div className="featured-tag">
-                            {p.tag} · {p.readingMinutes} min de lectura
-                          </div>
+                          <div className="featured-tag">{p.readingMinutes} min de lectura</div>
                           {p.titleHTML ? (
                             <h3 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
                           ) : (
@@ -208,21 +197,16 @@ export function PostIndex({
                           )}
                           <p className="featured-excerpt">{p.excerpt}</p>
                           <div
-                            className="byline"
                             style={{
                               marginTop: "auto",
-                              borderTop: "none",
-                              padding: "18px 0 0",
-                              marginBottom: 0,
+                              paddingTop: 18,
+                              fontSize: 11,
+                              letterSpacing: "0.18em",
+                              textTransform: "uppercase",
+                              color: "var(--ink-muted)",
                             }}
                           >
-                            <div className="avatar">G</div>
-                            <div>
-                              <div className="who">GiraSun</div>
-                              <div className="meta">
-                                {p.dateLabel} · {p.cat}
-                              </div>
-                            </div>
+                            {p.dateLabel} · {p.cat}
                           </div>
                         </div>
                       </Link>
