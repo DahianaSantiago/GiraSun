@@ -1,4 +1,4 @@
-import { FILMS, type Film } from "@/lib/fixtures";
+import { getFilms, type Film } from "@/lib/content";
 
 const DEFAULT_INTRO = {
   eyebrow: "Sesión continua",
@@ -14,7 +14,7 @@ const DEFAULT_INTRO = {
 };
 
 export function CineBlock({
-  films = FILMS,
+  films,
   intro = DEFAULT_INTRO,
   background = "var(--bg)",
 }: {
@@ -22,6 +22,7 @@ export function CineBlock({
   intro?: typeof DEFAULT_INTRO;
   background?: string;
 }) {
+  const list = films ?? getFilms();
   return (
     <section className="reading-block" style={{ background }}>
       <div className="container">
@@ -33,7 +34,7 @@ export function CineBlock({
             <div className="pill">{intro.pill}</div>
           </div>
           <div className="reading-list">
-            {films.map((f) => (
+            {list.map((f) => (
               <article className="reading-row" key={f.num}>
                 <div className="num">{f.num}</div>
                 <div className={`cover ${f.cover}`} style={{ fontStyle: "italic" }}>

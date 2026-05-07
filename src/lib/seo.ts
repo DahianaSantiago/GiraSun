@@ -1,4 +1,4 @@
-import type { Post } from "./fixtures";
+import type { Post } from "./content";
 
 const SITE_URL = "https://girasun.com";
 

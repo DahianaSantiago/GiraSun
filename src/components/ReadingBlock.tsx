@@ -1,4 +1,4 @@
-import { BOOKS, STATUS_LABELS, type Book } from "@/lib/fixtures";
+import { getBooks, STATUS_LABELS, type Book } from "@/lib/content";
 
 const DEFAULT_INTRO = {
   eyebrow: "Estantería viva",
@@ -14,7 +14,7 @@ const DEFAULT_INTRO = {
 };
 
 export function ReadingBlock({
-  books = BOOKS,
+  books,
   intro = DEFAULT_INTRO,
   background = "var(--bg-soft)",
 }: {
@@ -22,6 +22,7 @@ export function ReadingBlock({
   intro?: typeof DEFAULT_INTRO;
   background?: string;
 }) {
+  const list = books ?? getBooks();
   return (
     <section className="reading-block" style={{ background }}>
       <div className="container">
@@ -33,7 +34,7 @@ export function ReadingBlock({
             <div className="pill">{intro.pill}</div>
           </div>
           <div className="reading-list">
-            {books.map((b) => (
+            {list.map((b) => (
               <article className="reading-row" key={b.num}>
                 <div className="num">{b.num}</div>
                 <div className={`cover ${b.cover}`}>{b.title.slice(0, 18)}</div>

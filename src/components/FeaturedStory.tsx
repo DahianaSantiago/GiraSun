@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { ImageSlot } from "./ImageSlot";
 import { SectionHead } from "./SectionHead";
-import { POSTS, type Post } from "@/lib/fixtures";
+import { getAllPosts, type Post } from "@/lib/content";
 
 const FALLBACK_QUOTE =
   "«Había una ventana que daba al verano y otra que daba al miedo. Yo elegí la que tenía cortinas blancas, y aún así, soñé con la otra durante meses.»";
 
-export function FeaturedStory({ post = POSTS.find((p) => p.featured) }: { post?: Post }) {
-  if (!post) return null;
-  const href = `/${post.type === "cuento" ? "cuentos" : "escritos"}/${post.slug}`;
+export function FeaturedStory({ post }: { post?: Post }) {
+  const featured = post ?? getAllPosts().find((p) => p.featured);
+  if (!featured) return null;
+
+  const href = `/${featured.type === "cuento" ? "cuentos" : "escritos"}/${featured.slug}`;
   return (
     <section className="section section-tight" style={{ paddingTop: 0 }}>
       <div className="container">
@@ -19,31 +21,31 @@ export function FeaturedStory({ post = POSTS.find((p) => p.featured) }: { post?:
         />
         <div className="featured">
           <div className="featured-img">
-            <span className="badge">{post.cat}</span>
+            <span className="badge">{featured.cat}</span>
             <ImageSlot
-              src={post.heroSrc}
-              alt={post.heroAlt}
+              src={featured.heroSrc}
+              alt={featured.heroAlt}
               placeholder="Imagen del cuento destacado"
               style={{ position: "absolute", inset: 0 }}
             />
           </div>
           <div className="featured-body">
             <div className="featured-tag">
-              {post.tag} · {post.readingMinutes} min de lectura
+              {featured.tag} · {featured.readingMinutes} min de lectura
             </div>
-            {post.titleHTML ? (
-              <h2 dangerouslySetInnerHTML={{ __html: post.titleHTML }} />
+            {featured.titleHTML ? (
+              <h2 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
             ) : (
-              <h2>{post.title}</h2>
+              <h2>{featured.title}</h2>
             )}
             <blockquote className="featured-quote">{FALLBACK_QUOTE}</blockquote>
-            <p className="featured-excerpt">{post.excerpt}</p>
+            <p className="featured-excerpt">{featured.excerpt}</p>
             <div className="byline">
               <div className="avatar">G</div>
               <div>
                 <div className="who">GiraSun</div>
                 <div className="meta">
-                  {post.dateLabel} · {post.cat}
+                  {featured.dateLabel} · {featured.cat}
                 </div>
               </div>
             </div>
