@@ -93,6 +93,45 @@ export async function addBookAction(input: z.input<typeof BookInput>): Promise<C
   return { ok: true, path, commit: result.commit, url: result.html_url };
 }
 
+/** Update an existing book at /content/club-de-lectura/{slug}.mdx (overwrite). */
+export async function updateBookAction(
+  slug: string,
+  input: z.input<typeof BookInput>,
+): Promise<CommitResult> {
+  try {
+    await requireAdmin();
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+
+  const parsed = BookInput.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: "invalid-input", detail: parsed.error.issues[0]?.message };
+  }
+
+  const path = `content/club-de-lectura/${slug}.mdx`;
+  const fm = parsed.data;
+  const mdx =
+    "---\n" +
+    `num: ${yamlString(fm.num)}\n` +
+    `title: ${yamlString(fm.title)}\n` +
+    `author: ${yamlString(fm.author)}\n` +
+    `status: ${yamlString(fm.status)}\n` +
+    `cover: ${yamlString(fm.cover)}\n` +
+    `addedAt: ${yamlString(fm.addedAt)}\n` +
+    "---\n";
+
+  const result = await commitFiles({
+    files: [{ path, content: mdx }],
+    message: `feat(content): update book '${fm.title}' in club-de-lectura`,
+  });
+
+  revalidatePath("/admin/club-de-lectura");
+  revalidatePath("/club-de-lectura");
+  revalidatePath("/");
+  return { ok: true, path, commit: result.commit, url: result.html_url };
+}
+
 export async function addFilmAction(input: z.input<typeof FilmInput>): Promise<CommitResult> {
   try {
     await requireAdmin();
@@ -130,6 +169,48 @@ export async function addFilmAction(input: z.input<typeof FilmInput>): Promise<C
   const result = await commitFiles({
     files: [{ path, content: lines.join("\n") }],
     message: `feat(content): add film '${fm.title}' to cineclub`,
+  });
+
+  revalidatePath("/admin/cineclub");
+  revalidatePath("/cineclub");
+  revalidatePath("/");
+  return { ok: true, path, commit: result.commit, url: result.html_url };
+}
+
+/** Update an existing film at /content/cineclub/{slug}.mdx (overwrite). */
+export async function updateFilmAction(
+  slug: string,
+  input: z.input<typeof FilmInput>,
+): Promise<CommitResult> {
+  try {
+    await requireAdmin();
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
+
+  const parsed = FilmInput.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: "invalid-input", detail: parsed.error.issues[0]?.message };
+  }
+
+  const path = `content/cineclub/${slug}.mdx`;
+  const fm = parsed.data;
+  const lines = [
+    "---",
+    `num: ${yamlString(fm.num)}`,
+    `title: ${yamlString(fm.title)}`,
+    `director: ${yamlString(fm.director)}`,
+    `year: ${fm.year}`,
+    `date: ${yamlString(fm.date)}`,
+  ];
+  if (fm.sessionDate) lines.push(`sessionDate: ${yamlString(fm.sessionDate)}`);
+  lines.push(`note: ${yamlString(fm.note)}`);
+  lines.push(`cover: ${yamlString(fm.cover)}`);
+  lines.push("---", "");
+
+  const result = await commitFiles({
+    files: [{ path, content: lines.join("\n") }],
+    message: `feat(content): update film '${fm.title}' in cineclub`,
   });
 
   revalidatePath("/admin/cineclub");

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AddBookForm } from "@/components/admin/AddBookForm";
 import { getBooks, STATUS_LABELS } from "@/lib/content";
 
@@ -38,11 +39,12 @@ export default function AdminClubPage() {
                 <th>Autor</th>
                 <th>Estado</th>
                 <th>Cover</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {books.map((b) => (
-                <tr key={b.num}>
+                <tr key={b.slug}>
                   <td className="mono-cell">{b.num}</td>
                   <td>{b.title}</td>
                   <td className="muted-cell">{b.author}</td>
@@ -50,6 +52,9 @@ export default function AdminClubPage() {
                     <span className={`status-pill ${b.status}`}>{STATUS_LABELS[b.status]}</span>
                   </td>
                   <td className="muted-cell">{b.cover}</td>
+                  <td className="actions-cell">
+                    <Link href={`/admin/club-de-lectura/${b.slug}/edit`}>Editar</Link>
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -112,17 +112,36 @@ export default async function AdminEscritosPage() {
 
       {orphanPublished.length > 0 ? (
         <section className="admin-page-section">
-          <h2 className="admin-page-h2">Publicados sin borrador en el panel</h2>
-          <ul className="admin-orphan-list">
-            {orphanPublished.map((p) => (
-              <li key={p.slug}>
-                <span>{p.title}</span>{" "}
-                <a href={`/escritos/${p.slug}`} target="_blank" rel="noreferrer">
-                  /escritos/{p.slug}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <h2 className="admin-page-h2">Publicados (desde el repo)</h2>
+          <p style={{ color: "var(--ink-muted)", fontSize: 13, margin: "0 0 14px" }}>
+            Estos escritos viven en <code className="mono-cell">/content/escritos/</code>. Click en
+            Editar para abrirlos en el editor pre-llenados; al publicar se sobrescribe el archivo.
+          </p>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Slug</th>
+                <th>Fecha</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orphanPublished.map((p) => (
+                <tr key={p.slug}>
+                  <td>{p.title}</td>
+                  <td className="mono-cell">{p.slug}</td>
+                  <td className="muted-cell">{p.dateLabel}</td>
+                  <td className="actions-cell">
+                    <Link href={`/admin/escritos/from-mdx/${p.slug}`}>Editar</Link>
+                    <a href={`/escritos/${p.slug}`} target="_blank" rel="noreferrer">
+                      Ver
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
       ) : null}
     </div>

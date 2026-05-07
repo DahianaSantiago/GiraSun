@@ -115,22 +115,36 @@ export default async function AdminCuentosPage() {
 
       {orphanPublished.length > 0 ? (
         <section className="admin-page-section">
-          <h2 className="admin-page-h2">Publicados sin borrador en el panel</h2>
+          <h2 className="admin-page-h2">Publicados (desde el repo)</h2>
           <p style={{ color: "var(--ink-muted)", fontSize: 13, margin: "0 0 14px" }}>
-            Estos cuentos viven en el repo (\\\`/content/cuentos/*.mdx\\\`) pero no tienen un
-            borrador en el panel — fueron commiteados a mano. Si quieres editarlos desde aquí,
-            tendrías que crear un nuevo borrador con el mismo slug.
+            Estos cuentos viven en <code className="mono-cell">/content/cuentos/</code>. Click en
+            Editar para abrirlos en el editor pre-llenados; al publicar se sobrescribe el archivo.
           </p>
-          <ul className="admin-orphan-list">
-            {orphanPublished.map((p) => (
-              <li key={p.slug}>
-                <span>{p.title}</span>{" "}
-                <a href={`/cuentos/${p.slug}`} target="_blank" rel="noreferrer">
-                  /cuentos/{p.slug}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Slug</th>
+                <th>Fecha</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orphanPublished.map((p) => (
+                <tr key={p.slug}>
+                  <td>{p.title}</td>
+                  <td className="mono-cell">{p.slug}</td>
+                  <td className="muted-cell">{p.dateLabel}</td>
+                  <td className="actions-cell">
+                    <Link href={`/admin/cuentos/from-mdx/${p.slug}`}>Editar</Link>
+                    <a href={`/cuentos/${p.slug}`} target="_blank" rel="noreferrer">
+                      Ver
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
       ) : null}
     </div>

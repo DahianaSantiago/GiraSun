@@ -74,8 +74,8 @@ export type Post = z.infer<typeof PostFrontmatter> & {
   body: string;
 };
 
-export type Book = z.infer<typeof BookFrontmatter>;
-export type Film = z.infer<typeof FilmFrontmatter>;
+export type Book = z.infer<typeof BookFrontmatter> & { slug: string };
+export type Film = z.infer<typeof FilmFrontmatter> & { slug: string };
 
 export const STATUS_LABELS: Record<Book["status"], string> = {
   now: "Leyendo",
@@ -141,14 +141,25 @@ export function getAllPosts(): Post[] {
 // Books (Club de lectura)
 // ---------------------------------------------------------------------------
 
+const slugFromFile = (file: string): string =>
+  file
+    .split("/")
+    .pop()
+    ?.replace(/\.mdx$/, "") ?? "";
+
 export function getBooks(): Book[] {
   const files = listMdxFiles("club-de-lectura");
   return files
     .map((file) => {
       const { body: _body, ...frontmatter } = readMdx(file, BookFrontmatter);
-      return frontmatter;
+      return { ...frontmatter, slug: slugFromFile(file) } as Book;
     })
     .sort((a, b) => a.num.localeCompare(b.num));
+}
+
+/** Slug = the .mdx filename without extension. */
+export function findBookBySlug(slug: string): Book | undefined {
+  return getBooks().find((b) => b.slug === slug);
 }
 
 // ---------------------------------------------------------------------------
@@ -160,7 +171,12 @@ export function getFilms(): Film[] {
   return files
     .map((file) => {
       const { body: _body, ...frontmatter } = readMdx(file, FilmFrontmatter);
-      return frontmatter;
+      return { ...frontmatter, slug: slugFromFile(file) } as Film;
     })
     .sort((a, b) => b.num.localeCompare(a.num));
+}
+
+/** Slug = the .mdx filename without extension. */
+export function findFilmBySlug(slug: string): Film | undefined {
+  return getFilms().find((f) => f.slug === slug);
 }

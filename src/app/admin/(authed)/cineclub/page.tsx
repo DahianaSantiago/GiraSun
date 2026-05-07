@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AddFilmForm } from "@/components/admin/AddFilmForm";
 import { getFilms } from "@/lib/content";
 
@@ -40,16 +41,20 @@ export default function AdminCineClubPage() {
                 <th>Director</th>
                 <th>Año</th>
                 <th>Sesión</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {films.map((f) => (
-                <tr key={f.num}>
+                <tr key={f.slug}>
                   <td className="mono-cell">{f.num}</td>
                   <td>{f.title}</td>
                   <td className="muted-cell">{f.director}</td>
                   <td className="mono-cell">{f.year}</td>
                   <td className="muted-cell">{f.date}</td>
+                  <td className="actions-cell">
+                    <Link href={`/admin/cineclub/${f.slug}/edit`}>Editar</Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
