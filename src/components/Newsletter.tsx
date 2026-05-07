@@ -1,8 +1,35 @@
-// Visual stub for Phase 2. Phase 6 wires the real form (server action +
-// Resend double opt-in + Firestore subscriber). For now the inputs and
-// button render but the form is non-functional.
+"use client";
 
-export function Newsletter() {
+import { useState, useTransition } from "react";
+import { subscribeAction } from "@/app/actions/newsletter";
+
+type SubmitState = "idle" | "submitted" | "already-subscribed" | "error";
+
+export function Newsletter({ source = "home" }: { source?: string }) {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState<SubmitState>("idle");
+  const [pending, startTransition] = useTransition();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg(null);
+    startTransition(async () => {
+      const res = await subscribeAction({ email, source });
+      if (res.ok) {
+        setState(res.state === "already-subscribed" ? "already-subscribed" : "submitted");
+        setEmail("");
+      } else {
+        setState("error");
+        setErrorMsg(
+          res.error === "invalid-email"
+            ? "Esa dirección de correo no parece válida."
+            : "No pudimos guardar tu correo. Intenta de nuevo en un momento.",
+        );
+      }
+    });
+  };
+
   return (
     <section className="section">
       <div className="container">
@@ -31,18 +58,41 @@ export function Newsletter() {
             </p>
           </div>
           <div>
-            <form>
-              <input
-                type="email"
-                name="email"
-                placeholder="tu correo electrónico"
-                aria-label="tu correo electrónico"
-                disabled
-              />
-              <button type="submit" disabled>
-                Suscribirme
-              </button>
-            </form>
+            {state === "submitted" || state === "already-subscribed" ? (
+              <div className="sent">
+                {state === "already-subscribed"
+                  ? "Ya estabas en la lista. Nos escribiremos pronto. ✿"
+                  : "Revisa tu correo y confirma. Nos escribiremos pronto. ✿"}
+              </div>
+            ) : (
+              <form onSubmit={onSubmit} aria-label="Suscribirse al newsletter">
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="tu correo electrónico"
+                  aria-label="tu correo electrónico"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={pending}
+                />
+                <button type="submit" disabled={pending || !email}>
+                  {pending ? "Enviando..." : "Suscribirme"}
+                </button>
+              </form>
+            )}
+            {state === "error" && errorMsg ? (
+              <div
+                style={{
+                  fontSize: 12,
+                  color: "oklch(0.95 0.04 30 / 0.9)",
+                  marginTop: 10,
+                  position: "relative",
+                }}
+              >
+                {errorMsg}
+              </div>
+            ) : null}
             <div className="check">
               <span>✿</span>
               <span>Sin spam. Una sola carta al mes. Te puedes ir cuando quieras.</span>
