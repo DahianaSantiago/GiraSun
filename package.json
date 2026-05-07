@@ -1,12 +1,21 @@
 {
-  "name": "site",
+  "name": "girasun",
   "version": "0.1.0",
   "private": true,
+  "description": "GiraSun — diario literario de Dahiana Santiago. Cuentos, escritos, club de lectura y CineClub.",
+  "packageManager": "pnpm@9.12.1",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "simple-git-hooks"
   },
   "dependencies": {
     "next": "16.2.5",
@@ -20,7 +29,23 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.5",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8",
+    "simple-git-hooks": "^2.11.1",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,md,mdx,css,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
