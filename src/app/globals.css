@@ -1580,9 +1580,10 @@ img {
 }
 
 .story-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+  align-items: stretch;
   background: var(--bg-soft);
   border-radius: var(--radius-m);
   overflow: hidden;
@@ -1594,18 +1595,21 @@ img {
   transform: translateY(-2px);
 }
 .story-row .thumb {
-  aspect-ratio: 6 / 1;
+  aspect-ratio: 1;
   background: var(--bg-card-blush);
   position: relative;
 }
 .story-row .body {
-  padding: 22px 26px;
+  padding: 0 22px 22px;
   display: flex;
   flex-direction: column;
 }
 @media (max-width: 600px) {
+  .story-row {
+    grid-template-columns: 1fr;
+  }
   .story-row .body {
-    padding: 22px;
+    padding: 0 22px 22px;
   }
 }
 
