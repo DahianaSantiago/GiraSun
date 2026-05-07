@@ -19,6 +19,14 @@ export function Hero({
   if (variant === "centered") {
     return (
       <section className="hero hero-photo-bg" style={{ textAlign: "center" }}>
+        <ImageSlot
+          src={imageSrc}
+          alt={imageAlt}
+          placeholder="Foto principal — girasol / paisaje"
+          className="hero-bg-slot"
+          shape="rect"
+          priority
+        />
         <div className="hero-bg-filter" />
         <div className="container" style={{ padding: "110px 0", position: "relative", zIndex: 2 }}>
           <div className="hero-eyebrow" style={{ justifyContent: "center" }}>

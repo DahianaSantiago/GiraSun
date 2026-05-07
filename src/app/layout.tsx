@@ -47,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      data-palette="default"
+      data-palette="sunflower"
       className={`${playfair.variable} ${jetbrainsMono.variable}`}
     >
       <body>

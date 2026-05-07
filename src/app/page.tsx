@@ -9,7 +9,7 @@ import { AboutStrip } from "@/components/AboutStrip";
 export default function HomePage() {
   return (
     <>
-      <Hero variant="split" />
+      <Hero variant="centered" imageSrc="/images/Banner.png" />
       <CategoryGrid />
       <FeaturedStory />
       <ReadingBlock />
