@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthChip } from "./auth/AuthChip";
 
 export type NavSection = "home" | "cuentos" | "escritos" | "club" | "cine" | "about" | "contacto";
 
@@ -34,9 +35,12 @@ export function NavBar({ active }: { active?: NavSection }) {
             </Link>
           ))}
         </nav>
-        <div className="nav-search" role="search">
-          {SEARCH_ICON}
-          <span>Buscar...</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div className="nav-search" role="search">
+            {SEARCH_ICON}
+            <span>Buscar...</span>
+          </div>
+          <AuthChip />
         </div>
       </div>
     </header>
