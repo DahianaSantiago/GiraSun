@@ -1,4 +1,4 @@
-import { initializeApp, cert, applicationDefault } from "firebase-admin/app";
+import { initializeApp, cert } from "firebase-admin/app";
 import fs from "node:fs";
 import path from "node:path";
 
