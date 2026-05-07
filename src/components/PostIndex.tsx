@@ -155,12 +155,9 @@ export function PostIndex({
                           {p.tag} · {p.readingMinutes} min de lectura
                         </div>
                         {p.titleHTML ? (
-                          <h3
-                            style={{ fontSize: 22 }}
-                            dangerouslySetInnerHTML={{ __html: p.titleHTML }}
-                          />
+                          <h3 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
                         ) : (
-                          <h3 style={{ fontSize: 22 }}>{p.title}</h3>
+                          <h3>{p.title}</h3>
                         )}
                         <p className="featured-excerpt">{p.excerpt}</p>
                         <div

@@ -1595,9 +1595,18 @@ img {
   transform: translateY(-2px);
 }
 .story-row .thumb {
-  aspect-ratio: 1;
+  aspect-ratio: 6 / 1;
   background: var(--bg-card-blush);
   position: relative;
+}
+.story-row h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin: 0 0 12px;
+  text-wrap: balance;
 }
 .story-row .body {
   padding: 0 22px 22px;
