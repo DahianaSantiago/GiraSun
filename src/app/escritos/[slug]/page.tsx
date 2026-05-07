@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostDetail } from "@/components/PostDetail";
 import { PostBody } from "@/components/mdx/PostBody";
+import { CommentThread } from "@/components/CommentThread";
 import { findPost, getPostsByType } from "@/lib/content";
 import { postArticleSchema, postUrl } from "@/lib/seo";
 import { getLikeCount, hasLiked } from "@/lib/firebase/likes";
@@ -60,6 +61,7 @@ export default async function EscritoDetailPage({ params }: { params: Params }) 
         likeCount={likeCount}
         initialLiked={initialLiked}
       />
+      <CommentThread postType="escrito" postSlug={post.slug} />
     </>
   );
 }

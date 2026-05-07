@@ -1885,3 +1885,188 @@ img {
   color: var(--ink);
   margin: 48px 0 18px;
 }
+
+/* =========================================================================
+ * Comments (post-detail surface).
+ * ========================================================================= */
+.comments {
+  background: var(--bg-soft);
+  padding: 80px 0;
+  margin-top: 60px;
+}
+.comments h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 40px;
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+.comments h3 .count {
+  color: var(--ink-muted);
+  font-size: 28px;
+}
+.comments .ornament {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: 11px;
+  margin: 8px 0 16px;
+}
+.comments .ornament::before,
+.comments .ornament::after {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: var(--accent);
+  display: inline-block;
+}
+.comments .lede {
+  font-size: 14px;
+  color: var(--ink-soft);
+  max-width: 50ch;
+  margin-bottom: 32px;
+}
+
+.comment-form {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+}
+.comment-form .av {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 16px;
+  overflow: hidden;
+}
+.comment-form .av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.comment-form textarea {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  resize: vertical;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  width: 100%;
+  min-height: 64px;
+}
+.comment-form textarea::placeholder {
+  color: var(--ink-muted);
+}
+.comment-form textarea:disabled {
+  cursor: not-allowed;
+}
+.comment-form .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  gap: 8px;
+}
+.comment-form .hint {
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+.comment-form .post {
+  background: var(--accent);
+  color: oklch(0.2 0.02 60);
+  border: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.comment-form .post:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.comment-form .signin-prompt {
+  background: transparent;
+  border: 0;
+  color: var(--accent-ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  border-bottom: 1px solid var(--accent);
+  align-self: flex-start;
+}
+
+.comment {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.comment .av {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--bg-card-sage);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  color: var(--ink-soft);
+  overflow: hidden;
+}
+.comment .av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.comment .head {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.comment .name {
+  font-weight: 600;
+  font-size: 14px;
+}
+.comment .badge {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.comment .when {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.comment p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 10px;
+  white-space: pre-wrap;
+}
+.comments .empty {
+  font-size: 14px;
+  color: var(--ink-muted);
+  font-style: italic;
+}
