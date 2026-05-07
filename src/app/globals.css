@@ -1579,51 +1579,6 @@ img {
   border-radius: 999px;
 }
 
-.story-row {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 24px;
-  align-items: start;
-  background: var(--bg-soft);
-  border-radius: var(--radius-m);
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.25s ease;
-  color: inherit;
-}
-.story-row:hover {
-  transform: translateY(-2px);
-}
-.story-row .thumb {
-  aspect-ratio: 6 / 1;
-  background: var(--bg-card-blush);
-  position: relative;
-  align-self: start;
-  width: 100%;
-}
-.story-row h3 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 22px;
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-  margin: 0 0 12px;
-  text-wrap: balance;
-}
-.story-row .body {
-  padding: 0 22px 22px;
-  display: flex;
-  flex-direction: column;
-}
-@media (max-width: 600px) {
-  .story-row {
-    grid-template-columns: 1fr;
-  }
-  .story-row .body {
-    padding: 0 22px 22px;
-  }
-}
-
 .divider-ornament {
   display: flex;
   align-items: center;

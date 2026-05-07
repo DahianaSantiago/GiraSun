@@ -141,7 +141,7 @@ export function PostIndex({
                 ) : null}
                 <div className="stories-side">
                   {secondary.map((p) => (
-                    <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-row">
+                    <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-card">
                       <div className="thumb">
                         <ImageSlot
                           src={p.heroSrc}
