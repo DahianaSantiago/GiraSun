@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GiraSun
 
-## Getting Started
+> _"Tú eres un girasol, pero cuando caminas te vuelves sol, y entonces yo, sin remedio, me convierto en girasol."_
 
-First, run the development server:
+Diario literario de Dahiana Santiago — cuentos, escritos, club de lectura y CineClub.
+
+Hosted on Vercel at **[girasun.com](https://girasun.com)** (próximamente).
+
+---
+
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + Turbopack
+- **Tailwind CSS v4** sobre tokens del [GiraSun Design System](../GiraSun%20Design%20System/)
+- **Firebase** (Auth + Firestore) para comentarios, likes y suscriptores
+- **Resend** para envío del newsletter
+- **MDX** en `/content` para los textos largos; imágenes en `/public/images`
+- **TipTap** en el panel de admin para escritura
+
+## Requirements
+
+- Node `>=22` (ver `.nvmrc`)
+- pnpm `9.12.1` (definido en `packageManager`)
+
+## Commands
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install         # instalar dependencias
+pnpm dev             # servidor de desarrollo (http://localhost:3000)
+pnpm build           # build de producción
+pnpm start           # servir el build
+pnpm lint            # eslint
+pnpm typecheck       # tsc --noEmit
+pnpm format          # prettier --write .
+pnpm format:check    # verificar formato sin escribir
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/                  rutas (públicas y /admin)
+src/components/       componentes React
+src/lib/              firebase, mdx, octokit, email, auth, rate-limit
+content/              .mdx — cuentos / escritos / club-de-lectura / cineclub
+public/images/        imágenes referenciadas desde MDX
+public/fonts/         Cormorant Garamond + Inter (auto-hospedados)
+emails/               plantillas react-email
+firestore.rules       reglas de Firestore (deny-all + allows específicos)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Workflow
 
-## Learn More
+- Cambios de **código** → rama `feat/*` → PR → revisión (jjcadu) → merge → Vercel auto-deploya `main`.
+- Publicación de **contenido** desde el panel de admin → commit directo a `main` vía la GitHub App (bypass de branch protection limitado a `/content/**` y `/public/images/**`).
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Más detalles del plan en `~/.claude/plans/inside-documents-girasun-we-have-luminous-abelson.md`.
