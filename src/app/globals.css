@@ -1,26 +1,611 @@
 @import "tailwindcss";
 
+/* Playfair Display + JetBrains Mono are loaded via next/font/google in
+ * src/app/layout.tsx, which provides --font-playfair and --font-jetbrains-mono. */
+
+/* =========================================================================
+ * Self-hosted Cormorant Garamond — display headlines, signatures, blockquotes.
+ * ========================================================================= */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-LightItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-Italic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-MediumItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-SemiBold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-SemiBoldItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/CormorantGaramond-BoldItalic.ttf") format("truetype");
+}
+
+/* =========================================================================
+ * Self-hosted Inter (18pt optical size) — body, UI, eyebrows, captions.
+ * ========================================================================= */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Thin.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 100;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-ThinItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 200;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-ExtraLight.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 200;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-ExtraLightItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-LightItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Italic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-MediumItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-SemiBold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-SemiBoldItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-BoldItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-ExtraBold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-ExtraBoldItalic.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-Black.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/Inter_18pt-BlackItalic.ttf") format("truetype");
+}
+
+/* =========================================================================
+ * Design tokens (default palette: warm linen + sunflower gold).
+ * Short-form names match the GiraSun source CSS so component snippets port
+ * over verbatim.
+ * ========================================================================= */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --bg: oklch(0.975 0.012 85);
+  --bg-soft: oklch(0.955 0.02 85);
+  --bg-card-warm: oklch(0.945 0.03 85);
+  --bg-card-sage: oklch(0.945 0.018 130);
+  --bg-card-blush: oklch(0.95 0.018 30);
+  --bg-deep: oklch(0.42 0.018 70);
+  --hero-band: oklch(0.42 0.018 70);
+
+  /* Ink */
+  --ink: oklch(0.22 0.012 60);
+  --ink-soft: oklch(0.42 0.012 60);
+  --ink-muted: oklch(0.58 0.012 60);
+  --rule: oklch(0.88 0.012 80);
+
+  /* Sunflower accent */
+  --accent: oklch(0.78 0.13 80);
+  --accent-ink: oklch(0.55 0.14 75);
+  --accent-soft: oklch(0.93 0.06 85);
+  --on-accent: oklch(0.2 0.02 60);
+
+  /* Type families — --font-playfair and --font-jetbrains-mono come from
+   * next/font/google (see src/app/layout.tsx). */
+  --font-display-xl: var(--font-playfair, "Playfair Display"), "Cormorant Garamond", Georgia, serif;
+  --font-display: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono:
+    var(--font-jetbrains-mono, "JetBrains Mono"), "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Display sizes (fluid) */
+  --fs-display-xl: clamp(60px, 9vw, 120px);
+  --fs-display-l: clamp(56px, 8vw, 96px);
+  --fs-display-m: clamp(36px, 5vw, 56px);
+  --fs-display-s: clamp(28px, 3vw, 40px);
+
+  /* Body sizes */
+  --fs-lede: 17px;
+  --fs-prose: 17px;
+  --fs-body: 15px;
+  --fs-meta: 13px;
+  --fs-eyebrow: 11px;
+  --fs-mono: 12px;
+
+  /* Letter-spacing & line-height */
+  --tracking-tight: -0.025em;
+  --tracking-snug: -0.015em;
+  --tracking-wide: 0.18em;
+  --tracking-wider: 0.22em;
+  --tracking-widest: 0.32em;
+
+  --leading-display: 0.95;
+  --leading-snug: 1.15;
+  --leading-body: 1.55;
+  --leading-prose: 1.75;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 22px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 110px;
+
+  /* Radius */
+  --radius-xs: 2px;
+  --radius-s: 4px;
+  --radius-m: 6px;
+  --radius-l: 8px;
+  --radius-pill: 999px;
+
+  /* Borders */
+  --border-hairline: 1px solid var(--rule);
+  --border-accent: 2px solid var(--accent);
+
+  /* Shadows (warm-tinted, used sparingly) */
+  --shadow-1: 0 1px 2px oklch(0.2 0.02 70 / 0.04);
+  --shadow-2: 0 6px 18px -8px oklch(0.2 0.02 70 / 0.18);
+  --shadow-cta: 0 10px 24px -10px color-mix(in oklab, var(--accent) 60%, black);
+
+  /* Motion */
+  --ease-smooth: cubic-bezier(0.2, 0.65, 0.3, 1);
+  --dur-fast: 0.15s;
+  --dur-base: 0.25s;
+  --dur-slow: 0.6s;
 }
 
+/* Alt palette: olive (book club mood) — set <html data-palette="olive"> */
+html[data-palette="olive"] {
+  --accent: oklch(0.72 0.09 130);
+  --accent-ink: oklch(0.5 0.09 130);
+  --accent-soft: oklch(0.93 0.04 130);
+  --bg-card-warm: oklch(0.945 0.025 110);
+  --bg-card-sage: oklch(0.94 0.025 140);
+  --bg-card-blush: oklch(0.95 0.018 90);
+}
+
+/* Alt palette: terracotta (cineclub mood) */
+html[data-palette="terracotta"] {
+  --accent: oklch(0.7 0.12 45);
+  --accent-ink: oklch(0.52 0.13 40);
+  --accent-soft: oklch(0.93 0.04 45);
+  --bg-card-warm: oklch(0.945 0.03 60);
+  --bg-card-sage: oklch(0.94 0.018 110);
+  --bg-card-blush: oklch(0.94 0.03 30);
+}
+
+/* =========================================================================
+ * Bridge tokens to Tailwind v4 — exposes utilities like
+ *   bg-bg, text-ink, font-display, font-body, etc.
+ * ========================================================================= */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-bg-soft: var(--bg-soft);
+  --color-bg-card-warm: var(--bg-card-warm);
+  --color-bg-card-sage: var(--bg-card-sage);
+  --color-bg-card-blush: var(--bg-card-blush);
+  --color-bg-deep: var(--bg-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+
+  --font-display-xl: var(--font-display-xl);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* =========================================================================
+ * Base resets + body.
+ * ========================================================================= */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: var(--font-body);
+  font-feature-settings: "ss01", "cv11";
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+.serif-mark {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* =========================================================================
+ * Layout container — 1280px max with 48/22px gutters.
+ * ========================================================================= */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+@media (max-width: 720px) {
+  .container {
+    padding: 0 22px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =========================================================================
+ * Sticky top nav (translucent linen + blur).
+ * ========================================================================= */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+}
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  display: inline-block;
+  transform: translateY(-2px);
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  font-size: 14px;
+}
+.nav-links a {
+  color: var(--ink-soft);
+  position: relative;
+  padding: 6px 0;
+  transition: color var(--dur-fast);
+}
+.nav-links a:hover {
+  color: var(--ink);
+}
+.nav-links a.active {
+  color: var(--ink);
+}
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--accent);
+}
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--rule);
+  background: var(--bg-soft);
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  cursor: text;
+}
+.nav-search:hover {
+  border-color: color-mix(in oklab, var(--ink) 25%, var(--rule));
+}
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+  .nav-search {
+    display: none;
+  }
+}
+
+/* =========================================================================
+ * Side rail — vertical 1px line + rotated mono labels (≥1100px only).
+ * ========================================================================= */
+.side-rail {
+  position: fixed;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 40;
+}
+.side-rail .line {
+  width: 1px;
+  height: 70px;
+  background: var(--rule);
+}
+.side-rail .label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.side-rail .year-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--ink-muted);
+}
+@media (max-width: 1100px) {
+  .side-rail {
+    display: none;
+  }
+}
+
+/* =========================================================================
+ * Footer.
+ * ========================================================================= */
+.footer {
+  border-top: 1px solid var(--rule);
+  padding: 60px 0 36px;
+  margin-top: 80px;
+}
+.footer-inner {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.footer-sig {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.footer-sig small {
+  display: block;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 8px;
+}
+.footer-social {
+  display: flex;
+  gap: 18px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.footer-social a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  transition: color 0.2s;
+}
+.footer-social a:hover {
+  color: var(--accent-ink);
+}
+.footer-copy {
+  font-size: 11px;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================================
+ * Image slot — placeholder when no src is supplied; used by Hero and
+ * other media surfaces. Production usage usually passes a real <Image>
+ * via children.
+ * ========================================================================= */
+.image-slot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-soft);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-muted);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 24px;
 }
