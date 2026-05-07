@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { listDrafts } from "@/lib/drafts";
-import { getPostsByType } from "@/lib/content";
+import { listDrafts, type Draft } from "@/lib/drafts";
+import { getPostsByType, type Post } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Cuentos" };
@@ -12,8 +12,44 @@ const fmt = (ms: number): string => {
 };
 
 export default async function AdminCuentosPage() {
-  const drafts = await listDrafts("cuento");
-  const published = getPostsByType("cuento");
+  let drafts: Draft[] = [];
+  let published: Post[] = [];
+  let loadError: string | null = null;
+  try {
+    drafts = await listDrafts("cuento");
+    published = getPostsByType("cuento");
+  } catch (err) {
+    loadError = `${(err as Error).name}: ${(err as Error).message}\n\n${(err as Error).stack ?? ""}`;
+    console.error("[admin/cuentos] load failed", err);
+  }
+
+  if (loadError) {
+    return (
+      <div className="admin-page">
+        <header className="admin-page-head">
+          <div className="admin-page-eyebrow">Contenido · Cuentos</div>
+          <h1 className="admin-page-title">No pude cargar la lista</h1>
+          <p className="admin-page-lede">
+            Algo falló al leer los borradores o el contenido del repo. Detalle abajo.
+          </p>
+          <pre
+            style={{
+              marginTop: 24,
+              padding: "16px 20px",
+              background: "var(--bg-soft)",
+              border: "1px solid var(--rule)",
+              borderRadius: "var(--radius-s)",
+              fontSize: 12,
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+            }}
+          >
+            {loadError}
+          </pre>
+        </header>
+      </div>
+    );
+  }
 
   const draftSlugs = new Set(drafts.filter((d) => d.status === "published").map((d) => d.slug));
   const orphanPublished = published.filter((p) => !draftSlugs.has(p.slug));
