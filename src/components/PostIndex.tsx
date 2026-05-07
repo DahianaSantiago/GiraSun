@@ -114,16 +114,24 @@ export function PostIndex({
                         style={{ position: "absolute", inset: 0 }}
                       />
                     </div>
-                    <div className="body">
-                      <div className="cat">{featured.tag}</div>
-                      <h3>{featured.title}</h3>
-                      <p className="excerpt">{featured.excerpt}</p>
-                      <div className="by">
-                        <span>GiraSun</span>
-                        <span className="dot" />
-                        <span>{featured.dateLabel}</span>
-                        <span className="dot" />
-                        <span>{featured.readingMinutes} min</span>
+                    <div className="featured-body" style={{ padding: "32px 36px 36px" }}>
+                      <div className="featured-tag">
+                        {featured.tag} · {featured.readingMinutes} min de lectura
+                      </div>
+                      {featured.titleHTML ? (
+                        <h2 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
+                      ) : (
+                        <h2>{featured.title}</h2>
+                      )}
+                      <p className="featured-excerpt">{featured.excerpt}</p>
+                      <div className="byline">
+                        <div className="avatar">G</div>
+                        <div>
+                          <div className="who">GiraSun</div>
+                          <div className="meta">
+                            {featured.dateLabel} · {featured.cat}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Link>
@@ -139,14 +147,24 @@ export function PostIndex({
                           style={{ position: "absolute", inset: 0 }}
                         />
                       </div>
-                      <div className="body">
-                        <div className="cat">{p.tag}</div>
-                        <h3 style={{ fontSize: 22 }}>{p.title}</h3>
-                        <p className="excerpt">{p.excerpt}</p>
-                        <div className="by" style={{ marginTop: "auto" }}>
-                          <span>{p.dateLabel}</span>
-                          <span className="dot" />
-                          <span>{p.readingMinutes} min</span>
+                      <div className="featured-body" style={{ padding: "32px 36px 36px" }}>
+                        <div className="featured-tag">
+                          {p.tag} · {p.readingMinutes} min de lectura
+                        </div>
+                        {p.titleHTML ? (
+                          <h2 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
+                        ) : (
+                          <h2>{p.title}</h2>
+                        )}
+                        <p className="featured-excerpt">{p.excerpt}</p>
+                        <div className="byline">
+                          <div className="avatar">G</div>
+                          <div>
+                            <div className="who">GiraSun</div>
+                            <div className="meta">
+                              {p.dateLabel} · {p.cat}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </Link>
@@ -168,14 +186,24 @@ export function PostIndex({
                             style={{ position: "absolute", inset: 0 }}
                           />
                         </div>
-                        <div className="body">
-                          <div className="cat">{p.tag}</div>
-                          <h3>{p.title}</h3>
-                          <p className="excerpt">{p.excerpt}</p>
-                          <div className="by">
-                            <span>{p.dateLabel}</span>
-                            <span className="dot" />
-                            <span>{p.readingMinutes} min</span>
+                        <div className="featured-body" style={{ padding: "32px 36px 36px" }}>
+                          <div className="featured-tag">
+                            {p.tag} · {p.readingMinutes} min de lectura
+                          </div>
+                          {p.titleHTML ? (
+                            <h2 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
+                          ) : (
+                            <h2>{p.title}</h2>
+                          )}
+                          <p className="featured-excerpt">{p.excerpt}</p>
+                          <div className="byline">
+                            <div className="avatar">G</div>
+                            <div>
+                              <div className="who">GiraSun</div>
+                              <div className="meta">
+                                {p.dateLabel} · {p.cat}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </Link>
