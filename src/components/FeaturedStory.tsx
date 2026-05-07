@@ -30,9 +30,7 @@ export function FeaturedStory({ post }: { post?: Post }) {
             />
           </div>
           <div className="featured-body">
-            <div className="featured-tag">
-              {featured.tag} · {featured.readingMinutes} min de lectura
-            </div>
+            <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
             {featured.titleHTML ? (
               <h2 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
             ) : (
@@ -40,14 +38,15 @@ export function FeaturedStory({ post }: { post?: Post }) {
             )}
             <blockquote className="featured-quote">{FALLBACK_QUOTE}</blockquote>
             <p className="featured-excerpt">{featured.excerpt}</p>
-            <div className="byline">
-              <div className="avatar">G</div>
-              <div>
-                <div className="who">GiraSun</div>
-                <div className="meta">
-                  {featured.dateLabel} · {featured.cat}
-                </div>
-              </div>
+            <div
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "var(--ink-muted)",
+              }}
+            >
+              {featured.dateLabel} · {featured.cat}
             </div>
             <div style={{ marginTop: 24 }}>
               <Link

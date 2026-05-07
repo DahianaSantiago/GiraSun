@@ -105,7 +105,7 @@ export function PostIndex({
               <div className="stories-grid">
                 {featured ? (
                   <Link href={hrefFor(featured.type, featured.slug)} className="story-card feature">
-                    <div className="thumb" style={{ aspectRatio: "4/3" }}>
+                    <div className="thumb">
                       <span className="featured-pill">Destacado</span>
                       <ImageSlot
                         src={featured.heroSrc}
@@ -115,22 +115,31 @@ export function PostIndex({
                       />
                     </div>
                     <div className="body">
-                      <div className="cat">{featured.tag}</div>
-                      <h3>{featured.title}</h3>
-                      <p className="excerpt">{featured.excerpt}</p>
-                      <div className="by">
-                        <span>GiraSun</span>
-                        <span className="dot" />
-                        <span>{featured.dateLabel}</span>
-                        <span className="dot" />
-                        <span>{featured.readingMinutes} min</span>
+                      <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
+                      {featured.titleHTML ? (
+                        <h3 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
+                      ) : (
+                        <h3>{featured.title}</h3>
+                      )}
+                      <p className="featured-excerpt">{featured.excerpt}</p>
+                      <div
+                        style={{
+                          marginTop: "auto",
+                          paddingTop: 18,
+                          fontSize: 11,
+                          letterSpacing: "0.18em",
+                          textTransform: "uppercase",
+                          color: "var(--ink-muted)",
+                        }}
+                      >
+                        {featured.dateLabel} · {featured.cat}
                       </div>
                     </div>
                   </Link>
                 ) : null}
                 <div className="stories-side">
                   {secondary.map((p) => (
-                    <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-row">
+                    <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-card">
                       <div className="thumb">
                         <ImageSlot
                           src={p.heroSrc}
@@ -140,13 +149,24 @@ export function PostIndex({
                         />
                       </div>
                       <div className="body">
-                        <div className="cat">{p.tag}</div>
-                        <h3 style={{ fontSize: 22 }}>{p.title}</h3>
-                        <p className="excerpt">{p.excerpt}</p>
-                        <div className="by" style={{ marginTop: "auto" }}>
-                          <span>{p.dateLabel}</span>
-                          <span className="dot" />
-                          <span>{p.readingMinutes} min</span>
+                        <div className="featured-tag">{p.readingMinutes} min de lectura</div>
+                        {p.titleHTML ? (
+                          <h3 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
+                        ) : (
+                          <h3>{p.title}</h3>
+                        )}
+                        <p className="featured-excerpt">{p.excerpt}</p>
+                        <div
+                          style={{
+                            marginTop: "auto",
+                            paddingTop: 18,
+                            fontSize: 11,
+                            letterSpacing: "0.18em",
+                            textTransform: "uppercase",
+                            color: "var(--ink-muted)",
+                          }}
+                        >
+                          {p.dateLabel} · {p.cat}
                         </div>
                       </div>
                     </Link>
@@ -169,13 +189,24 @@ export function PostIndex({
                           />
                         </div>
                         <div className="body">
-                          <div className="cat">{p.tag}</div>
-                          <h3>{p.title}</h3>
-                          <p className="excerpt">{p.excerpt}</p>
-                          <div className="by">
-                            <span>{p.dateLabel}</span>
-                            <span className="dot" />
-                            <span>{p.readingMinutes} min</span>
+                          <div className="featured-tag">{p.readingMinutes} min de lectura</div>
+                          {p.titleHTML ? (
+                            <h3 dangerouslySetInnerHTML={{ __html: p.titleHTML }} />
+                          ) : (
+                            <h3>{p.title}</h3>
+                          )}
+                          <p className="featured-excerpt">{p.excerpt}</p>
+                          <div
+                            style={{
+                              marginTop: "auto",
+                              paddingTop: 18,
+                              fontSize: 11,
+                              letterSpacing: "0.18em",
+                              textTransform: "uppercase",
+                              color: "var(--ink-muted)",
+                            }}
+                          >
+                            {p.dateLabel} · {p.cat}
                           </div>
                         </div>
                       </Link>
