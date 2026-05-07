@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { POSTS } from "@/lib/fixtures";
+import { getAllPosts } from "@/lib/content";
 
 const SITE_URL = "https://girasun.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const posts = getAllPosts();
   const now = new Date();
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
@@ -20,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/contacto`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
   ];
 
-  const postRoutes: MetadataRoute.Sitemap = POSTS.map((p) => ({
+  const postRoutes: MetadataRoute.Sitemap = posts.map((p) => ({
     url: `${SITE_URL}/${p.type === "cuento" ? "cuentos" : "escritos"}/${p.slug}`,
     lastModified: new Date(p.date),
     changeFrequency: "monthly",

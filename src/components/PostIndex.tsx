@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ImageSlot } from "./ImageSlot";
-import type { Post, PostType } from "@/lib/fixtures";
+import type { Post, PostType } from "@/lib/content";
 
 type FilterKey = "all" | "short" | "long";
 const FILTERS: Array<{ key: FilterKey; label: string }> = [

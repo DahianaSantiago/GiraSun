@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostDetail } from "@/components/PostDetail";
-import { findPost, getPostsByType } from "@/lib/fixtures";
-import { getPostBody } from "@/lib/post-bodies";
+import { PostBody } from "@/components/mdx/PostBody";
+import { findPost, getPostsByType } from "@/lib/content";
 import { postArticleSchema, postUrl } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
@@ -45,7 +45,7 @@ export default async function EscritoDetailPage({ params }: { params: Params }) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postArticleSchema(post)) }}
       />
-      <PostDetail post={post} body={getPostBody(post.slug)} next={next} />
+      <PostDetail post={post} body={<PostBody source={post.body} />} next={next} />
     </>
   );
 }

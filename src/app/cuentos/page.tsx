@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PostIndex } from "@/components/PostIndex";
-import { getPostsByType } from "@/lib/fixtures";
+import { getPostsByType } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Cuento cuentos",

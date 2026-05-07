@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ImageSlot } from "./ImageSlot";
-import type { Post } from "@/lib/fixtures";
+import type { Post } from "@/lib/content";
 
 const slugify = (s: string) =>
   s
