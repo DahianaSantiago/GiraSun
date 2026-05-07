@@ -4,6 +4,8 @@ import "./globals.css";
 import { NavBar } from "@/components/NavBar";
 import { SideRail } from "@/components/SideRail";
 import { Footer } from "@/components/Footer";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { SignInModal } from "@/components/auth/SignInModal";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -49,10 +51,13 @@ export default function RootLayout({
       className={`${playfair.variable} ${jetbrainsMono.variable}`}
     >
       <body>
-        <NavBar />
-        <SideRail />
-        <main>{children}</main>
-        <Footer />
+        <AuthProvider>
+          <NavBar />
+          <SideRail />
+          <main>{children}</main>
+          <Footer />
+          <SignInModal />
+        </AuthProvider>
       </body>
     </html>
   );

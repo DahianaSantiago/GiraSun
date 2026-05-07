@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ImageSlot } from "./ImageSlot";
+import { LikeButton } from "./LikeButton";
 import type { Post } from "@/lib/content";
 
 const slugify = (s: string) =>
@@ -11,18 +12,6 @@ const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
-const HEART_ICON = (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-  </svg>
-);
 const SHARE_ICON = (
   <svg
     width="14"
@@ -68,10 +57,14 @@ export function PostDetail({
   post,
   body,
   next,
+  likeCount,
+  initialLiked,
 }: {
   post: Post;
   body: ReactNode;
   next?: { href: string; title: string };
+  likeCount: number;
+  initialLiked: boolean;
 }) {
   const indexHref = post.type === "cuento" ? "/cuentos" : "/escritos";
   const indexLabel = post.type === "cuento" ? "los cuentos" : "los escritos";
@@ -105,19 +98,25 @@ export function PostDetail({
             </div>
           </div>
 
-          {/* Action row — Phase 5 wires the like/share/save logic.
-              Rendered as visual chips for now, no handlers attached. */}
-          <div className="actions" style={{ display: "flex", gap: 8, marginBottom: 36 }}>
-            <button type="button" aria-label="Me gusta" disabled style={{ opacity: 0.7 }}>
-              {HEART_ICON}
-            </button>
-            <button type="button" aria-label="Compartir" disabled style={{ opacity: 0.7 }}>
+          {/* Action row — like wired to Firestore; share/save/email stay
+              disabled until a future phase makes them meaningful. */}
+          <div
+            className="actions"
+            style={{ display: "flex", gap: 8, marginBottom: 36, alignItems: "center" }}
+          >
+            <LikeButton
+              postType={post.type}
+              postSlug={post.slug}
+              initialCount={likeCount}
+              initialLiked={initialLiked}
+            />
+            <button type="button" aria-label="Compartir" disabled style={{ opacity: 0.6 }}>
               {SHARE_ICON}
             </button>
-            <button type="button" aria-label="Guardar" disabled style={{ opacity: 0.7 }}>
+            <button type="button" aria-label="Guardar" disabled style={{ opacity: 0.6 }}>
               {SAVE_ICON}
             </button>
-            <button type="button" aria-label="Email" disabled style={{ opacity: 0.7 }}>
+            <button type="button" aria-label="Email" disabled style={{ opacity: 0.6 }}>
               {EMAIL_ICON}
             </button>
           </div>

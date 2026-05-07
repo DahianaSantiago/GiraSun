@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostDetail } from "@/components/PostDetail";
 import { PostBody } from "@/components/mdx/PostBody";
+import { CommentThread } from "@/components/CommentThread";
 import { findPost, getPostsByType } from "@/lib/content";
 import { postArticleSchema, postUrl } from "@/lib/seo";
+import { getLikeCount, hasLiked } from "@/lib/firebase/likes";
+import { getSession } from "@/lib/firebase/session";
 
 type Params = Promise<{ slug: string }>;
 
@@ -39,13 +42,26 @@ export default async function EscritoDetailPage({ params }: { params: Params }) 
   const nextPost = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : undefined;
   const next = nextPost ? { href: `/escritos/${nextPost.slug}`, title: nextPost.title } : undefined;
 
+  const session = await getSession();
+  const [likeCount, initialLiked] = await Promise.all([
+    getLikeCount("escrito", post.slug),
+    session ? hasLiked("escrito", post.slug, session.uid) : Promise.resolve(false),
+  ]);
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(postArticleSchema(post)) }}
       />
-      <PostDetail post={post} body={<PostBody source={post.body} />} next={next} />
+      <PostDetail
+        post={post}
+        body={<PostBody source={post.body} />}
+        next={next}
+        likeCount={likeCount}
+        initialLiked={initialLiked}
+      />
+      <CommentThread postType="escrito" postSlug={post.slug} />
     </>
   );
 }
