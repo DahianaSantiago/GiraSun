@@ -68,7 +68,7 @@ export function PostIndex({
               {FILTERS.map((t) => (
                 <button
                   key={t.key}
-                  className={`filter-tab${filter === t.key ? "on" : ""}`}
+                  className={filter === t.key ? "filter-tab on" : "filter-tab"}
                   onClick={() => setFilter(t.key)}
                   type="button"
                 >
