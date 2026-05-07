@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { NavBar } from "@/components/NavBar";
-import { SideRail } from "@/components/SideRail";
-import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/components/auth/AuthProvider";
-import { SignInModal } from "@/components/auth/SignInModal";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -39,6 +35,12 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Root layout — minimal. Only sets up <html>, fonts, and the AuthProvider
+ * (shared by both public surfaces and the admin shell). Public chrome
+ * (NavBar/SideRail/Footer) lives in src/app/(public)/layout.tsx; admin
+ * chrome lives in src/app/admin/layout.tsx.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,13 +53,7 @@ export default function RootLayout({
       className={`${playfair.variable} ${jetbrainsMono.variable}`}
     >
       <body>
-        <AuthProvider>
-          <NavBar />
-          <SideRail />
-          <main>{children}</main>
-          <Footer />
-          <SignInModal />
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
