@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth/AuthProvider";
 
@@ -26,23 +26,29 @@ const GOOGLE_LOGO = (
 );
 
 export function AdminSignInButton({ from }: { from: string }) {
-  const { user, loading, signIn } = useAuth();
+  const { signIn } = useAuth();
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
 
-  // If the user finishes signing in (e.g., after the popup closes), bounce
-  // them through to the destination. The /admin/login route re-checks admin
-  // status server-side and only routes them past if they qualify.
-  useEffect(() => {
-    if (!loading && user) {
-      startTransition(() => router.replace(from));
+  const onClick = async () => {
+    setPending(true);
+    try {
+      // signIn() in AuthProvider already awaits BOTH signInWithPopup AND
+      // the POST /api/session that mints the cookie. Only after both
+      // resolve do we redirect — otherwise the layout's getSession() races
+      // the cookie set and bounces us back to /admin/login.
+      await signIn();
+      router.replace(from);
+      router.refresh();
+    } finally {
+      setPending(false);
     }
-  }, [loading, user, from, router]);
+  };
 
   return (
     <button
       type="button"
-      onClick={() => signIn()}
+      onClick={onClick}
       disabled={pending}
       style={{
         display: "inline-flex",
@@ -53,7 +59,7 @@ export function AdminSignInButton({ from }: { from: string }) {
         background: "var(--ink)",
         color: "oklch(0.96 0.01 85)",
         border: 0,
-        cursor: "pointer",
+        cursor: pending ? "wait" : "pointer",
         fontSize: 14,
         fontWeight: 500,
         letterSpacing: "0.02em",
