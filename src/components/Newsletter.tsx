@@ -94,7 +94,7 @@ export function Newsletter({ source = "home" }: { source?: string }) {
               </div>
             ) : null}
             <div className="check">
-              <span>✿</span>
+              <span className="brand-dot"></span>
               <span>Sin spam. Una sola carta al mes. Te puedes ir cuando quieras.</span>
             </div>
           </div>

@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { AuthChip } from "./auth/AuthChip";
 
 export type NavSection = "home" | "cuentos" | "escritos" | "club" | "cine" | "about" | "contacto";
@@ -21,6 +24,19 @@ const LINKS: Array<{ href: string; label: string; key: NavSection }> = [
 ];
 
 export function NavBar({ active }: { active?: NavSection }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 900) {
+        setMobileOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <header className="nav">
       <div className="nav-inner container">
@@ -35,8 +51,32 @@ export function NavBar({ active }: { active?: NavSection }) {
             </Link>
           ))}
         </nav>
-        <AuthChip />
+        <div className="nav-actions">
+          <AuthChip />
+          <button
+            className="nav-hamburger"
+            aria-label="Menú"
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            <span className={mobileOpen ? "open" : ""} />
+          </button>
+        </div>
       </div>
+      {mobileOpen && (
+        <nav className="nav-mobile">
+          {LINKS.map((link) => (
+            <Link
+              key={link.key}
+              href={link.href}
+              className={active === link.key ? "active" : ""}
+              onClick={() => setMobileOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
