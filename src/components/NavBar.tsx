@@ -35,13 +35,7 @@ export function NavBar({ active }: { active?: NavSection }) {
             </Link>
           ))}
         </nav>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div className="nav-search" role="search">
-            {SEARCH_ICON}
-            <span>Buscar...</span>
-          </div>
-          <AuthChip />
-        </div>
+        <AuthChip />
       </div>
     </header>
   );
