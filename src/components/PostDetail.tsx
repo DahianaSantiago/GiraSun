@@ -74,8 +74,6 @@ export function PostDetail({
           ) : (
             <h1>{post.title}</h1>
           )}
-          <div className="ornament">·</div>
-
           <div
             className="byline"
             style={{ justifyContent: "flex-start", paddingLeft: 0, paddingRight: 0 }}
