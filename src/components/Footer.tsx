@@ -11,7 +11,7 @@ export function Footer({ year = String(new Date().getFullYear()) }: { year?: str
       <div className="footer-inner container">
         <div className="footer-sig">
           Con cariño, GiraSun.
-          <small>Diario personal · MMXXVI</small>
+          <small>Diario personal</small>
         </div>
         <div className="footer-social">
           {SOCIAL_LINKS.map((s) => (

@@ -21,7 +21,6 @@ export function FeaturedStory({ post }: { post?: Post }) {
         />
         <div className="featured">
           <div className="featured-img">
-            <span className="badge">{featured.cat}</span>
             <ImageSlot
               src={featured.heroSrc}
               alt={featured.heroAlt}

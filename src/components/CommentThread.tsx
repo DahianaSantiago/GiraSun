@@ -29,11 +29,6 @@ export async function CommentThread({
         <h3>
           Comentarios <span className="count">({comments.length})</span>
         </h3>
-        <div className="ornament">·</div>
-        <p className="lede">
-          Pensamientos, reflexiones, recuerdos que detonó la lectura. Leo todos.
-        </p>
-
         <CommentComposer postType={postType} postSlug={postSlug} />
 
         {comments.length === 0 ? (

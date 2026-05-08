@@ -19,32 +19,6 @@ const SHARE_ICON = (
     <path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" />
   </svg>
 );
-const SAVE_ICON = (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-  </svg>
-);
-const EMAIL_ICON = (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-    <path d="m22 6-10 7L2 6" />
-  </svg>
-);
-
 export function PostDetail({
   post,
   body,
@@ -74,8 +48,6 @@ export function PostDetail({
           ) : (
             <h1>{post.title}</h1>
           )}
-          <div className="ornament">·</div>
-
           <div
             className="byline"
             style={{ justifyContent: "flex-start", paddingLeft: 0, paddingRight: 0 }}
@@ -92,8 +64,6 @@ export function PostDetail({
             </div>
           </div>
 
-          {/* Action row — like wired to Firestore; share/save/email stay
-              disabled until a future phase makes them meaningful. */}
           <div
             className="actions"
             style={{ display: "flex", gap: 8, marginBottom: 36, alignItems: "center" }}
@@ -106,12 +76,6 @@ export function PostDetail({
             />
             <button type="button" aria-label="Compartir" disabled style={{ opacity: 0.6 }}>
               {SHARE_ICON}
-            </button>
-            <button type="button" aria-label="Guardar" disabled style={{ opacity: 0.6 }}>
-              {SAVE_ICON}
-            </button>
-            <button type="button" aria-label="Email" disabled style={{ opacity: 0.6 }}>
-              {EMAIL_ICON}
             </button>
           </div>
         </aside>

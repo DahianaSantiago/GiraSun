@@ -3,7 +3,7 @@ import { ImageSlot } from "./ImageSlot";
 
 type HeroVariant = "split" | "centered" | "fullbleed";
 
-const EYEBROW = "Diario personal · MMXXVI";
+const EYEBROW = "Diario personal";
 const QUOTE =
   "Tú eres un girasol, pero cuando caminas te vuelves sol, y entonces yo, sin remedio, me convierto en girasol.";
 
