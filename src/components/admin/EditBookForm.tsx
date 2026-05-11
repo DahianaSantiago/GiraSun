@@ -58,13 +58,13 @@ export function EditBookForm({ slug, initial }: { slug: string; initial: Book })
 
       <div className="library-form-grid">
         <Field label="Núm.">
-          <input value={num} onChange={(e) => setNum(e.target.value)} required />
+          <input type="text" value={num} onChange={(e) => setNum(e.target.value)} required />
         </Field>
         <Field label="Título">
-          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </Field>
         <Field label="Autor">
-          <input value={author} onChange={(e) => setAuthor(e.target.value)} required />
+          <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} required />
         </Field>
         <Field label="Estado">
           <select value={status} onChange={(e) => setStatus(e.target.value as Book["status"])}>

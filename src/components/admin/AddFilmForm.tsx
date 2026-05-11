@@ -86,13 +86,24 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
 
       <div className="library-form-grid">
         <Field label="Núm. (00)">
-          <input value={num} onChange={(e) => setNum(e.target.value)} placeholder="13" required />
+          <input
+            type="text"
+            value={num}
+            onChange={(e) => setNum(e.target.value)}
+            placeholder="13"
+            required
+          />
         </Field>
         <Field label="Título">
-          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </Field>
         <Field label="Director">
-          <input value={director} onChange={(e) => setDirector(e.target.value)} required />
+          <input
+            type="text"
+            value={director}
+            onChange={(e) => setDirector(e.target.value)}
+            required
+          />
         </Field>
         <Field label="Año">
           <input
@@ -115,6 +126,7 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         </Field>
         <Field label="Apunte (una línea)">
           <input
+            type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="El desierto, el rojo, el silencio."

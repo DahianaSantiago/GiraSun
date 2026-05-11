@@ -5,6 +5,23 @@ import { getFilms } from "@/lib/content";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "CineClub" };
 
+const EditIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
+
 export default function AdminCineClubPage() {
   const films = getFilms();
 
@@ -38,8 +55,6 @@ export default function AdminCineClubPage() {
               <tr>
                 <th>Núm.</th>
                 <th>Título</th>
-                <th>Director</th>
-                <th>Año</th>
                 <th>Sesión</th>
                 <th></th>
               </tr>
@@ -49,11 +64,15 @@ export default function AdminCineClubPage() {
                 <tr key={f.slug}>
                   <td className="mono-cell">{f.num}</td>
                   <td>{f.title}</td>
-                  <td className="muted-cell">{f.director}</td>
-                  <td className="mono-cell">{f.year}</td>
                   <td className="muted-cell">{f.date}</td>
                   <td className="actions-cell">
-                    <Link href={`/admin/cineclub/${f.slug}/edit`}>Editar</Link>
+                    <Link
+                      href={`/admin/cineclub/${f.slug}/edit`}
+                      className="icon-btn"
+                      title="Editar"
+                    >
+                      <EditIcon />
+                    </Link>
                   </td>
                 </tr>
               ))}
