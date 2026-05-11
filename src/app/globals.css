@@ -2536,6 +2536,7 @@ img {
   font-size: 14px;
   color: var(--ink);
   flex: 1;
+  text-align: right;
 }
 .admin-table tr:last-child td {
   border-bottom: 0;
@@ -2558,11 +2559,9 @@ img {
 .admin-table .actions-cell a {
   color: var(--accent-ink);
   text-decoration: none;
-  border-bottom: 1px solid var(--accent);
 }
 .admin-table .actions-cell a:hover {
   color: var(--ink);
-  border-bottom-color: var(--ink);
 }
 
 @media (min-width: 900px) {
