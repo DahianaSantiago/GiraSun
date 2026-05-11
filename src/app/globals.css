@@ -2540,6 +2540,7 @@ img {
   font-weight: 500;
   font-size: 14px;
   color: var(--ink);
+  flex: 1;
 }
 .admin-table tr:last-child td {
   border-bottom: 0;
