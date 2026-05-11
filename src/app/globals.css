@@ -2536,7 +2536,6 @@ img {
   font-size: 14px;
   color: var(--ink);
   flex: 1;
-  text-align: right;
 }
 .admin-table tr:last-child td {
   border-bottom: 0;
