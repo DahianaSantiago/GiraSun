@@ -15,6 +15,9 @@ interface AuthContextType {
   loading: boolean;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
+  signInPromptOpen: boolean;
+  promptSignIn: () => void;
+  closeSignInPrompt: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,6 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [signInPromptOpen, setSignInPromptOpen] = useState(false);
 
   // Sync session cookie with Firebase Auth state
   const syncSession = async (firebaseUser: User | null) => {
@@ -65,8 +69,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await syncSession(null);
   };
 
+  const promptSignIn = () => setSignInPromptOpen(true);
+  const closeSignInPrompt = () => setSignInPromptOpen(false);
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signIn,
+        signOut,
+        signInPromptOpen,
+        promptSignIn,
+        closeSignInPrompt,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

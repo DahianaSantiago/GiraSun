@@ -14,9 +14,9 @@ export default async function EditCuentoPage({ params }: { params: Params }) {
 
   return (
     <PostEditor
+      id={draft.id}
       type="cuento"
       initial={{
-        id: draft.id,
         body: draft.body,
         frontmatter: {
           type: "cuento",

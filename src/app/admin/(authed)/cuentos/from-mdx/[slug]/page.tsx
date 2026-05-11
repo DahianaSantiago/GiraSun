@@ -14,12 +14,12 @@ export default async function EditCuentoFromMdxPage({ params }: { params: Params
 
   return (
     <PostEditor
+      id={null}
       type="cuento"
       initial={{
         // No Firestore draft id yet — PostEditor's first 'Guardar borrador'
         // creates one. From there, 'Publicar' overwrites the existing
         // /content/cuentos/{slug}.mdx.
-        id: "",
         body: post.body,
         frontmatter: {
           type: "cuento",

@@ -50,7 +50,7 @@ export function PostEditor({
   type,
   initial,
 }: {
-  id: string | null;
+  id?: string | null;
   type: DraftType;
   initial?: { frontmatter: DraftFrontmatter; body: string };
 }) {
@@ -108,6 +108,8 @@ export function PostEditor({
     heroAlt: heroAlt.trim(),
     readingMinutes: calculateReadingMinutes(body),
     featured: featured || undefined,
+    eyebrow: initial?.frontmatter.eyebrow,
+    tag: initial?.frontmatter.tag,
   });
 
   const onSave = () => {
