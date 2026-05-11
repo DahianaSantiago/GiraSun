@@ -31,17 +31,10 @@ export function AdminSignInButton({ from }: { from: string }) {
   const onClick = async () => {
     setPending(true);
     try {
-      // signIn() in AuthProvider awaits BOTH signInWithPopup AND the POST
-      // /api/session that mints the cookie. After it resolves, do a HARD
-      // reload to `from` — Next.js's router.replace keeps the client-side
-      // cache and the layout server-render of /admin/login still has the
-      // pre-auth state, so soft navigation lands on a 'still not signed in'
-      // render and bounces back. window.location forces a fresh request,
-      // which the middleware lets through (cookie is present) and the
-      // layout's getSession() reads.
       await signIn();
       window.location.assign(from);
-    } catch {
+    } catch (err) {
+      console.error("Sign-in error:", err);
       setPending(false);
     }
   };

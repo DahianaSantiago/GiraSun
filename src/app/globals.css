@@ -2770,10 +2770,84 @@ img {
   text-transform: uppercase;
   color: var(--ink-muted);
 }
-.post-editor-field-hint {
-  font-size: 11px;
+.post-editor-field-hint-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--bg-soft);
   color: var(--ink-muted);
-  font-style: italic;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font-size: 10px;
+  margin-left: 6px;
+  cursor: help;
+  position: relative;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+}
+
+.post-editor-field-hint-trigger:hover,
+.post-editor-field-hint-trigger:active {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* Premium Tooltip */
+.post-editor-field-hint-trigger::after {
+  content: attr(data-hint);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  background: var(--paper); /* Soft off-white for depth */
+  color: var(--ink);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  width: max-content;
+  max-width: 200px;
+  text-align: center;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1),
+    0 0 0 1px var(--rule);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  line-height: 1.4;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
+.post-editor-field-hint-trigger:hover::after,
+.post-editor-field-hint-trigger:active::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* Tooltip Arrow */
+.post-editor-field-hint-trigger::before {
+  content: "";
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--rule);
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.post-editor-field-hint-trigger:hover::before,
+.post-editor-field-hint-trigger:active::before {
+  opacity: 1;
 }
 .post-editor-field input[type="text"],
 .post-editor-field input[type="number"],
