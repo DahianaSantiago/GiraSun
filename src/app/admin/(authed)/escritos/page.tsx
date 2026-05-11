@@ -11,6 +11,40 @@ const fmt = (ms: number): string => {
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
 };
 
+const EditIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
+
+const EyeIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
 export default async function AdminEscritosPage() {
   let drafts: Draft[] = [];
   let published: Post[] = [];
@@ -78,8 +112,6 @@ export default async function AdminEscritosPage() {
             <thead>
               <tr>
                 <th>Título</th>
-                <th>Slug</th>
-                <th>Estado</th>
                 <th>Editado</th>
                 <th></th>
               </tr>
@@ -87,19 +119,28 @@ export default async function AdminEscritosPage() {
             <tbody>
               {drafts.map((d) => (
                 <tr key={d.id}>
-                  <td>{d.title}</td>
-                  <td className="mono-cell">{d.slug}</td>
-                  <td>
-                    <span className={`status-pill ${d.status}`}>
-                      {d.status === "published" ? "Publicado" : "Borrador"}
-                    </span>
+                  <td className="title-cell">
+                    {d.title}
+                    {d.status === "draft" ? (
+                      <span className="status-pill draft" style={{ marginLeft: 8 }}>
+                        Borrador
+                      </span>
+                    ) : null}
                   </td>
                   <td className="muted-cell">{fmt(d.updatedAt)}</td>
                   <td className="actions-cell">
-                    <Link href={`/admin/escritos/${d.id}/edit`}>Editar</Link>
+                    <Link href={`/admin/escritos/${d.id}/edit`} className="icon-btn" title="Editar">
+                      <EditIcon />
+                    </Link>
                     {d.status === "published" ? (
-                      <a href={`/escritos/${d.slug}`} target="_blank" rel="noreferrer">
-                        Ver
+                      <a
+                        href={`/escritos/${d.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="icon-btn"
+                        title="Ver publicado"
+                      >
+                        <EyeIcon />
                       </a>
                     ) : null}
                   </td>
@@ -113,15 +154,10 @@ export default async function AdminEscritosPage() {
       {orphanPublished.length > 0 ? (
         <section className="admin-page-section">
           <h2 className="admin-page-h2">Publicados (desde el repo)</h2>
-          <p style={{ color: "var(--ink-muted)", fontSize: 13, margin: "0 0 14px" }}>
-            Estos escritos viven en <code className="mono-cell">/content/escritos/</code>. Click en
-            Editar para abrirlos en el editor pre-llenados; al publicar se sobrescribe el archivo.
-          </p>
           <table className="admin-table">
             <thead>
               <tr>
                 <th>Título</th>
-                <th>Slug</th>
                 <th>Fecha</th>
                 <th></th>
               </tr>
@@ -129,13 +165,24 @@ export default async function AdminEscritosPage() {
             <tbody>
               {orphanPublished.map((p) => (
                 <tr key={p.slug}>
-                  <td>{p.title}</td>
-                  <td className="mono-cell">{p.slug}</td>
+                  <td className="title-cell">{p.title}</td>
                   <td className="muted-cell">{p.dateLabel}</td>
                   <td className="actions-cell">
-                    <Link href={`/admin/escritos/from-mdx/${p.slug}`}>Editar</Link>
-                    <a href={`/escritos/${p.slug}`} target="_blank" rel="noreferrer">
-                      Ver
+                    <Link
+                      href={`/admin/escritos/from-mdx/${p.slug}`}
+                      className="icon-btn"
+                      title="Editar"
+                    >
+                      <EditIcon />
+                    </Link>
+                    <a
+                      href={`/escritos/${p.slug}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="icon-btn"
+                      title="Ver en sitio"
+                    >
+                      <EyeIcon />
                     </a>
                   </td>
                 </tr>

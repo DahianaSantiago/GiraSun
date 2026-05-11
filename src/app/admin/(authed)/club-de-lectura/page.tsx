@@ -1,9 +1,26 @@
 import Link from "next/link";
 import { AddBookForm } from "@/components/admin/AddBookForm";
-import { getBooks, STATUS_LABELS } from "@/lib/content";
+import { getBooks } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Club de lectura" };
+
+const EditIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
 
 export default function AdminClubPage() {
   const books = getBooks();
@@ -36,9 +53,7 @@ export default function AdminClubPage() {
               <tr>
                 <th>Núm.</th>
                 <th>Título</th>
-                <th>Autor</th>
-                <th>Estado</th>
-                <th>Cover</th>
+                <th>Fecha</th>
                 <th></th>
               </tr>
             </thead>
@@ -46,14 +61,16 @@ export default function AdminClubPage() {
               {books.map((b) => (
                 <tr key={b.slug}>
                   <td className="mono-cell">{b.num}</td>
-                  <td>{b.title}</td>
-                  <td className="muted-cell">{b.author}</td>
-                  <td>
-                    <span className={`status-pill ${b.status}`}>{STATUS_LABELS[b.status]}</span>
-                  </td>
-                  <td className="muted-cell">{b.cover}</td>
+                  <td className="title-cell">{b.title}</td>
+                  <td className="muted-cell">{b.addedAt}</td>
                   <td className="actions-cell">
-                    <Link href={`/admin/club-de-lectura/${b.slug}/edit`}>Editar</Link>
+                    <Link
+                      href={`/admin/club-de-lectura/${b.slug}/edit`}
+                      className="icon-btn"
+                      title="Editar"
+                    >
+                      <EditIcon />
+                    </Link>
                   </td>
                 </tr>
               ))}

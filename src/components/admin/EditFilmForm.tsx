@@ -84,13 +84,18 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
 
       <div className="library-form-grid">
         <Field label="Núm.">
-          <input value={num} onChange={(e) => setNum(e.target.value)} required />
+          <input type="text" value={num} onChange={(e) => setNum(e.target.value)} required />
         </Field>
         <Field label="Título">
-          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </Field>
         <Field label="Director">
-          <input value={director} onChange={(e) => setDirector(e.target.value)} required />
+          <input
+            type="text"
+            value={director}
+            onChange={(e) => setDirector(e.target.value)}
+            required
+          />
         </Field>
         <Field label="Año">
           <input
@@ -112,7 +117,7 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
           </select>
         </Field>
         <Field label="Apunte">
-          <input value={note} onChange={(e) => setNote(e.target.value)} required />
+          <input type="text" value={note} onChange={(e) => setNote(e.target.value)} required />
         </Field>
       </div>
       <button type="submit" className="post-editor-btn" disabled={pending}>
