@@ -63,7 +63,7 @@ export default function AdminCineClubPage() {
               {films.map((f) => (
                 <tr key={f.slug}>
                   <td className="mono-cell">{f.num}</td>
-                  <td>{f.title}</td>
+                  <td className="title-cell">{f.title}</td>
                   <td className="muted-cell">{f.date}</td>
                   <td className="actions-cell">
                     <Link

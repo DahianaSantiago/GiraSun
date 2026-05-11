@@ -2535,6 +2535,11 @@ img {
   font-weight: 500;
   font-size: 14px;
   color: var(--ink);
+}
+.admin-table .title-cell {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink);
   flex: 1;
 }
 .admin-table tr:last-child td {
@@ -2548,6 +2553,9 @@ img {
 .admin-table .muted-cell {
   color: var(--ink-muted);
   font-size: 13px;
+  margin-left: auto;
+  text-align: right;
+  white-space: nowrap;
 }
 .admin-table .actions-cell {
   display: flex;

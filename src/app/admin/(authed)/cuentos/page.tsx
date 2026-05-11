@@ -119,7 +119,7 @@ export default async function AdminCuentosPage() {
             <tbody>
               {drafts.map((d) => (
                 <tr key={d.id}>
-                  <td>
+                  <td className="title-cell">
                     {d.title}
                     {d.status === "draft" ? (
                       <span className="status-pill draft" style={{ marginLeft: 8 }}>
@@ -165,7 +165,7 @@ export default async function AdminCuentosPage() {
             <tbody>
               {orphanPublished.map((p) => (
                 <tr key={p.slug}>
-                  <td>{p.title}</td>
+                  <td className="title-cell">{p.title}</td>
                   <td className="muted-cell">{p.dateLabel}</td>
                   <td className="actions-cell">
                     <Link

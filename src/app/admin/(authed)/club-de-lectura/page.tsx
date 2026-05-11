@@ -61,7 +61,7 @@ export default function AdminClubPage() {
               {books.map((b) => (
                 <tr key={b.slug}>
                   <td className="mono-cell">{b.num}</td>
-                  <td>{b.title}</td>
+                  <td className="title-cell">{b.title}</td>
                   <td className="muted-cell">{b.addedAt}</td>
                   <td className="actions-cell">
                     <Link
