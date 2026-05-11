@@ -16,9 +16,9 @@ export type DraftFrontmatter = {
   slug: string;
   date: string; // YYYY-MM-DD
   dateLabel: string; // '5 mayo, 2026'
-  eyebrow: string;
+  eyebrow?: string;
   cat: string;
-  tag: string;
+  tag?: string;
   excerpt: string;
   dek?: string;
   heroSrc?: string;
@@ -47,9 +47,9 @@ const fromDoc = (id: string, d: DocumentData): Draft => ({
   slug: d.slug,
   date: d.date,
   dateLabel: d.dateLabel,
-  eyebrow: d.eyebrow,
+  eyebrow: d.eyebrow ?? "",
   cat: d.cat,
-  tag: d.tag,
+  tag: d.tag ?? "",
   excerpt: d.excerpt,
   dek: d.dek ?? undefined,
   heroSrc: d.heroSrc ?? undefined,

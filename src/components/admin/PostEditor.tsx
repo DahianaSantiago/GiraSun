@@ -15,9 +15,9 @@ const slugify = (s: string): string =>
   s
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+    .replace(/^-+|-+$/g, "");
 
 const SPANISH_MONTHS = [
   "enero",
@@ -40,37 +40,72 @@ const formatSpanishDate = (iso: string): string => {
   return `${parseInt(m[3], 10)} ${SPANISH_MONTHS[parseInt(m[2], 10) - 1]}, ${m[1]}`;
 };
 
-const DEFAULTS_BY_TYPE: Record<DraftType, { eyebrow: string; cat: string; tag: string }> = {
-  cuento: { eyebrow: "Cuento", cat: "Cuento", tag: "Cuento cuentos" },
-  escrito: { eyebrow: "Escrito", cat: "Escrito", tag: "Escribo" },
+const DEFAULTS_BY_TYPE: Record<DraftType, { cat: string }> = {
+  cuento: { cat: "Cuento" },
+  escrito: { cat: "Escrito" },
 };
 
+const HelpIcon = () => (
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ display: "block" }}
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+  </svg>
+);
+
 export function PostEditor({
+  id,
   type,
   initial,
 }: {
+  id?: string | null;
   type: DraftType;
-  initial?: { id: string; frontmatter: DraftFrontmatter; body: string };
+  initial?: { frontmatter: DraftFrontmatter; body: string };
 }) {
   const defaults = DEFAULTS_BY_TYPE[type];
-  const today = new Date().toISOString().slice(0, 10);
 
-  const [id, setId] = useState<string | null>(initial?.id ?? null);
   const [title, setTitle] = useState(initial?.frontmatter.title ?? "");
   const [titleHTML, setTitleHTML] = useState(initial?.frontmatter.titleHTML ?? "");
   const [slug, setSlug] = useState(initial?.frontmatter.slug ?? "");
-  const [date, setDate] = useState(initial?.frontmatter.date ?? today);
-  const [eyebrow, setEyebrow] = useState(initial?.frontmatter.eyebrow ?? defaults.eyebrow);
-  const [cat, setCat] = useState(initial?.frontmatter.cat ?? defaults.cat);
-  const [tag, setTag] = useState(initial?.frontmatter.tag ?? defaults.tag);
+  const [date, setDate] = useState(
+    initial?.frontmatter.date ?? new Date().toISOString().split("T")[0],
+  );
   const [excerpt, setExcerpt] = useState(initial?.frontmatter.excerpt ?? "");
-  const [dek, setDek] = useState(initial?.frontmatter.dek ?? "");
   const [heroSrc, setHeroSrc] = useState(initial?.frontmatter.heroSrc ?? "");
   const [heroAlt, setHeroAlt] = useState(initial?.frontmatter.heroAlt ?? "");
-  const [readingMinutes, setReadingMinutes] = useState(initial?.frontmatter.readingMinutes ?? 5);
   const [featured, setFeatured] = useState(initial?.frontmatter.featured ?? false);
-  const [sectionsRaw, setSectionsRaw] = useState((initial?.frontmatter.sections ?? []).join("\n"));
   const [body, setBody] = useState(initial?.body ?? "");
+
+  const calculateReadingMinutes = (text: string): number => {
+    const words = text
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0).length;
+    const mins = Math.round(words / 150);
+    return Math.max(1, mins);
+  };
+
+  const handleSlugChange = (val: string) => {
+    let next = val
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    next = next.replace(/\s+/g, "-");
+    next = next.replace(/[^a-z0-9-]/g, "");
+    next = next.replace(/-+/g, "-");
+    if (next.startsWith("-")) next = next.slice(1);
+    setSlug(next);
+  };
 
   const [savePending, startSave] = useTransition();
   const [publishPending, startPublish] = useTransition();
@@ -82,28 +117,23 @@ export function PostEditor({
     type,
     title: title.trim(),
     titleHTML: titleHTML.trim() || undefined,
-    slug: slug.trim() || slugify(title),
+    slug: slug.trim() ? slugify(slug) : slugify(title),
     date,
     dateLabel: formatSpanishDate(date),
-    eyebrow: eyebrow.trim(),
-    cat: cat.trim(),
-    tag: tag.trim(),
+    cat: defaults.cat,
     excerpt: excerpt.trim(),
-    dek: dek.trim() || undefined,
     heroSrc: heroSrc.trim() || undefined,
     heroAlt: heroAlt.trim(),
-    readingMinutes,
+    readingMinutes: calculateReadingMinutes(body),
     featured: featured || undefined,
-    sections: sectionsRaw
-      .split("\n")
-      .map((s) => s.trim())
-      .filter(Boolean),
+    eyebrow: initial?.frontmatter.eyebrow,
+    tag: initial?.frontmatter.tag,
   });
 
   const onSave = () => {
     setMessage(null);
     const fm = buildFrontmatter();
-    if (!fm.slug) fm.slug = slugify(fm.title);
+    setSlug(fm.slug);
     startSave(async () => {
       const result: DraftActionResult = await saveDraftAction({
         id: id ?? undefined,
@@ -111,7 +141,6 @@ export function PostEditor({
         body,
       });
       if (result.ok) {
-        setId(result.id);
         setMessage({ kind: "success", text: "Borrador guardado." });
       } else {
         setMessage({
@@ -133,7 +162,7 @@ export function PostEditor({
       if (result.ok) {
         setMessage({
           kind: "success",
-          text: `Publicado. Vercel está reconstruyendo. Commit ${result.commit.slice(0, 7)}.`,
+          text: `Publicado. Commit ${result.commit.slice(0, 7)}.`,
           href: result.url,
         });
       } else {
@@ -184,12 +213,9 @@ export function PostEditor({
             </a>
           ) : null}
           {message.kind === "success" && id && !message.href ? (
-            <>
-              {" "}
-              <a href={`/${liveSegment}/${slug}`} target="_blank" rel="noreferrer">
-                ver borrador en vivo (después de publicar)
-              </a>
-            </>
+            <a href={`/${liveSegment}/${slug}`} target="_blank" rel="noreferrer">
+              ver borrador en vivo (después de publicar)
+            </a>
           ) : null}
         </div>
       ) : null}
@@ -224,33 +250,21 @@ export function PostEditor({
             <input
               type="text"
               value={slug}
-              onChange={(e) => setSlug(slugify(e.target.value))}
+              onChange={(e) => handleSlugChange(e.target.value)}
               placeholder="casa-agosto"
             />
           </FormField>
 
-          <FormField
-            label="Fecha (YYYY-MM-DD)"
-            hint={`Se muestra como: ${formatSpanishDate(date)}`}
-          >
+          <FormField label="Fecha" hint={`Se muestra como: ${formatSpanishDate(date)}`}>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </FormField>
 
-          <FormField label="Excerpt" hint="Aparece en las listas y en el OG">
+          <FormField label="Resumen">
             <textarea
               rows={3}
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               placeholder="Una historia sobre las casas que recordamos antes de habitarlas..."
-            />
-          </FormField>
-
-          <FormField label="Dek (opcional)" hint="Línea italic en el panel del detail">
-            <input
-              type="text"
-              value={dek}
-              onChange={(e) => setDek(e.target.value)}
-              placeholder="Una historia sobre las casas..."
             />
           </FormField>
 
@@ -272,37 +286,6 @@ export function PostEditor({
             />
           </FormField>
 
-          <FormField label="Minutos de lectura">
-            <input
-              type="number"
-              min={1}
-              max={99}
-              value={readingMinutes}
-              onChange={(e) => setReadingMinutes(parseInt(e.target.value, 10) || 1)}
-            />
-          </FormField>
-
-          <FormField label="Eyebrow">
-            <input type="text" value={eyebrow} onChange={(e) => setEyebrow(e.target.value)} />
-          </FormField>
-
-          <FormField label="Cat (single word)">
-            <input type="text" value={cat} onChange={(e) => setCat(e.target.value)} />
-          </FormField>
-
-          <FormField label="Tag (display)">
-            <input type="text" value={tag} onChange={(e) => setTag(e.target.value)} />
-          </FormField>
-
-          <FormField label="Secciones (TOC, una por línea)">
-            <textarea
-              rows={4}
-              value={sectionsRaw}
-              onChange={(e) => setSectionsRaw(e.target.value)}
-              placeholder={"La ventana que daba al verano\nRecados en la harina"}
-            />
-          </FormField>
-
           <FormField label="Destacado">
             <label style={{ fontSize: 13, color: "var(--ink-soft)" }}>
               <input
@@ -318,6 +301,33 @@ export function PostEditor({
 
         <div className="post-editor-main">
           <TipTapEditor initialMarkdown={initial?.body ?? ""} onChange={setBody} />
+          <div
+            style={{
+              marginTop: 8,
+              marginRight: 4,
+              fontSize: 12,
+              color: "var(--ink-muted)",
+              textAlign: "right",
+              fontStyle: "italic",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 12,
+            }}
+          >
+            <span style={{ opacity: 0.7 }}>
+              {
+                body
+                  .trim()
+                  .split(/\s+/)
+                  .filter((w) => w.length > 0).length
+              }{" "}
+              palabras
+            </span>
+            <span>
+              {calculateReadingMinutes(body)}{" "}
+              {calculateReadingMinutes(body) === 1 ? "minuto" : "minutos"} de lectura
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -335,9 +345,15 @@ function FormField({
 }) {
   return (
     <label className="post-editor-field">
-      <span className="post-editor-field-label">{label}</span>
+      <span className="post-editor-field-label">
+        {label}
+        {hint ? (
+          <span className="post-editor-field-hint-trigger" data-hint={hint}>
+            <HelpIcon />
+          </span>
+        ) : null}
+      </span>
       {children}
-      {hint ? <span className="post-editor-field-hint">{hint}</span> : null}
     </label>
   );
 }

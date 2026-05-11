@@ -2770,10 +2770,75 @@ img {
   text-transform: uppercase;
   color: var(--ink-muted);
 }
-.post-editor-field-hint {
-  font-size: 11px;
+.post-editor-field-hint-trigger {
+  display: inline-flex;
+  margin-left: 6px;
+  cursor: help;
+  position: relative;
+  transition: color 0.2s ease;
+  vertical-align: middle;
   color: var(--ink-muted);
-  font-style: italic;
+}
+
+.post-editor-field-hint-trigger:hover,
+.post-editor-field-hint-trigger:active {
+  color: var(--accent-ink);
+}
+
+/* Premium Tooltip */
+.post-editor-field-hint-trigger::after {
+  content: attr(data-hint);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  background: var(--bg-card-warm);
+  backdrop-filter: blur(8px);
+  color: var(--ink);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  width: max-content;
+  max-width: 220px;
+  text-align: center;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1),
+    0 0 0 1px var(--rule);
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  line-height: 1.4;
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
+.post-editor-field-hint-trigger:hover::after,
+.post-editor-field-hint-trigger:active::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* Tooltip Arrow */
+.post-editor-field-hint-trigger::before {
+  content: "";
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--bg-card-warm);
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.post-editor-field-hint-trigger:hover::before,
+.post-editor-field-hint-trigger:active::before {
+  opacity: 1;
 }
 .post-editor-field input[type="text"],
 .post-editor-field input[type="number"],

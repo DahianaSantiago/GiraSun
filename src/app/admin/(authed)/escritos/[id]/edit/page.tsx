@@ -14,9 +14,9 @@ export default async function EditEscritoPage({ params }: { params: Params }) {
 
   return (
     <PostEditor
+      id={draft.id}
       type="escrito"
       initial={{
-        id: draft.id,
         body: draft.body,
         frontmatter: {
           type: "escrito",

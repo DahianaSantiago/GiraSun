@@ -1,103 +1,96 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
+  signInWithPopup,
   GoogleAuthProvider,
   onAuthStateChanged,
-  signInWithPopup,
-  signInWithRedirect,
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
 import { getClientAuth } from "@/lib/firebase/client";
 
-type AuthContextValue = {
+interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
-  /** Open the sign-in modal. The modal is rendered globally; this just toggles state. */
-  promptSignIn: () => void;
-  /** Internal: read by the modal to know whether to render. Don't call directly. */
   signInPromptOpen: boolean;
+  promptSignIn: () => void;
   closeSignInPrompt: () => void;
-};
+}
 
-const AuthContext = createContext<AuthContextValue | null>(null);
-
-const isMobileViewport = (): boolean =>
-  typeof window !== "undefined" && window.matchMedia("(max-width: 720px)").matches;
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [signInPromptOpen, setSignInPromptOpen] = useState(false);
 
+  // Sync session cookie with Firebase Auth state
+  const syncSession = async (firebaseUser: User | null) => {
+    try {
+      if (firebaseUser) {
+        const idToken = await firebaseUser.getIdToken();
+        await fetch("/api/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+        });
+      } else {
+        await fetch("/api/session", { method: "DELETE" });
+      }
+    } catch (error) {
+      console.error("Session sync failed:", error);
+    }
+  };
+
   useEffect(() => {
     const auth = getClientAuth();
-    const unsub = onAuthStateChanged(auth, (next) => {
-      setUser(next);
+    return onAuthStateChanged(auth, async (u) => {
+      setUser(u);
       setLoading(false);
+      // We sync here to keep the cookie alive on refresh
+      await syncSession(u);
     });
-    return () => unsub();
   }, []);
 
-  const signIn = useCallback(async () => {
+  const signIn = async () => {
     const auth = getClientAuth();
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: "select_account" });
+    // Unified: use popup on all devices to maintain state in the current page
+    const result = await signInWithPopup(auth, provider);
+    await syncSession(result.user);
+  };
 
-    try {
-      const result = isMobileViewport() ? null : await signInWithPopup(auth, provider);
-
-      // Mobile path: signInWithRedirect navigates away — when the user comes
-      // back, onAuthStateChanged fires with the new user. We still need to
-      // exchange that for a session cookie below, but it'll happen on the
-      // next render via the user effect.
-      if (!result) {
-        await signInWithRedirect(auth, provider);
-        return;
-      }
-
-      const idToken = await result.user.getIdToken();
-      const res = await fetch("/api/session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idToken }),
-      });
-      if (!res.ok) {
-        await firebaseSignOut(auth);
-        throw new Error("session-cookie-failed");
-      }
-      setSignInPromptOpen(false);
-    } catch (err) {
-      const code = (err as { code?: string }).code;
-      // The user closed the popup or cancelled — not an error worth logging.
-      if (code !== "auth/popup-closed-by-user" && code !== "auth/cancelled-popup-request") {
-        console.error("Sign-in failed:", err);
-      }
-    }
-  }, []);
-
-  const signOut = useCallback(async () => {
+  const signOut = async () => {
     const auth = getClientAuth();
     await firebaseSignOut(auth);
-    await fetch("/api/session", { method: "DELETE" });
-  }, []);
+    await syncSession(null);
+  };
 
-  const promptSignIn = useCallback(() => setSignInPromptOpen(true), []);
-  const closeSignInPrompt = useCallback(() => setSignInPromptOpen(false), []);
+  const promptSignIn = () => setSignInPromptOpen(true);
+  const closeSignInPrompt = () => setSignInPromptOpen(false);
 
-  const value = useMemo<AuthContextValue>(
-    () => ({ user, loading, signIn, signOut, promptSignIn, signInPromptOpen, closeSignInPrompt }),
-    [user, loading, signIn, signOut, promptSignIn, signInPromptOpen, closeSignInPrompt],
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signIn,
+        signOut,
+        signInPromptOpen,
+        promptSignIn,
+        closeSignInPrompt,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth(): AuthContextValue {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
-  return ctx;
-}
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
+  return context;
+};

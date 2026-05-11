@@ -14,9 +14,9 @@ export default async function EditEscritoFromMdxPage({ params }: { params: Param
 
   return (
     <PostEditor
+      id={null}
       type="escrito"
       initial={{
-        id: "",
         body: post.body,
         frontmatter: {
           type: "escrito",

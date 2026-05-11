@@ -21,11 +21,11 @@ const PostFrontmatter = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "date must be YYYY-MM-DD"),
   /** Spanish-formatted date for cards / bylines, e.g. '5 mayo, 2026'. */
   dateLabel: z.string().min(1),
-  eyebrow: z.string().min(1),
+  eyebrow: z.string().optional(),
   /** Single-word eyebrow used inside cards, e.g. 'Cuento' or 'Escrito'. */
   cat: z.string().min(1),
   /** Display-form category label, e.g. 'Cuento cuentos' or 'Escribo'. */
-  tag: z.string().min(1),
+  tag: z.string().optional(),
   excerpt: z.string().min(1),
   dek: z.string().optional(),
   heroSrc: z.string().optional(),
