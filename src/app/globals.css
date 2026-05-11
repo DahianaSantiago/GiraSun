@@ -2772,29 +2772,17 @@ img {
 }
 .post-editor-field-hint-trigger {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  background: var(--bg-soft);
-  color: var(--ink-muted);
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  font-size: 10px;
-  line-height: 1;
   margin-left: 6px;
   cursor: help;
   position: relative;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
   vertical-align: middle;
-  padding: 0;
+  color: var(--ink-muted);
 }
 
 .post-editor-field-hint-trigger:hover,
 .post-editor-field-hint-trigger:active {
-  background: var(--accent-soft);
   color: var(--accent-ink);
-  border-color: var(--accent);
 }
 
 /* Premium Tooltip */
