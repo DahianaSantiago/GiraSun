@@ -21,6 +21,7 @@
     "firebase:indexes:deploy": "firebase deploy --only firestore:indexes"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.6",
     "@octokit/rest": "^22.0.1",
     "@react-email/components": "^1.0.12",
     "@tiptap/extension-link": "^3.22.5",

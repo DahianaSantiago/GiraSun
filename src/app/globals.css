@@ -2811,10 +2811,60 @@ img {
 .tiptap-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 8px 12px;
   background: var(--bg-soft);
   border-bottom: 1px solid var(--rule);
+  align-items: center;
+}
+.tiptap-toolbar-group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  position: relative;
+}
+.tiptap-toolbar-group:not(:last-child)::after {
+  content: "";
+  height: 20px;
+  width: 1px;
+  background: var(--rule);
+  margin-left: 8px;
+}
+.tiptap-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tiptap-toolbar-btn:hover {
+  background: color-mix(in oklab, var(--rule) 40%, transparent);
+  color: var(--ink);
+}
+.tiptap-toolbar-btn.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+}
+.tiptap-toolbar-btn svg {
+  display: block;
+}
+.tiptap-bubble-menu {
+  display: flex;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 4px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-l);
+  gap: 4px;
+  backdrop-filter: blur(8px);
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
 }
 .tiptap-editor .ProseMirror {
   padding: 24px 20px;
@@ -2867,6 +2917,18 @@ img {
   color: var(--accent-ink);
   border-bottom: 1px solid var(--accent);
   text-decoration: none;
+}
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding: 0 1rem 0 1.2rem;
+  margin: 1.2em 0;
+  list-style-type: disc;
+}
+.tiptap-editor .ProseMirror ol {
+  list-style-type: decimal;
+}
+.tiptap-editor .ProseMirror li p {
+  margin: 0;
 }
 
 /* Library forms (Club / CineClub). */

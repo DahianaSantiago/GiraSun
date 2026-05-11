@@ -70,10 +70,12 @@ export async function saveDraftAction(input: {
 
   const parsed = FrontmatterInput.safeParse(input.frontmatter);
   if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    const field = issue?.path.join(".") ?? "unknown";
     return {
       ok: false,
       error: "invalid-frontmatter",
-      detail: parsed.error.issues[0]?.message ?? "validation failed",
+      detail: `Campo '${field}': ${issue?.message ?? "valor inválido"}`,
     };
   }
 
