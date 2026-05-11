@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { listDrafts, type Draft } from "@/lib/drafts";
-import { getPostsByType, type Post } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Escritos" };
@@ -47,11 +46,9 @@ const EyeIcon = () => (
 
 export default async function AdminEscritosPage() {
   let drafts: Draft[] = [];
-  let published: Post[] = [];
   let loadError: string | null = null;
   try {
     drafts = await listDrafts("escrito");
-    published = getPostsByType("escrito");
   } catch (err) {
     loadError = `${(err as Error).name}: ${(err as Error).message}\n\n${(err as Error).stack ?? ""}`;
     console.error("[admin/escritos] load failed", err);
@@ -85,9 +82,6 @@ export default async function AdminEscritosPage() {
     );
   }
 
-  const draftSlugs = new Set(drafts.filter((d) => d.status === "published").map((d) => d.slug));
-  const orphanPublished = published.filter((p) => !draftSlugs.has(p.slug));
-
   return (
     <div className="admin-page">
       <header className="admin-page-head">
@@ -95,9 +89,7 @@ export default async function AdminEscritosPage() {
         <h1 className="admin-page-title">
           Escri<em>tos</em>
         </h1>
-        <p className="admin-page-lede">
-          Anotaciones del cuaderno. Borradores aquí, publicados van al repo y al sitio público.
-        </p>
+        <p className="admin-page-lede">Anotaciones del cuaderno. Borradores y publicados.</p>
         <Link href="/admin/escritos/new" className="post-editor-btn" style={{ marginTop: 18 }}>
           + Nuevo escrito
         </Link>
@@ -150,47 +142,6 @@ export default async function AdminEscritosPage() {
           </table>
         )}
       </section>
-
-      {orphanPublished.length > 0 ? (
-        <section className="admin-page-section">
-          <h2 className="admin-page-h2">Publicados (desde el repo)</h2>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Fecha</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {orphanPublished.map((p) => (
-                <tr key={p.slug}>
-                  <td className="title-cell">{p.title}</td>
-                  <td className="muted-cell">{p.dateLabel}</td>
-                  <td className="actions-cell">
-                    <Link
-                      href={`/admin/escritos/from-mdx/${p.slug}`}
-                      className="icon-btn"
-                      title="Editar"
-                    >
-                      <EditIcon />
-                    </Link>
-                    <a
-                      href={`/escritos/${p.slug}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="icon-btn"
-                      title="Ver en sitio"
-                    >
-                      <EyeIcon />
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      ) : null}
     </div>
   );
 }

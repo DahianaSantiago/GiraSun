@@ -13,7 +13,7 @@ const DEFAULT_INTRO = {
   pill: "Actualizado el 3 mayo",
 };
 
-export function ReadingBlock({
+export async function ReadingBlock({
   books,
   intro = DEFAULT_INTRO,
   background = "var(--bg-soft)",
@@ -22,7 +22,7 @@ export function ReadingBlock({
   intro?: typeof DEFAULT_INTRO;
   background?: string;
 }) {
-  const list = books ?? getBooks();
+  const list = books ?? (await getBooks());
   return (
     <section className="reading-block" style={{ background }}>
       <div className="container">

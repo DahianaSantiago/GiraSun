@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { updateBookAction, type CommitResult } from "@/app/actions/library";
 import type { Book } from "@/lib/content";
 
 export function EditBookForm({ slug, initial }: { slug: string; initial: Book }) {
+  const router = useRouter();
   const [num, setNum] = useState(initial.num);
   const [title, setTitle] = useState(initial.title);
   const [author, setAuthor] = useState(initial.author);
@@ -13,7 +15,7 @@ export function EditBookForm({ slug, initial }: { slug: string; initial: Book })
   const [addedAt, setAddedAt] = useState(initial.addedAt ?? new Date().toISOString().slice(0, 10));
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<
-    { kind: "success"; text: string; href: string } | { kind: "error"; text: string } | null
+    { kind: "success"; text: string } | { kind: "error"; text: string } | null
   >(null);
 
   const onSubmit = (e: React.FormEvent) => {
@@ -29,11 +31,8 @@ export function EditBookForm({ slug, initial }: { slug: string; initial: Book })
         addedAt,
       });
       if (result.ok) {
-        setMessage({
-          kind: "success",
-          text: `Cambios guardados. Commit ${result.commit.slice(0, 7)}.`,
-          href: result.url,
-        });
+        router.push("/admin/club-de-lectura");
+        router.refresh();
       } else {
         setMessage({
           kind: "error",
@@ -45,16 +44,7 @@ export function EditBookForm({ slug, initial }: { slug: string; initial: Book })
 
   return (
     <form className="library-form" onSubmit={onSubmit}>
-      {message ? (
-        <div className={`post-editor-message ${message.kind}`}>
-          {message.text}{" "}
-          {message.kind === "success" ? (
-            <a href={message.href} target="_blank" rel="noreferrer">
-              ver commit
-            </a>
-          ) : null}
-        </div>
-      ) : null}
+      {message ? <div className={`post-editor-message ${message.kind}`}>{message.text}</div> : null}
 
       <div className="library-form-grid">
         <Field label="Núm.">

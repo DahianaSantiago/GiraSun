@@ -10,7 +10,7 @@ type Params = Promise<{ slug: string }>;
 
 export default async function EditBookPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const book = findBookBySlug(slug);
+  const book = await findBookBySlug(slug);
   if (!book) notFound();
 
   return (

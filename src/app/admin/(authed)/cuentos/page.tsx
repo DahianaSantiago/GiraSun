@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { listDrafts, type Draft } from "@/lib/drafts";
-import { getPostsByType, type Post } from "@/lib/content";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Cuentos" };
@@ -47,16 +46,13 @@ const EyeIcon = () => (
 
 export default async function AdminCuentosPage() {
   let drafts: Draft[] = [];
-  let published: Post[] = [];
   let loadError: string | null = null;
   try {
     drafts = await listDrafts("cuento");
-    published = getPostsByType("cuento");
   } catch (err) {
     loadError = `${(err as Error).name}: ${(err as Error).message}\n\n${(err as Error).stack ?? ""}`;
     console.error("[admin/cuentos] load failed", err);
   }
-
   if (loadError) {
     return (
       <div className="admin-page">
@@ -84,9 +80,6 @@ export default async function AdminCuentosPage() {
       </div>
     );
   }
-
-  const draftSlugs = new Set(drafts.filter((d) => d.status === "published").map((d) => d.slug));
-  const orphanPublished = published.filter((p) => !draftSlugs.has(p.slug));
 
   return (
     <div className="admin-page">
@@ -150,47 +143,6 @@ export default async function AdminCuentosPage() {
           </table>
         )}
       </section>
-
-      {orphanPublished.length > 0 ? (
-        <section className="admin-page-section">
-          <h2 className="admin-page-h2">Publicados (desde el repo)</h2>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Fecha</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {orphanPublished.map((p) => (
-                <tr key={p.slug}>
-                  <td className="title-cell">{p.title}</td>
-                  <td className="muted-cell">{p.dateLabel}</td>
-                  <td className="actions-cell">
-                    <Link
-                      href={`/admin/cuentos/from-mdx/${p.slug}`}
-                      className="icon-btn"
-                      title="Editar"
-                    >
-                      <EditIcon />
-                    </Link>
-                    <a
-                      href={`/cuentos/${p.slug}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="icon-btn"
-                      title="Ver en sitio"
-                    >
-                      <EyeIcon />
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      ) : null}
     </div>
   );
 }

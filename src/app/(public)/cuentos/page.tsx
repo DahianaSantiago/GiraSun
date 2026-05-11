@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CuentosIndexPage() {
-  const posts = getPostsByType("cuento");
+export default async function CuentosPage() {
+  const posts = await getPostsByType("cuento");
   return (
     <PostIndex
       posts={posts}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { addFilmAction, type CommitResult } from "@/app/actions/library";
 
 const SPANISH_MONTHS = [
@@ -25,6 +26,7 @@ const formatSpanishDate = (iso: string): string => {
 };
 
 export function AddFilmForm({ existingCount }: { existingCount: number }) {
+  const router = useRouter();
   const today = new Date().toISOString().slice(0, 10);
   const [num, setNum] = useState(String(existingCount + 1).padStart(2, "0"));
   const [title, setTitle] = useState("");
@@ -35,7 +37,7 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
   const [cover, setCover] = useState<"warm" | "sage" | "blush">("warm");
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<
-    { kind: "success"; text: string; href: string } | { kind: "error"; text: string } | null
+    { kind: "success"; text: string } | { kind: "error"; text: string } | null
   >(null);
 
   const onSubmit = (e: React.FormEvent) => {
@@ -53,15 +55,8 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         cover,
       });
       if (result.ok) {
-        setMessage({
-          kind: "success",
-          text: `Sesión agregada al CineClub. Commit ${result.commit.slice(0, 7)}.`,
-          href: result.url,
-        });
-        setTitle("");
-        setDirector("");
-        setNote("");
-        setNum(String(parseInt(num, 10) + 1).padStart(2, "0"));
+        router.push("/admin/cineclub");
+        router.refresh();
       } else {
         setMessage({
           kind: "error",
@@ -73,16 +68,7 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
 
   return (
     <form className="library-form" onSubmit={onSubmit}>
-      {message ? (
-        <div className={`post-editor-message ${message.kind}`}>
-          {message.text}{" "}
-          {message.kind === "success" ? (
-            <a href={message.href} target="_blank" rel="noreferrer">
-              ver commit
-            </a>
-          ) : null}
-        </div>
-      ) : null}
+      {message ? <div className={`post-editor-message ${message.kind}`}>{message.text}</div> : null}
 
       <div className="library-form-grid">
         <Field label="Núm. (00)">

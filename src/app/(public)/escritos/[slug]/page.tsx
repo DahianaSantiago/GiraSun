@@ -10,13 +10,14 @@ import { getSession } from "@/lib/firebase/session";
 
 type Params = Promise<{ slug: string }>;
 
-export function generateStaticParams() {
-  return getPostsByType("escrito").map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const posts = await getPostsByType("escrito");
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { slug } = await params;
-  const post = findPost("escrito", slug);
+  const post = await findPost("escrito", slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -34,10 +35,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function EscritoDetailPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const post = findPost("escrito", slug);
+  const post = await findPost("escrito", slug);
   if (!post) notFound();
 
-  const all = getPostsByType("escrito");
+  const all = await getPostsByType("escrito");
   const idx = all.findIndex((p) => p.slug === post.slug);
   const nextPost = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : undefined;
   const next = nextPost ? { href: `/escritos/${nextPost.slug}`, title: nextPost.title } : undefined;

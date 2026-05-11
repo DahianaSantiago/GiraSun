@@ -6,11 +6,12 @@ import { CineBlock } from "@/components/CineBlock";
 import { Newsletter } from "@/components/Newsletter";
 import { AboutStrip } from "@/components/AboutStrip";
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <Hero variant="centered" imageSrc="/images/Banner.png" />
       <CategoryGrid />
+      {/* @ts-expect-error RSC */}
       <FeaturedStory />
       <ReadingBlock />
       <CineBlock />

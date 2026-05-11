@@ -6,8 +6,9 @@ import { getAllPosts, type Post } from "@/lib/content";
 const FALLBACK_QUOTE =
   "«Había una ventana que daba al verano y otra que daba al miedo. Yo elegí la que tenía cortinas blancas, y aún así, soñé con la otra durante meses.»";
 
-export function FeaturedStory({ post }: { post?: Post }) {
-  const featured = post ?? getAllPosts().find((p) => p.featured);
+export async function FeaturedStory({ post }: { post?: Post }) {
+  const allPosts = await getAllPosts();
+  const featured = post ?? allPosts.find((p) => p.featured);
   if (!featured) return null;
 
   const href = `/${featured.type === "cuento" ? "cuentos" : "escritos"}/${featured.slug}`;

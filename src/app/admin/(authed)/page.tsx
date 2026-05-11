@@ -15,11 +15,18 @@ async function counts() {
     db.collection("subscribers").where("status", "==", "pending").count().get(),
   ]);
 
+  const [cuentos, escritos, books, films] = await Promise.all([
+    getPostsByType("cuento"),
+    getPostsByType("escrito"),
+    getBooks(),
+    getFilms(),
+  ]);
+
   return {
-    cuentos: getPostsByType("cuento").length,
-    escritos: getPostsByType("escrito").length,
-    books: getBooks().length,
-    films: getFilms().length,
+    cuentos: cuentos.length,
+    escritos: escritos.length,
+    books: books.length,
+    films: films.length,
     comments: totalComments.data().count,
     hiddenComments: pendingComments.data().count,
     subscribers: confirmedSubs.data().count,
@@ -87,11 +94,11 @@ export default async function AdminDashboardPage() {
 
       <section className="admin-page-section">
         <div className="admin-page-eyebrow">Próximamente</div>
-        <h2 className="admin-page-h2">Lo que falta para que el panel sea útil</h2>
+        <h2 className="admin-page-h2">Siguientes pasos</h2>
         <ul className="admin-todo-list">
-          <li>
-            <strong>Editor de cuentos / escritos</strong> — TipTap + commit MDX vía Octokit. Phase
-            8.
+          <li className="done" style={{ opacity: 0.6, textDecoration: "line-through" }}>
+            <strong>Migración a Firestore</strong> — Independencia total de GitHub para contenido.
+            ¡Listo!
           </li>
           <li>
             <strong>
