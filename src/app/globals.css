@@ -2781,11 +2781,13 @@ img {
   border: 1px solid var(--rule);
   border-radius: 50%;
   font-size: 10px;
+  line-height: 1;
   margin-left: 6px;
   cursor: help;
   position: relative;
   transition: all 0.2s ease;
   vertical-align: middle;
+  padding: 0;
 }
 
 .post-editor-field-hint-trigger:hover,
@@ -2802,17 +2804,18 @@ img {
   bottom: 125%;
   left: 50%;
   transform: translateX(-50%) scale(0.95);
-  background: var(--paper); /* Soft off-white for depth */
+  background: var(--bg-card-warm);
+  backdrop-filter: blur(8px);
   color: var(--ink);
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 12px;
   width: max-content;
-  max-width: 200px;
+  max-width: 220px;
   text-align: center;
   box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1),
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1),
     0 0 0 1px var(--rule);
   pointer-events: none;
   opacity: 0;
@@ -2839,7 +2842,7 @@ img {
   left: 50%;
   transform: translateX(-50%);
   border: 6px solid transparent;
-  border-top-color: var(--rule);
+  border-top-color: var(--bg-card-warm);
   opacity: 0;
   transition: all 0.2s ease;
   pointer-events: none;
