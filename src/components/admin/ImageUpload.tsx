@@ -103,7 +103,7 @@ export default function ImageUpload({
         {isUploading || isProcessing ? (
           <div className="loading-overlay">
             <span className="loader"></span>
-            <p>{isUploading ? "Subiendo..." : "Procesando..."}</p>
+            <small>{isUploading ? "Subiendo..." : "Procesando..."}</small>
           </div>
         ) : previewSrc ? (
           <>
@@ -230,14 +230,14 @@ export default function ImageUpload({
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 1rem;
+          color: var(--text-soft, #888);
         }
 
         .loader {
-          width: 32px;
-          height: 32px;
-          border: 3px solid var(--accent, #e6b905);
-          border-bottom-color: transparent;
+          width: clamp(25px, 6%, 35px);
+          aspect-ratio: 1;
+          border: 2px solid var(--border-soft, #ddd);
+          border-bottom-color: var(--accent, #e6b905);
           border-radius: 50%;
           animation: rotation 1s linear infinite;
         }
