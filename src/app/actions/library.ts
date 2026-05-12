@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/firebase/session";
 import { isAdmin } from "@/lib/firebase/admins";
-import { commitFiles, readFileFromRepo } from "@/lib/octokit";
+import { getServerDb } from "@/lib/firebase/server";
 
 async function requireAdmin(): Promise<{ email: string }> {
   const session = await getSession();
@@ -45,11 +45,7 @@ const FilmInput = z.object({
   cover: z.enum(["warm", "sage", "blush"]),
 });
 
-const yamlString = (v: string): string => JSON.stringify(v);
-
-export type CommitResult =
-  | { ok: true; path: string; commit: string; url: string }
-  | { ok: false; error: string; detail?: string };
+export type CommitResult = { ok: true } | { ok: false; error: string; detail?: string };
 
 export async function addBookAction(input: z.input<typeof BookInput>): Promise<CommitResult> {
   try {
@@ -64,36 +60,25 @@ export async function addBookAction(input: z.input<typeof BookInput>): Promise<C
   }
 
   const slug = `${parsed.data.num}-${slugify(parsed.data.title)}`;
-  const path = `content/club-de-lectura/${slug}.mdx`;
+  const db = getServerDb();
+  const docRef = db.collection("books").doc(slug);
 
-  const existing = await readFileFromRepo(path);
-  if (existing) {
-    return { ok: false, error: "already-exists", detail: `${path} already exists in the repo` };
+  const existing = await docRef.get();
+  if (existing.exists) {
+    return { ok: false, error: "already-exists", detail: `Book with slug ${slug} already exists` };
   }
 
-  const fm = parsed.data;
-  const mdx =
-    "---\n" +
-    `num: ${yamlString(fm.num)}\n` +
-    `title: ${yamlString(fm.title)}\n` +
-    `author: ${yamlString(fm.author)}\n` +
-    `status: ${yamlString(fm.status)}\n` +
-    `cover: ${yamlString(fm.cover)}\n` +
-    `addedAt: ${yamlString(fm.addedAt)}\n` +
-    "---\n";
-
-  const result = await commitFiles({
-    files: [{ path, content: mdx }],
-    message: `feat(content): add book '${fm.title}' to club-de-lectura`,
+  await docRef.set({
+    ...parsed.data,
+    updatedAt: new Date(),
   });
 
   revalidatePath("/admin/club-de-lectura");
   revalidatePath("/club-de-lectura");
   revalidatePath("/");
-  return { ok: true, path, commit: result.commit, url: result.html_url };
+  return { ok: true };
 }
 
-/** Update an existing book at /content/club-de-lectura/{slug}.mdx (overwrite). */
 export async function updateBookAction(
   slug: string,
   input: z.input<typeof BookInput>,
@@ -109,27 +94,18 @@ export async function updateBookAction(
     return { ok: false, error: "invalid-input", detail: parsed.error.issues[0]?.message };
   }
 
-  const path = `content/club-de-lectura/${slug}.mdx`;
-  const fm = parsed.data;
-  const mdx =
-    "---\n" +
-    `num: ${yamlString(fm.num)}\n` +
-    `title: ${yamlString(fm.title)}\n` +
-    `author: ${yamlString(fm.author)}\n` +
-    `status: ${yamlString(fm.status)}\n` +
-    `cover: ${yamlString(fm.cover)}\n` +
-    `addedAt: ${yamlString(fm.addedAt)}\n` +
-    "---\n";
-
-  const result = await commitFiles({
-    files: [{ path, content: mdx }],
-    message: `feat(content): update book '${fm.title}' in club-de-lectura`,
-  });
+  await getServerDb()
+    .collection("books")
+    .doc(slug)
+    .set({
+      ...parsed.data,
+      updatedAt: new Date(),
+    });
 
   revalidatePath("/admin/club-de-lectura");
   revalidatePath("/club-de-lectura");
   revalidatePath("/");
-  return { ok: true, path, commit: result.commit, url: result.html_url };
+  return { ok: true };
 }
 
 export async function addFilmAction(input: z.input<typeof FilmInput>): Promise<CommitResult> {
@@ -145,39 +121,25 @@ export async function addFilmAction(input: z.input<typeof FilmInput>): Promise<C
   }
 
   const slug = `${parsed.data.num}-${slugify(parsed.data.title)}`;
-  const path = `content/cineclub/${slug}.mdx`;
+  const db = getServerDb();
+  const docRef = db.collection("films").doc(slug);
 
-  const existing = await readFileFromRepo(path);
-  if (existing) {
-    return { ok: false, error: "already-exists", detail: `${path} already exists in the repo` };
+  const existing = await docRef.get();
+  if (existing.exists) {
+    return { ok: false, error: "already-exists", detail: `Film with slug ${slug} already exists` };
   }
 
-  const fm = parsed.data;
-  const lines = [
-    "---",
-    `num: ${yamlString(fm.num)}`,
-    `title: ${yamlString(fm.title)}`,
-    `director: ${yamlString(fm.director)}`,
-    `year: ${fm.year}`,
-    `date: ${yamlString(fm.date)}`,
-  ];
-  if (fm.sessionDate) lines.push(`sessionDate: ${yamlString(fm.sessionDate)}`);
-  lines.push(`note: ${yamlString(fm.note)}`);
-  lines.push(`cover: ${yamlString(fm.cover)}`);
-  lines.push("---", "");
-
-  const result = await commitFiles({
-    files: [{ path, content: lines.join("\n") }],
-    message: `feat(content): add film '${fm.title}' to cineclub`,
+  await docRef.set({
+    ...parsed.data,
+    updatedAt: new Date(),
   });
 
   revalidatePath("/admin/cineclub");
   revalidatePath("/cineclub");
   revalidatePath("/");
-  return { ok: true, path, commit: result.commit, url: result.html_url };
+  return { ok: true };
 }
 
-/** Update an existing film at /content/cineclub/{slug}.mdx (overwrite). */
 export async function updateFilmAction(
   slug: string,
   input: z.input<typeof FilmInput>,
@@ -193,28 +155,16 @@ export async function updateFilmAction(
     return { ok: false, error: "invalid-input", detail: parsed.error.issues[0]?.message };
   }
 
-  const path = `content/cineclub/${slug}.mdx`;
-  const fm = parsed.data;
-  const lines = [
-    "---",
-    `num: ${yamlString(fm.num)}`,
-    `title: ${yamlString(fm.title)}`,
-    `director: ${yamlString(fm.director)}`,
-    `year: ${fm.year}`,
-    `date: ${yamlString(fm.date)}`,
-  ];
-  if (fm.sessionDate) lines.push(`sessionDate: ${yamlString(fm.sessionDate)}`);
-  lines.push(`note: ${yamlString(fm.note)}`);
-  lines.push(`cover: ${yamlString(fm.cover)}`);
-  lines.push("---", "");
-
-  const result = await commitFiles({
-    files: [{ path, content: lines.join("\n") }],
-    message: `feat(content): update film '${fm.title}' in cineclub`,
-  });
+  await getServerDb()
+    .collection("films")
+    .doc(slug)
+    .set({
+      ...parsed.data,
+      updatedAt: new Date(),
+    });
 
   revalidatePath("/admin/cineclub");
   revalidatePath("/cineclub");
   revalidatePath("/");
-  return { ok: true, path, commit: result.commit, url: result.html_url };
+  return { ok: true };
 }

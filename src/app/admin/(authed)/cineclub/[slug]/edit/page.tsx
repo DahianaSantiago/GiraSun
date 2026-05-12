@@ -10,7 +10,7 @@ type Params = Promise<{ slug: string }>;
 
 export default async function EditFilmPage({ params }: { params: Params }) {
   const { slug } = await params;
-  const film = findFilmBySlug(slug);
+  const film = await findFilmBySlug(slug);
   if (!film) notFound();
 
   return (

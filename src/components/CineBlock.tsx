@@ -13,7 +13,7 @@ const DEFAULT_INTRO = {
   pill: "12 sesiones · desde 2025",
 };
 
-export function CineBlock({
+export async function CineBlock({
   films,
   intro = DEFAULT_INTRO,
   background = "var(--bg)",
@@ -22,7 +22,7 @@ export function CineBlock({
   intro?: typeof DEFAULT_INTRO;
   background?: string;
 }) {
-  const list = films ?? getFilms();
+  const list = films ?? (await getFilms());
   return (
     <section className="reading-block" style={{ background }}>
       <div className="container">

@@ -22,8 +22,8 @@ const EditIcon = () => (
   </svg>
 );
 
-export default function AdminCineClubPage() {
-  const films = getFilms();
+export default async function AdminCineClubPage() {
+  const films = await getFilms();
 
   return (
     <div className="admin-page">

@@ -10,6 +10,7 @@ import {
   type PublishResult,
 } from "@/app/actions/drafts";
 import type { DraftFrontmatter, DraftType } from "@/lib/drafts";
+import { useRouter } from "next/navigation";
 
 const slugify = (s: string): string =>
   s
@@ -72,6 +73,7 @@ export function PostEditor({
   type: DraftType;
   initial?: { frontmatter: DraftFrontmatter; body: string };
 }) {
+  const router = useRouter();
   const defaults = DEFAULTS_BY_TYPE[type];
 
   const [title, setTitle] = useState(initial?.frontmatter.title ?? "");
@@ -142,6 +144,8 @@ export function PostEditor({
       });
       if (result.ok) {
         setMessage({ kind: "success", text: "Borrador guardado." });
+        router.push(indexHref);
+        router.refresh();
       } else {
         setMessage({
           kind: "error",
@@ -152,19 +156,35 @@ export function PostEditor({
   };
 
   const onPublish = () => {
-    if (!id) {
-      setMessage({ kind: "error", text: "Guarda un borrador primero." });
-      return;
-    }
     setMessage(null);
+    const fm = buildFrontmatter();
     startPublish(async () => {
-      const result: PublishResult = await publishDraftAction(id);
+      // 1. Save latest changes first
+      const saveResult: DraftActionResult = await saveDraftAction({
+        id: id ?? undefined,
+        frontmatter: fm,
+        body,
+      });
+
+      if (!saveResult.ok) {
+        setMessage({
+          kind: "error",
+          text: `No pude guardar antes de publicar: ${saveResult.error}`,
+        });
+        return;
+      }
+
+      // 2. Publish using the ID (either the existing one or the one just created)
+      const finalId = id || saveResult.id;
+      const result: PublishResult = await publishDraftAction(finalId);
+
       if (result.ok) {
         setMessage({
           kind: "success",
-          text: `Publicado. Commit ${result.commit.slice(0, 7)}.`,
-          href: result.url,
+          text: `¡Publicado con éxito!`,
         });
+        router.push(indexHref);
+        router.refresh();
       } else {
         setMessage({
           kind: "error",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { updateFilmAction, type CommitResult } from "@/app/actions/library";
 import type { Film } from "@/lib/content";
 
@@ -26,6 +27,7 @@ const formatSpanishDate = (iso: string): string => {
 };
 
 export function EditFilmForm({ slug, initial }: { slug: string; initial: Film }) {
+  const router = useRouter();
   const [num, setNum] = useState(initial.num);
   const [title, setTitle] = useState(initial.title);
   const [director, setDirector] = useState(initial.director);
@@ -37,7 +39,7 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
   const [cover, setCover] = useState<Film["cover"]>(initial.cover);
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<
-    { kind: "success"; text: string; href: string } | { kind: "error"; text: string } | null
+    { kind: "success"; text: string } | { kind: "error"; text: string } | null
   >(null);
 
   const onSubmit = (e: React.FormEvent) => {
@@ -55,11 +57,8 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
         cover,
       });
       if (result.ok) {
-        setMessage({
-          kind: "success",
-          text: `Cambios guardados. Commit ${result.commit.slice(0, 7)}.`,
-          href: result.url,
-        });
+        router.push("/admin/cineclub");
+        router.refresh();
       } else {
         setMessage({
           kind: "error",
@@ -71,16 +70,7 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
 
   return (
     <form className="library-form" onSubmit={onSubmit}>
-      {message ? (
-        <div className={`post-editor-message ${message.kind}`}>
-          {message.text}{" "}
-          {message.kind === "success" ? (
-            <a href={message.href} target="_blank" rel="noreferrer">
-              ver commit
-            </a>
-          ) : null}
-        </div>
-      ) : null}
+      {message ? <div className={`post-editor-message ${message.kind}`}>{message.text}</div> : null}
 
       <div className="library-form-grid">
         <Field label="Núm.">

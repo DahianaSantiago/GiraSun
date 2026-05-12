@@ -22,8 +22,8 @@ const EditIcon = () => (
   </svg>
 );
 
-export default function AdminClubPage() {
-  const books = getBooks();
+export default async function AdminClubPage() {
+  const books = await getBooks();
 
   return (
     <div className="admin-page">

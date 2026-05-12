@@ -1,7 +1,5 @@
-// Reads MDX content from /content/{type}/*.mdx, parses frontmatter, validates
-// it with Zod, and returns typed objects. Phase 8 (admin panel) will write to
-// the same directory via Octokit, so this module is the canonical reader.
-
+import { getServerDb } from "./firebase/server";
+import { Timestamp } from "firebase-admin/firestore";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
@@ -117,66 +115,167 @@ function readMdx<T extends Record<string, unknown>>(
 }
 
 // ---------------------------------------------------------------------------
-// Posts (cuentos + escritos)
+// Posts (cuentos + escritos) - Now from Firestore
 // ---------------------------------------------------------------------------
 
-export function getPostsByType(type: PostType): Post[] {
-  const files = listMdxFiles(POST_DIRS[type]);
-  const posts = files.map((file) => {
-    const { body, ...frontmatter } = readMdx(file, PostFrontmatter);
-    return { ...frontmatter, type, body };
+export async function getPostsByType(type: PostType): Promise<Post[]> {
+  const db = getServerDb();
+  const snap = await db
+    .collection("posts")
+    .where("type", "==", type)
+    .where("status", "==", "published")
+    .orderBy("date", "desc")
+    .get();
+
+  return snap.docs.map((doc) => {
+    const d = doc.data();
+    return {
+      title: d.title,
+      titleHTML: d.titleHTML,
+      slug: d.slug,
+      date: d.date,
+      dateLabel: d.dateLabel,
+      eyebrow: d.eyebrow,
+      cat: d.cat,
+      tag: d.tag,
+      excerpt: d.excerpt,
+      dek: d.dek,
+      heroSrc: d.heroSrc,
+      heroAlt: d.heroAlt,
+      readingMinutes: Number(d.readingMinutes),
+      featured: d.featured,
+      status: d.status,
+      sections: d.sections || [],
+      type: d.type as PostType,
+      body: d.body,
+    } as Post;
   });
-  return posts.filter((p) => p.status === "published").sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function findPost(type: PostType, slug: string): Post | undefined {
-  return getPostsByType(type).find((p) => p.slug === slug);
+export async function findPost(type: PostType, slug: string): Promise<Post | undefined> {
+  const db = getServerDb();
+  const docId = `${type}_${slug}`;
+  const doc = await db.collection("posts").doc(docId).get();
+
+  let d;
+  if (!doc.exists) {
+    const snap = await db
+      .collection("posts")
+      .where("type", "==", type)
+      .where("slug", "==", slug)
+      .limit(1)
+      .get();
+    if (snap.empty) return undefined;
+    d = snap.docs[0].data();
+  } else {
+    d = doc.data()!;
+  }
+
+  return {
+    title: d.title,
+    titleHTML: d.titleHTML,
+    slug: d.slug,
+    date: d.date,
+    dateLabel: d.dateLabel,
+    eyebrow: d.eyebrow,
+    cat: d.cat,
+    tag: d.tag,
+    excerpt: d.excerpt,
+    dek: d.dek,
+    heroSrc: d.heroSrc,
+    heroAlt: d.heroAlt,
+    readingMinutes: Number(d.readingMinutes),
+    featured: d.featured,
+    status: d.status,
+    sections: d.sections || [],
+    type: d.type as PostType,
+    body: d.body,
+  } as Post;
 }
 
-export function getAllPosts(): Post[] {
-  return [...getPostsByType("cuento"), ...getPostsByType("escrito")];
+export async function getAllPosts(): Promise<Post[]> {
+  const [cuentos, escritos] = await Promise.all([
+    getPostsByType("cuento"),
+    getPostsByType("escrito"),
+  ]);
+  return [...cuentos, ...escritos].sort((a, b) => b.date.localeCompare(a.date));
 }
 
+// ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // Books (Club de lectura)
 // ---------------------------------------------------------------------------
 
-const slugFromFile = (file: string): string =>
-  file
-    .split("/")
-    .pop()
-    ?.replace(/\.mdx$/, "") ?? "";
-
-export function getBooks(): Book[] {
-  const files = listMdxFiles("club-de-lectura");
-  return files
-    .map((file) => {
-      const { body: _body, ...frontmatter } = readMdx(file, BookFrontmatter);
-      return { ...frontmatter, slug: slugFromFile(file) } as Book;
-    })
-    .sort((a, b) => a.num.localeCompare(b.num));
+export async function getBooks(): Promise<Book[]> {
+  const db = getServerDb();
+  const snap = await db.collection("books").orderBy("num", "asc").get();
+  return snap.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      num: data.num,
+      title: data.title,
+      author: data.author,
+      status: data.status,
+      cover: data.cover,
+      addedAt: data.addedAt,
+      slug: doc.id,
+    } as Book;
+  });
 }
 
-/** Slug = the .mdx filename without extension. */
-export function findBookBySlug(slug: string): Book | undefined {
-  return getBooks().find((b) => b.slug === slug);
+/** Slug = the document ID. */
+export async function findBookBySlug(slug: string): Promise<Book | undefined> {
+  const doc = await getServerDb().collection("books").doc(slug).get();
+  if (!doc.exists) return undefined;
+  const data = doc.data()!;
+  return {
+    num: data.num,
+    title: data.title,
+    author: data.author,
+    status: data.status,
+    cover: data.cover,
+    addedAt: data.addedAt,
+    slug: doc.id,
+  } as Book;
 }
 
 // ---------------------------------------------------------------------------
 // Films (CineClub)
 // ---------------------------------------------------------------------------
 
-export function getFilms(): Film[] {
-  const files = listMdxFiles("cineclub");
-  return files
-    .map((file) => {
-      const { body: _body, ...frontmatter } = readMdx(file, FilmFrontmatter);
-      return { ...frontmatter, slug: slugFromFile(file) } as Film;
-    })
-    .sort((a, b) => b.num.localeCompare(a.num));
+export async function getFilms(): Promise<Film[]> {
+  const db = getServerDb();
+  const snap = await db.collection("films").orderBy("num", "desc").get();
+  return snap.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      num: data.num,
+      title: data.title,
+      director: data.director,
+      year: data.year,
+      date: data.date,
+      sessionDate: data.sessionDate,
+      note: data.note,
+      cover: data.cover,
+      slug: doc.id,
+    } as Film;
+  });
 }
 
-/** Slug = the .mdx filename without extension. */
-export function findFilmBySlug(slug: string): Film | undefined {
-  return getFilms().find((f) => f.slug === slug);
+/** Slug = the document ID. */
+export async function findFilmBySlug(slug: string): Promise<Film | undefined> {
+  const doc = await getServerDb().collection("films").doc(slug).get();
+  if (!doc.exists) return undefined;
+  const data = doc.data()!;
+  return {
+    num: data.num,
+    title: data.title,
+    director: data.director,
+    year: data.year,
+    date: data.date,
+    sessionDate: data.sessionDate,
+    note: data.note,
+    cover: data.cover,
+    slug: doc.id,
+  } as Film;
 }

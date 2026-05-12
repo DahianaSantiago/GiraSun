@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EscritosIndexPage() {
-  const posts = getPostsByType("escrito");
+export default async function EscritosIndexPage() {
+  const posts = await getPostsByType("escrito");
   return (
     <PostIndex
       posts={posts}
