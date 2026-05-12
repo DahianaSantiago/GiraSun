@@ -11,7 +11,6 @@ export default async function HomePage() {
     <>
       <Hero variant="centered" imageSrc="/images/Banner.png" />
       <CategoryGrid />
-      {/* @ts-expect-error RSC */}
       <FeaturedStory />
       <ReadingBlock />
       <CineBlock />
