@@ -129,8 +129,7 @@ export default function ImageUpload({
         ) : (
           <div className="placeholder">
             <svg
-              width="32"
-              height="32"
+              className="placeholder-icon"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -220,6 +219,12 @@ export default function ImageUpload({
           display: flex;
           flex-direction: column;
           align-items: center;
+        }
+
+        .placeholder-icon {
+          width: clamp(25px, 6%, 35px);
+          height: auto;
+          margin-bottom: 4px;
         }
 
         .loading-overlay {
