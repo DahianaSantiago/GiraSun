@@ -11,6 +11,7 @@ import {
 } from "@/app/actions/drafts";
 import type { DraftFrontmatter, DraftType } from "@/lib/drafts";
 import { useRouter } from "next/navigation";
+import ImageUpload from "./ImageUpload";
 
 const slugify = (s: string): string =>
   s
@@ -288,21 +289,16 @@ export function PostEditor({
             />
           </FormField>
 
-          <FormField label="Imagen (path en /public)">
-            <input
-              type="text"
-              value={heroSrc}
-              onChange={(e) => setHeroSrc(e.target.value)}
-              placeholder="/images/cuentos/casa-agosto/hero.jpg"
-            />
-          </FormField>
-
-          <FormField label="Alt de la imagen">
-            <input
-              type="text"
-              value={heroAlt}
-              onChange={(e) => setHeroAlt(e.target.value)}
-              placeholder="Cocina de verano con luz lateral..."
+          <FormField label="Imagen Destacada">
+            <ImageUpload
+              currentSrc={heroSrc}
+              currentAlt={heroAlt}
+              onImageChange={(url, alt) => {
+                setHeroSrc(url);
+                setHeroAlt(alt);
+              }}
+              pathPrefix={type === "cuento" ? "cuentos" : "escritos"}
+              slug={slug || slugify(title)}
             />
           </FormField>
 
