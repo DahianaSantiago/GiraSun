@@ -224,7 +224,6 @@ export default function ImageUpload({
         .placeholder-icon {
           width: clamp(25px, 6%, 35px);
           height: auto;
-          margin-bottom: 4px;
         }
 
         .loading-overlay {
