@@ -10,6 +10,7 @@ import {
   deleteComment,
   COMMENT_MAX_LENGTH,
 } from "@/lib/firebase/comments";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 async function requireAdmin() {
   const session = await getSession();
@@ -30,6 +31,9 @@ export async function createCommentAction(input: {
 }) {
   const session = await getSession();
   if (!session) return { ok: false as const, error: "not-authenticated" };
+
+  const rl = await checkRateLimit("comment", session.uid);
+  if (!rl.ok) return { ok: false as const, error: "rate-limited" };
 
   const parsed = Input.safeParse(input);
   if (!parsed.success) {
