@@ -10,6 +10,8 @@ interface ImageUploadProps {
   currentSrc?: string;
   currentAlt?: string;
   onImageChange: (url: string, alt: string) => void;
+  onClear?: () => void;
+  filterCss?: string;
   aspectRatio?: number;
   pathPrefix: string; // e.g. "cuentos"
   slug: string;
@@ -19,6 +21,8 @@ export default function ImageUpload({
   currentSrc,
   currentAlt,
   onImageChange,
+  onClear,
+  filterCss,
   aspectRatio = 6, // 6:1 as per research
   pathPrefix,
   slug,
@@ -91,7 +95,15 @@ export default function ImageUpload({
   };
 
   const triggerInput = () => {
+    if (isModalOpen || isProcessing || isUploading) return;
     fileInputRef.current?.click();
+  };
+
+  const handleClear = () => {
+    setPreviewSrc(null);
+    setAltText("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    onClear?.();
   };
 
   return (
@@ -99,6 +111,7 @@ export default function ImageUpload({
       <div
         className={`image-trigger ${!previewSrc ? "empty" : ""}`}
         style={{ aspectRatio: `${aspectRatio}/1` }}
+        onClick={triggerInput}
       >
         {isUploading || isProcessing ? (
           <div className="loading-overlay">
@@ -107,7 +120,12 @@ export default function ImageUpload({
           </div>
         ) : previewSrc ? (
           <>
-            <img src={previewSrc} alt={altText} className="preview-img" />
+            <img
+              src={previewSrc}
+              alt={altText}
+              className="preview-img"
+              style={{ filter: filterCss ?? undefined }}
+            />
             <div className="hover-overlay">
               <svg
                 width="24"
@@ -125,6 +143,17 @@ export default function ImageUpload({
               </svg>
               <span>Cambiar Imagen</span>
             </div>
+            <button
+              type="button"
+              className="clear-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClear();
+              }}
+              title="Quitar imagen"
+            >
+              ✕
+            </button>
           </>
         ) : (
           <div className="placeholder">
@@ -210,6 +239,31 @@ export default function ImageUpload({
         }
 
         .image-trigger:hover .hover-overlay {
+          opacity: 1;
+        }
+
+        .clear-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          border: none;
+          background: rgba(0, 0, 0, 0.55);
+          color: #fff;
+          font-size: 11px;
+          line-height: 1;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.2s;
+          z-index: 10;
+        }
+
+        .image-trigger:hover .clear-btn {
           opacity: 1;
         }
 

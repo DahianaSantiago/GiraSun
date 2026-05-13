@@ -12,6 +12,7 @@ import {
 import type { DraftFrontmatter, DraftType } from "@/lib/drafts";
 import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
+import { IMAGE_FILTERS, type ImageFilterKey } from "@/lib/image-filters";
 
 const slugify = (s: string): string =>
   s
@@ -86,6 +87,9 @@ export function PostEditor({
   const [excerpt, setExcerpt] = useState(initial?.frontmatter.excerpt ?? "");
   const [heroSrc, setHeroSrc] = useState(initial?.frontmatter.heroSrc ?? "");
   const [heroAlt, setHeroAlt] = useState(initial?.frontmatter.heroAlt ?? "");
+  const [heroFilter, setHeroFilter] = useState<ImageFilterKey>(
+    (initial?.frontmatter.heroFilter as ImageFilterKey) ?? "none",
+  );
   const [featured, setFeatured] = useState(initial?.frontmatter.featured ?? false);
   const [body, setBody] = useState(initial?.body ?? "");
 
@@ -127,6 +131,7 @@ export function PostEditor({
     excerpt: excerpt.trim(),
     heroSrc: heroSrc.trim() || undefined,
     heroAlt: heroAlt.trim(),
+    heroFilter: heroFilter !== "none" ? heroFilter : undefined,
     readingMinutes: calculateReadingMinutes(body),
     featured: featured || undefined,
     eyebrow: initial?.frontmatter.eyebrow,
@@ -289,7 +294,7 @@ export function PostEditor({
             />
           </FormField>
 
-          <FormField label="Imagen Destacada">
+          <FormField label="Imagen Destacada" as="div">
             <ImageUpload
               currentSrc={heroSrc}
               currentAlt={heroAlt}
@@ -297,10 +302,65 @@ export function PostEditor({
                 setHeroSrc(url);
                 setHeroAlt(alt);
               }}
+              onClear={() => {
+                setHeroSrc("");
+                setHeroAlt("");
+                setHeroFilter("none");
+              }}
+              filterCss={heroFilter !== "none" ? IMAGE_FILTERS[heroFilter].css : undefined}
               pathPrefix={type === "cuento" ? "cuentos" : "escritos"}
               slug={slug || slugify(title)}
             />
           </FormField>
+
+          {heroSrc && (
+            <FormField label="Filtro de imagen" as="div">
+              <div className="filter-picker">
+                {(
+                  Object.entries(IMAGE_FILTERS) as [
+                    ImageFilterKey,
+                    { label: string; css: string },
+                  ][]
+                ).map(([key, { label, css }]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={`filter-swatch${heroFilter === key ? "active" : ""}`}
+                    onClick={() => setHeroFilter(key)}
+                    title={label}
+                  >
+                    {heroSrc ? (
+                      <div className="filter-swatch-preview">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={heroSrc}
+                          alt=""
+                          style={{ filter: css === "none" ? undefined : css }}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="filter-swatch-preview"
+                        style={{
+                          background:
+                            key === "none"
+                              ? "var(--surface-2)"
+                              : key === "sepia"
+                                ? "oklch(0.75 0.06 70)"
+                                : key === "ash"
+                                  ? "oklch(0.55 0 0)"
+                                  : key === "haze"
+                                    ? "oklch(0.88 0.02 200)"
+                                    : "oklch(0.35 0 0)",
+                        }}
+                      />
+                    )}
+                    <span className="filter-swatch-label">{label}</span>
+                  </button>
+                ))}
+              </div>
+            </FormField>
+          )}
 
           <FormField label="Destacado">
             <label style={{ fontSize: 13, color: "var(--ink-soft)" }}>
@@ -354,13 +414,15 @@ function FormField({
   label,
   hint,
   children,
+  as: Tag = "label",
 }: {
   label: string;
   hint?: string;
   children: React.ReactNode;
+  as?: "label" | "div";
 }) {
   return (
-    <label className="post-editor-field">
+    <Tag className="post-editor-field">
       <span className="post-editor-field-label">
         {label}
         {hint ? (
@@ -370,6 +432,6 @@ function FormField({
         ) : null}
       </span>
       {children}
-    </label>
+    </Tag>
   );
 }
