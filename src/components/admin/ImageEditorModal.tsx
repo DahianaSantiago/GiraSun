@@ -62,7 +62,11 @@ export default function ImageEditorModal({
             </svg>
           </button>
           <h2>Editar Imagen</h2>
-          <button onClick={handleSave} disabled={isProcessing} className="btn-primary">
+          <button
+            onClick={handleSave}
+            disabled={isProcessing || !altText.trim()}
+            className="btn-primary"
+          >
             {isProcessing ? "Procesando..." : "Listo"}
           </button>
         </header>
@@ -95,7 +99,9 @@ export default function ImageEditorModal({
           </div>
 
           <div className="control-group">
-            <label htmlFor="alt-text">Texto alternativo (SEO)</label>
+            <label htmlFor="alt-text">
+              Texto alternativo (SEO) <span className="required">*</span>
+            </label>
             <input
               id="alt-text"
               type="text"
@@ -104,6 +110,7 @@ export default function ImageEditorModal({
               onChange={(e) => setAltText(e.target.value)}
               className="alt-input"
             />
+            {!altText.trim() && <small className="alt-hint">Requerido para continuar</small>}
           </div>
         </div>
       </div>
@@ -206,6 +213,15 @@ export default function ImageEditorModal({
         .alt-input:focus {
           outline: 2px solid var(--accent, #e6b905);
           border-color: transparent;
+        }
+
+        .required {
+          color: oklch(0.65 0.16 30);
+        }
+
+        .alt-hint {
+          font-size: 0.75rem;
+          color: oklch(0.65 0.16 30);
         }
 
         .btn-icon {

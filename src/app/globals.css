@@ -2721,6 +2721,16 @@ img {
   display: flex;
   gap: 12px;
 }
+
+@media (max-width: 639px) {
+  .post-editor-actions {
+    width: 100%;
+  }
+  .post-editor-actions .post-editor-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
 .post-editor-message {
   padding: 12px 16px;
   border-radius: var(--radius-s);
@@ -2875,8 +2885,21 @@ img {
 .filter-picker {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
   padding: 4px 0;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filter-picker::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  .filter-picker {
+    flex-wrap: nowrap;
+  }
 }
 
 .filter-swatch {

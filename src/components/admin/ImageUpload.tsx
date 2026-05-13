@@ -96,6 +96,8 @@ export default function ImageUpload({
 
   const triggerInput = () => {
     if (isModalOpen || isProcessing || isUploading) return;
+    // Reset value so selecting the same file again fires onChange.
+    if (fileInputRef.current) fileInputRef.current.value = "";
     fileInputRef.current?.click();
   };
 
@@ -110,7 +112,7 @@ export default function ImageUpload({
     <div className="image-upload-wrapper">
       <div
         className={`image-trigger ${!previewSrc ? "empty" : ""}`}
-        style={{ aspectRatio: `${aspectRatio}/1` }}
+        style={{ "--img-aspect": `${aspectRatio}/1` } as React.CSSProperties}
         onClick={triggerInput}
       >
         {isUploading || isProcessing ? (
@@ -201,6 +203,7 @@ export default function ImageUpload({
 
         .image-trigger {
           width: 100%;
+          aspect-ratio: var(--img-aspect, 6/1);
           position: relative;
           background: var(--bg-soft, #f5f5f5);
           border: 2px dashed var(--border-soft, #ddd);
@@ -211,6 +214,13 @@ export default function ImageUpload({
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+
+        /* On narrow screens use a taller ratio so the area is easy to tap */
+        @media (max-width: 639px) {
+          .image-trigger {
+            aspect-ratio: 3/1;
+          }
         }
 
         .image-trigger.empty:hover {
@@ -246,13 +256,13 @@ export default function ImageUpload({
           position: absolute;
           top: 8px;
           right: 8px;
-          width: 26px;
-          height: 26px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
           border: none;
           background: rgba(0, 0, 0, 0.55);
           color: #fff;
-          font-size: 11px;
+          font-size: 13px;
           line-height: 1;
           cursor: pointer;
           display: flex;
@@ -265,6 +275,16 @@ export default function ImageUpload({
 
         .image-trigger:hover .clear-btn {
           opacity: 1;
+        }
+
+        /* Touch devices: keep overlay and clear button always visible */
+        @media (hover: none) {
+          .hover-overlay {
+            opacity: 0.75;
+          }
+          .clear-btn {
+            opacity: 1;
+          }
         }
 
         .placeholder {
