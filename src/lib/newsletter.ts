@@ -122,6 +122,61 @@ export async function confirmSubscriber(
   return { ok: true, email: data.email };
 }
 
+/** Admin read: all subscribers sorted by createdAt desc, limit 1000. */
+export async function listAllSubscribers(): Promise<Subscriber[]> {
+  const db = getServerDb();
+  const snap = await db.collection("subscribers").orderBy("createdAt", "desc").limit(1000).get();
+  return snap.docs.map((d) => fromDoc(d.data()));
+}
+
+export type NewsletterSend = {
+  id: string;
+  subject: string;
+  bodyHTML: string;
+  sentAt: number;
+  recipientCount: number;
+  sentBy: string;
+};
+
+const sendFromDoc = (id: string, d: DocumentData): NewsletterSend => ({
+  id,
+  subject: d.subject,
+  bodyHTML: d.bodyHTML ?? "",
+  sentAt: d.sentAt instanceof Timestamp ? d.sentAt.toMillis() : 0,
+  recipientCount: d.recipientCount ?? 0,
+  sentBy: d.sentBy ?? "",
+});
+
+export async function recordNewsletterSend(input: {
+  subject: string;
+  bodyHTML: string;
+  recipientCount: number;
+  sentBy: string;
+}): Promise<NewsletterSend> {
+  const db = getServerDb();
+  const ref = await db.collection("newsletter_sends").add({
+    ...input,
+    sentAt: Timestamp.now(),
+  });
+  const doc = await ref.get();
+  return sendFromDoc(ref.id, doc.data() ?? {});
+}
+
+export async function listNewsletterSends(): Promise<NewsletterSend[]> {
+  const db = getServerDb();
+  const snap = await db.collection("newsletter_sends").orderBy("sentAt", "desc").limit(50).get();
+  return snap.docs.map((d) => sendFromDoc(d.id, d.data()));
+}
+
+/** Admin force-unsubscribe by email. Idempotent. */
+export async function adminUnsubscribe(email: string): Promise<void> {
+  const id = docIdFor(email);
+  await getServerDb()
+    .collection("subscribers")
+    .doc(id)
+    .update({ status: "unsubscribed", unsubscribedAt: FieldValue.serverTimestamp() });
+}
+
 /** Unsubscribe via unsubToken. Idempotent. */
 export async function unsubscribeByToken(
   token: string,

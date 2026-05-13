@@ -325,7 +325,9 @@ export function PostEditor({
                   <button
                     key={key}
                     type="button"
-                    className={`filter-swatch${heroFilter === key ? "active" : ""}`}
+                    className={["filter-swatch", heroFilter === key && "active"]
+                      .filter(Boolean)
+                      .join(" ")}
                     onClick={() => setHeroFilter(key)}
                     title={label}
                   >
