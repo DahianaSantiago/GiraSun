@@ -125,7 +125,11 @@ function CommentRow({
   const truncated = comment.body.length > SNIPPET_LIMIT;
 
   return (
-    <div className={`mcl-row${comment.hidden ? "is-hidden" : ""}${expanded ? "is-expanded" : ""}`}>
+    <div
+      className={["mcl-row", comment.hidden && "is-hidden", expanded && "is-expanded"]
+        .filter(Boolean)
+        .join(" ")}
+    >
       <div className="mcl-row-avatar">
         {comment.authorPhotoURL ? (
           <Image
@@ -142,7 +146,7 @@ function CommentRow({
       <div className="mcl-row-body">
         <span className="mcl-row-author">{comment.authorName}</span>
         <span
-          className={`mcl-row-snippet${truncated ? "is-truncatable" : ""}`}
+          className={["mcl-row-snippet", truncated && "is-truncatable"].filter(Boolean).join(" ")}
           onClick={truncated ? () => setExpanded((v) => !v) : undefined}
           title={truncated && !expanded ? "Ver completo" : undefined}
         >
@@ -242,7 +246,7 @@ export function CommentModerationList({ initial }: { initial: Comment[] }) {
       <div className="mod-filters">
         <button
           type="button"
-          className={`mod-filter-btn${filter === "all" ? "active" : ""}`}
+          className={["mod-filter-btn", filter === "all" && "active"].filter(Boolean).join(" ")}
           onClick={() => setFilter("all")}
         >
           Todos los posts
@@ -250,7 +254,9 @@ export function CommentModerationList({ initial }: { initial: Comment[] }) {
         </button>
         <button
           type="button"
-          className={`mod-filter-btn${filter === "has-hidden" ? "active" : ""}`}
+          className={["mod-filter-btn", filter === "has-hidden" && "active"]
+            .filter(Boolean)
+            .join(" ")}
           onClick={() => setFilter("has-hidden")}
         >
           Con ocultos
