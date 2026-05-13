@@ -48,6 +48,21 @@ export async function listVisibleComments(
   return snap.docs.map((d) => fromDoc(d.id, d.data()));
 }
 
+/** Admin read: all comments (hidden + visible), newest first. */
+export async function listAllComments(): Promise<Comment[]> {
+  const db = getServerDb();
+  const snap = await db.collection("comments").orderBy("createdAt", "desc").limit(500).get();
+  return snap.docs.map((d) => fromDoc(d.id, d.data()));
+}
+
+export async function setCommentHidden(id: string, hidden: boolean): Promise<void> {
+  await getServerDb().collection("comments").doc(id).update({ hidden });
+}
+
+export async function deleteComment(id: string): Promise<void> {
+  await getServerDb().collection("comments").doc(id).delete();
+}
+
 /** Server insert. Validation should already have run by the time we get here. */
 export async function insertComment(input: {
   postType: PostType;
@@ -72,30 +87,4 @@ export async function insertComment(input: {
   return fromDoc(ref.id, doc.data() ?? {});
 }
 
-const SPANISH_MONTHS = [
-  "enero",
-  "febrero",
-  "marzo",
-  "abril",
-  "mayo",
-  "junio",
-  "julio",
-  "agosto",
-  "septiembre",
-  "octubre",
-  "noviembre",
-  "diciembre",
-];
-
-/** Format a ms-epoch as "5 mayo, 2026" or "Hace un momento" for very-fresh stamps. */
-export function formatCommentDate(ms: number): string {
-  const now = Date.now();
-  const ageMs = now - ms;
-  if (ageMs < 1000 * 60) return "Hace un momento";
-  if (ageMs < 1000 * 60 * 60) {
-    const m = Math.floor(ageMs / (1000 * 60));
-    return `Hace ${m} min`;
-  }
-  const d = new Date(ms);
-  return `${d.getDate()} ${SPANISH_MONTHS[d.getMonth()]}, ${d.getFullYear()}`;
-}
+export { formatCommentDate } from "@/lib/format-date";
