@@ -18,6 +18,7 @@ export type DraftFrontmatter = {
   dek?: string;
   heroSrc?: string;
   heroAlt: string;
+  heroFilter?: string;
   readingMinutes: number;
   featured?: boolean;
   sections?: string[];
@@ -49,6 +50,7 @@ const fromDoc = (id: string, d: DocumentData): Draft => ({
   dek: d.dek ?? undefined,
   heroSrc: d.heroSrc ?? undefined,
   heroAlt: d.heroAlt,
+  heroFilter: d.heroFilter ?? undefined,
   readingMinutes: d.readingMinutes,
   featured: d.featured ?? false,
   sections: d.sections ?? [],

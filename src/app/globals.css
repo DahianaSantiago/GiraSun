@@ -2871,6 +2871,57 @@ img {
   overflow: hidden;
 }
 
+/* ── Filter picker ─────────────────────────────────────────── */
+.filter-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 4px 0;
+}
+
+.filter-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 2px solid var(--rule);
+  border-radius: var(--radius-s);
+  padding: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.filter-swatch:hover {
+  border-color: var(--ink-soft);
+}
+
+.filter-swatch.active {
+  border-color: var(--accent);
+}
+
+.filter-swatch-preview {
+  width: 54px;
+  height: 38px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.filter-swatch-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.filter-swatch-label {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
 .tiptap-editor {
   display: flex;
   flex-direction: column;

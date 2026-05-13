@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ImageSlot } from "./ImageSlot";
 import type { Post, PostType } from "@/lib/content";
+import { resolveFilter } from "@/lib/image-filters";
 
 type FilterKey = "all" | "short" | "long";
 const FILTERS: Array<{ key: FilterKey; label: string }> = [
@@ -112,6 +113,7 @@ export function PostIndex({
                         alt={featured.heroAlt}
                         placeholder="Foto destacada"
                         style={{ position: "absolute", inset: 0 }}
+                        filter={resolveFilter(featured.heroFilter)}
                       />
                     </div>
                     <div className="body">
@@ -146,6 +148,7 @@ export function PostIndex({
                           alt={p.heroAlt}
                           placeholder="Imagen"
                           style={{ position: "absolute", inset: 0 }}
+                          filter={resolveFilter(p.heroFilter)}
                         />
                       </div>
                       <div className="body">
@@ -186,6 +189,7 @@ export function PostIndex({
                             alt={p.heroAlt}
                             placeholder="Imagen"
                             style={{ position: "absolute", inset: 0 }}
+                            filter={resolveFilter(p.heroFilter)}
                           />
                         </div>
                         <div className="body">

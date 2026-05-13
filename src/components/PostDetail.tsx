@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ImageSlot } from "./ImageSlot";
 import { LikeButton } from "./LikeButton";
 import type { Post } from "@/lib/content";
+import { resolveFilter } from "@/lib/image-filters";
 
 const SHARE_ICON = (
   <svg
@@ -87,6 +88,7 @@ export function PostDetail({
               alt={post.heroAlt}
               placeholder="Imagen del cuento"
               style={{ position: "absolute", inset: 0 }}
+              filter={resolveFilter(post.heroFilter)}
               priority
             />
           </div>

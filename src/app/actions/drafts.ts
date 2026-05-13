@@ -47,6 +47,10 @@ const FrontmatterInput = z.object({
     .optional()
     .or(z.literal("").transform(() => undefined)),
   heroAlt: z.string().trim().min(1).max(200),
+  heroFilter: z
+    .enum(["none", "sepia", "ash", "haze", "shadow"])
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
   readingMinutes: z.number().int().min(1).max(99),
   featured: z.boolean().optional(),
   sections: z.array(z.string().min(1).max(120)).max(20).optional(),
