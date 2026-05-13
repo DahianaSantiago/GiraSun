@@ -3291,8 +3291,9 @@ img {
 .mcl-row:hover {
   background: var(--surface);
 }
-.mcl-row.is-hidden {
-  opacity: 0.45;
+.mcl-row.is-hidden .mcl-row-author,
+.mcl-row.is-hidden .mcl-row-snippet {
+  text-decoration: line-through;
 }
 .mcl-row-avatar {
   flex-shrink: 0;
