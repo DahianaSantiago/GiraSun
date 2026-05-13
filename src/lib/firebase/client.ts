@@ -9,6 +9,7 @@
 import { getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { connectAuthEmulator, getAuth, type Auth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore, type Firestore } from "firebase/firestore";
+import { connectStorageEmulator, getStorage, type FirebaseStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -31,6 +32,7 @@ function getOrInitApp(): FirebaseApp {
 
 let _auth: Auth | null = null;
 let _db: Firestore | null = null;
+let _storage: FirebaseStorage | null = null;
 
 export function getClientAuth(): Auth {
   if (_auth) return _auth;
@@ -50,4 +52,14 @@ export function getClientDb(): Firestore {
     connectFirestoreEmulator(_db, "127.0.0.1", 8080);
   }
   return _db;
+}
+
+export function getClientStorage(): FirebaseStorage {
+  if (_storage) return _storage;
+  const app = getOrInitApp();
+  _storage = getStorage(app);
+  if (process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATORS === "1" && typeof window !== "undefined") {
+    connectStorageEmulator(_storage, "127.0.0.1", 9199);
+  }
+  return _storage;
 }

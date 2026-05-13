@@ -2721,6 +2721,16 @@ img {
   display: flex;
   gap: 12px;
 }
+
+@media (max-width: 639px) {
+  .post-editor-actions {
+    width: 100%;
+  }
+  .post-editor-actions .post-editor-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
 .post-editor-message {
   padding: 12px 16px;
   border-radius: var(--radius-s);
@@ -2869,6 +2879,70 @@ img {
   border: 1px solid var(--rule);
   border-radius: var(--radius-m);
   overflow: hidden;
+}
+
+/* ── Filter picker ─────────────────────────────────────────── */
+.filter-picker {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  flex-wrap: wrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filter-picker::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  .filter-picker {
+    flex-wrap: nowrap;
+  }
+}
+
+.filter-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: 2px solid var(--rule);
+  border-radius: var(--radius-s);
+  padding: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.filter-swatch:hover {
+  border-color: var(--ink-soft);
+}
+
+.filter-swatch.active {
+  border-color: var(--accent);
+}
+
+.filter-swatch-preview {
+  width: 54px;
+  height: 38px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.filter-swatch-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.filter-swatch-label {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  white-space: nowrap;
 }
 
 .tiptap-editor {

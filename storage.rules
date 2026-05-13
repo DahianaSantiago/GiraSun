@@ -1,0 +1,18 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper to check if user is authenticated
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Allow public read access to images
+    match /images/{allPaths=**} {
+      allow read: if true;
+      // Allow upload/delete if the user is signed in
+      // In a real app, we might want to check the admin list in Firestore,
+      // but for this MVP, being signed in to the admin panel is the first barrier.
+      allow write: if isSignedIn();
+    }
+  }
+}

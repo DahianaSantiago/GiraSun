@@ -24,6 +24,7 @@ export function ImageSlot({
   radius,
   className,
   style,
+  filter,
   priority,
 }: {
   src?: string;
@@ -33,6 +34,7 @@ export function ImageSlot({
   radius?: number;
   className?: string;
   style?: React.CSSProperties;
+  filter?: string;
   priority?: boolean;
 }) {
   const borderRadius = radius != null ? `${radius}px` : SHAPE_RADIUS[shape];
@@ -56,7 +58,7 @@ export function ImageSlot({
         alt={alt}
         fill
         sizes="(min-width: 1280px) 50vw, 100vw"
-        style={{ objectFit: "cover" }}
+        style={{ objectFit: "cover", filter: filter ?? undefined }}
         priority={priority}
       />
     </div>
