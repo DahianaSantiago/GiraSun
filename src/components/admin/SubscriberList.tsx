@@ -86,7 +86,7 @@ export function SubscriberList({ initial }: { initial: Subscriber[] }) {
           <button
             key={key}
             type="button"
-            className={`mod-filter-btn${filter === key ? "active" : ""}`}
+            className={["mod-filter-btn", filter === key && "active"].filter(Boolean).join(" ")}
             onClick={() => setFilter(key)}
           >
             {label}
@@ -114,7 +114,9 @@ export function SubscriberList({ initial }: { initial: Subscriber[] }) {
           {visible.map((s) => (
             <div
               key={s.email}
-              className={`sub-row${s.status === "unsubscribed" ? "is-unsub" : ""}`}
+              className={["sub-row", s.status === "unsubscribed" && "is-unsub"]
+                .filter(Boolean)
+                .join(" ")}
             >
               <div className="sub-row-main">
                 <span className="sub-row-email">{s.email}</span>

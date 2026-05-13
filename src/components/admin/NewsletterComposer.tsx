@@ -81,7 +81,11 @@ export function NewsletterComposer({
         </div>
 
         {result && (
-          <p className={`newsletter-result${result.startsWith("Error") ? "is-error" : ""}`}>
+          <p
+            className={["newsletter-result", result.startsWith("Error") && "is-error"]
+              .filter(Boolean)
+              .join(" ")}
+          >
             {result}
           </p>
         )}
