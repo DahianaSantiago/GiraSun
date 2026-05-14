@@ -24,7 +24,9 @@ export function Newsletter({ source = "home" }: { source?: string }) {
         setErrorMsg(
           res.error === "invalid-email"
             ? "Esa dirección de correo no parece válida."
-            : "No pudimos guardar tu correo. Intenta de nuevo en un momento.",
+            : res.error === "rate-limited"
+              ? "Demasiados intentos. Intenta de nuevo más tarde."
+              : "No pudimos guardar tu correo. Intenta de nuevo en un momento.",
         );
       }
     });
