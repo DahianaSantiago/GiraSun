@@ -8,10 +8,10 @@ const BASE_URL = "http://localhost:3001";
 const AUTH_EMULATOR_HOST = "127.0.0.1:9399";
 const FIRESTORE_EMULATOR_HOST = "127.0.0.1:8380";
 
-// "girasun-emulator" is a stable local-only project ID used exclusively for
-// tests. The Firebase Admin SDK is configured with this same ID in emulator
-// mode, so token aud claims match without needing real Firebase credentials.
-const TEST_PROJECT_ID = "girasun-emulator";
+// "demo-girasun" uses Firebase's special "demo-*" prefix, which tells
+// firebase-tools to never contact live Firebase services — no auth, no network.
+// The Admin SDK uses the same ID so token aud claims match.
+const TEST_PROJECT_ID = "demo-girasun";
 
 const EMULATOR_ENV = {
   FIRESTORE_EMULATOR_HOST,
