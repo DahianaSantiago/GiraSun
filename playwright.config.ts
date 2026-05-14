@@ -3,12 +3,21 @@ import { defineConfig, devices } from "@playwright/test";
 // The test server runs on 3001 so it doesn't conflict with the dev server on 3000.
 const BASE_URL = "http://localhost:3001";
 
-// Env vars injected into the test Next.js server so it routes Auth + Firestore
-// to the local emulators and recognises the test account as an admin.
+// Dedicated emulator ports for tests — avoids collisions with other Firebase
+// projects (e.g. brewbooks-mvp) that may be running on the default 9099/8080.
+const AUTH_EMULATOR_HOST = "127.0.0.1:9399";
+const FIRESTORE_EMULATOR_HOST = "127.0.0.1:8380";
+
+// "girasun-emulator" is a stable local-only project ID used exclusively for
+// tests. The Firebase Admin SDK is configured with this same ID in emulator
+// mode, so token aud claims match without needing real Firebase credentials.
+const TEST_PROJECT_ID = "girasun-emulator";
+
 const EMULATOR_ENV = {
-  FIRESTORE_EMULATOR_HOST: "127.0.0.1:8080",
-  FIREBASE_AUTH_EMULATOR_HOST: "127.0.0.1:9099",
+  FIRESTORE_EMULATOR_HOST,
+  FIREBASE_AUTH_EMULATOR_HOST: AUTH_EMULATOR_HOST,
   NEXT_PUBLIC_USE_FIREBASE_EMULATORS: "1",
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: TEST_PROJECT_ID,
   ADMIN_EMAILS: "test-admin@girasun.com",
   NEXT_PUBLIC_SITE_URL: BASE_URL,
 };
@@ -27,39 +36,30 @@ export default defineConfig({
   },
 
   projects: [
-    // 1. Create admin session (runs once before admin tests)
-    {
-      name: "setup",
-      testMatch: /auth\.setup\.ts/,
-      use: { ...devices["Desktop Chrome"] },
-    },
-
-    // 2. Public tests — no authentication
-    {
-      name: "public",
-      testMatch: /tests\/public\/.*/,
-      use: { ...devices["Desktop Chrome"] },
-    },
-
-    // 3. Admin tests — depend on setup to have created the session file
+    { name: "setup", testMatch: /auth\.setup\.ts/, use: { ...devices["Desktop Chrome"] } },
+    { name: "public", testMatch: /tests\/public\/.*/, use: { ...devices["Desktop Chrome"] } },
     {
       name: "admin",
       testMatch: /tests\/admin\/.*/,
-      use: {
-        ...devices["Desktop Chrome"],
-        storageState: "tests/.auth/admin.json",
-      },
+      use: { ...devices["Desktop Chrome"], storageState: "tests/.auth/admin.json" },
       dependencies: ["setup"],
     },
   ],
 
-  webServer: {
-    command: "next dev -p 3001",
-    url: BASE_URL,
-    // Reuse the existing server locally (if one is already on 3001); always
-    // start fresh in CI.
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-    env: EMULATOR_ENV,
-  },
+  webServer: [
+    {
+      // Start the Firebase emulators on dedicated test ports before the app.
+      command: `firebase --config firebase.test.json emulators:start --only auth,firestore --project ${TEST_PROJECT_ID}`,
+      url: `http://${AUTH_EMULATOR_HOST}/`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 60_000,
+    },
+    {
+      command: "next dev -p 3001",
+      url: BASE_URL,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+      env: EMULATOR_ENV,
+    },
+  ],
 });

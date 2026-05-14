@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+test.describe.configure({ mode: "serial" });
+
 test.describe("newsletter signup", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
@@ -15,6 +17,8 @@ test.describe("newsletter signup", () => {
 
   test("shows an error for an invalid email", async ({ page }) => {
     const form = page.locator(".newsletter form").first();
+    // Disable browser-native HTML5 validation so the server-side Zod check runs
+    await form.evaluate((f) => f.setAttribute("novalidate", ""));
     await form.locator('input[type="email"]').fill("no-es-un-email");
     await form.locator('button[type="submit"]').click();
     await expect(page.getByText(/válid/i)).toBeVisible({ timeout: 5000 });
@@ -40,6 +44,11 @@ test.describe("newsletter signup", () => {
       const form = page.locator(".newsletter form").first();
       await form.locator('input[type="email"]').fill(email);
       await form.locator('button[type="submit"]').click();
+      // Wait for the server to respond before the next navigation
+      await Promise.race([
+        page.locator(".newsletter .sent").waitFor({ timeout: 6000 }),
+        page.getByText(/demasiados intentos|intenta de nuevo|no pudimos/i).waitFor({ timeout: 6000 }),
+      ]).catch(() => {});
     };
 
     for (let i = 0; i < 6; i++) {

@@ -18,7 +18,7 @@ test.describe("subscribers list", () => {
     await expect(page.getByRole("button", { name: /todos/i })).toBeVisible();
     await expect(page.getByRole("button", { name: /confirmados/i })).toBeVisible();
     await expect(page.getByRole("button", { name: /pendientes/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /baja/i })).toBeVisible();
+    await expect(page.locator(".mod-filters").getByRole("button", { name: /baja/i })).toBeVisible();
   });
 
   test("search input is present", async ({ page }) => {

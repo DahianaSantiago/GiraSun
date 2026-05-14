@@ -24,9 +24,9 @@ test.describe("comment moderation", () => {
   });
 
   test("shows empty state or comment groups", async ({ page }) => {
-    // Either shows "No hay comentarios" or the group list — both are valid
-    const isEmpty = await page.locator("text=No hay comentarios").isVisible();
+    // Either shows "No hay comentarios" text (may appear in multiple elements) or the group list
+    const emptyCount = await page.getByText(/No hay comentarios/).count();
     const hasGroups = await page.locator(".mcl-groups").isVisible();
-    expect(isEmpty || hasGroups).toBe(true);
+    expect(emptyCount > 0 || hasGroups).toBe(true);
   });
 });

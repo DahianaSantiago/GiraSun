@@ -11,7 +11,7 @@
 import { test as setup } from "@playwright/test";
 import path from "node:path";
 
-const AUTH_EMULATOR = "http://127.0.0.1:9099";
+const AUTH_EMULATOR = `http://${process.env.FIREBASE_AUTH_EMULATOR_HOST ?? "127.0.0.1:9399"}`;
 const TEST_EMAIL = "test-admin@girasun.com";
 const TEST_PASSWORD = "Test-Password-GiraSun!";
 const SESSION_FILE = path.join(__dirname, ".auth/admin.json");

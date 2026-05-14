@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { z } from "zod";
 import { render } from "@react-email/components";
 import { ConfirmEmail } from "../../../emails/Confirm";
@@ -14,6 +15,7 @@ import {
 import { LetterEmail } from "../../../emails/Letter";
 import { getSession } from "@/lib/firebase/session";
 import { isAdmin } from "@/lib/firebase/admins";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 async function requireAdmin() {
   const session = await getSession();
@@ -38,6 +40,12 @@ export async function subscribeAction(input: { email: string; source?: string })
   }
 
   const { email, source = "home" } = parsed.data;
+
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0].trim() ?? "127.0.0.1";
+  const rl = await checkRateLimit("newsletter", ip);
+  if (!rl.allowed) {
+    return { ok: false as const, error: "rate-limited" };
+  }
 
   try {
     const result = await upsertPendingSubscriber(email, source);
