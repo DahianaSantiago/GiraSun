@@ -42,11 +42,15 @@ export async function createSessionCookie(
 /** Read + verify the session cookie from the current request. Returns null when absent or invalid. */
 export async function getSession(): Promise<Session | null> {
   const jar = await cookies();
-  const cookie = jar.get(SESSION_COOKIE_NAME)?.value;
-  if (!cookie) return null;
+  const cookieValue = jar.get(SESSION_COOKIE_NAME)?.value;
+
+  if (!cookieValue) return null;
 
   try {
-    const decoded = await getServerAuth().verifySessionCookie(cookie, true);
+    // Revocation checking requires a live backend call; skip it in emulator mode
+    // where the emulator may not support the revocation endpoint.
+    const checkRevoked = !process.env.FIREBASE_AUTH_EMULATOR_HOST;
+    const decoded = await getServerAuth().verifySessionCookie(cookieValue, checkRevoked);
     return {
       uid: decoded.uid,
       email: decoded.email ?? "",

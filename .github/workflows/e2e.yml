@@ -1,0 +1,63 @@
+name: E2E Tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # The Firebase emulators are Java processes; `firebase emulators:start`
+      # exits immediately if no JVM is on PATH. ubuntu-latest no longer ships a
+      # default JDK, so provision one explicitly.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium --with-deps
+
+      # Cache the downloaded emulator JARs so they don't re-download every run.
+      - name: Cache Firebase emulator JARs
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ hashFiles('firebase.test.json') }}
+
+      # Download the Firestore emulator JAR up front so the Playwright webServer
+      # doesn't race the download against its 60s start timeout — and so a
+      # download/Java failure surfaces here as a clear step instead of an opaque
+      # webServer exit. (The Auth emulator ships inside firebase-tools — no JAR.)
+      - name: Warm Firebase emulators
+        run: pnpm exec firebase setup:emulators:firestore
+
+      - name: Run E2E tests
+        run: pnpm exec playwright test
+        env:
+          CI: true
+          # Emulator-only config. The client SDK just needs a non-empty apiKey to
+          # initialize; all traffic is routed to the local emulators, so these are
+          # safe throwaway values (no real project secrets).
+          NEXT_PUBLIC_FIREBASE_API_KEY: demo-api-key
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: demo-girasun.firebaseapp.com
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: demo-girasun
+          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: demo-girasun.appspot.com
+          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: "000000000000"
+          NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:demo"

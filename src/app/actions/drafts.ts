@@ -30,9 +30,19 @@ const FrontmatterInput = z.object({
     .regex(/^[a-z0-9-]+$/, "slug must be lowercase, digits and hyphens only"),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "YYYY-MM-DD"),
   dateLabel: z.string().trim().min(1).max(60),
-  eyebrow: z.string().trim().min(1).max(40),
+  eyebrow: z
+    .string()
+    .trim()
+    .max(40)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
   cat: z.string().trim().min(1).max(40),
-  tag: z.string().trim().min(1).max(60),
+  tag: z
+    .string()
+    .trim()
+    .max(60)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
   excerpt: z.string().trim().min(10).max(800),
   dek: z
     .string()
@@ -46,7 +56,7 @@ const FrontmatterInput = z.object({
     .max(400)
     .optional()
     .or(z.literal("").transform(() => undefined)),
-  heroAlt: z.string().trim().min(1).max(200),
+  heroAlt: z.string().trim().max(200),
   heroFilter: z
     .enum(["none", "sepia", "ash", "haze", "shadow"])
     .optional()
