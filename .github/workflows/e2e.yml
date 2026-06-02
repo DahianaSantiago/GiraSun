@@ -41,13 +41,12 @@ jobs:
           path: ~/.cache/firebase/emulators
           key: firebase-emulators-${{ hashFiles('firebase.test.json') }}
 
-      # Download the emulator JARs up front so the Playwright webServer doesn't
-      # race the download against its 60s start timeout — and so a download/Java
-      # failure surfaces here as a clear step instead of an opaque webServer exit.
+      # Download the Firestore emulator JAR up front so the Playwright webServer
+      # doesn't race the download against its 60s start timeout — and so a
+      # download/Java failure surfaces here as a clear step instead of an opaque
+      # webServer exit. (The Auth emulator ships inside firebase-tools — no JAR.)
       - name: Warm Firebase emulators
-        run: |
-          pnpm exec firebase setup:emulators:firestore
-          pnpm exec firebase setup:emulators:auth
+        run: pnpm exec firebase setup:emulators:firestore
 
       - name: Run E2E tests
         run: pnpm exec playwright test
