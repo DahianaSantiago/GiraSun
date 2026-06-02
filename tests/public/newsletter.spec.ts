@@ -1,6 +1,29 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 test.describe.configure({ mode: "serial" });
+
+// The first server action invocation in `next dev` compiles the route on demand,
+// which can take several seconds. Give submit results room to absorb that cold
+// start instead of racing a tight 5s window.
+const SUBMIT_TIMEOUT = 15000;
+
+// Fill the email input robustly. Filling right after navigation can dispatch the
+// input event before client hydration completes, dropping the React onChange so
+// `email` stays "" and the submit button stays disabled forever. We clear before
+// each refill (so the value actually changes — Playwright skips the input event
+// on an identical value) and retry until the button enables, i.e. until React has
+// hydrated and registered the value.
+async function fillEmail(page: Page, email: string) {
+  const form = page.locator(".newsletter form").first();
+  const emailInput = form.locator('input[type="email"]');
+  const submitBtn = form.locator('button[type="submit"]');
+  await expect(async () => {
+    await emailInput.fill("");
+    await emailInput.fill(email);
+    await expect(submitBtn).toBeEnabled({ timeout: 1000 });
+  }).toPass({ timeout: 10000 });
+  return { form, emailInput, submitBtn };
+}
 
 test.describe("newsletter signup", () => {
   test.beforeEach(async ({ page }) => {
@@ -8,32 +31,27 @@ test.describe("newsletter signup", () => {
   });
 
   test("accepts a valid email and shows pending confirmation message", async ({ page }) => {
-    const form = page.locator(".newsletter form").first();
-    await form.locator('input[type="email"]').fill("lector@ejemplo.com");
-    await form.locator('button[type="submit"]').click();
+    const { emailInput, submitBtn } = await fillEmail(page, "lector@ejemplo.com");
+    await submitBtn.click();
     // Should show success/pending state — not stay on the idle form
-    await expect(form.locator('input[type="email"]')).not.toBeVisible({ timeout: 5000 });
+    await expect(emailInput).not.toBeVisible({ timeout: SUBMIT_TIMEOUT });
   });
 
   test("shows an error for an invalid email", async ({ page }) => {
     const form = page.locator(".newsletter form").first();
     // Disable browser-native HTML5 validation so the server-side Zod check runs
     await form.evaluate((f) => f.setAttribute("novalidate", ""));
-    await form.locator('input[type="email"]').fill("no-es-un-email");
-    await form.locator('button[type="submit"]').click();
-    await expect(page.getByText(/válid/i)).toBeVisible({ timeout: 5000 });
+    const { submitBtn } = await fillEmail(page, "no-es-un-email");
+    await submitBtn.click();
+    await expect(page.getByText(/válid/i)).toBeVisible({ timeout: SUBMIT_TIMEOUT });
   });
 
   test("submit button is disabled while a request is in flight", async ({ page }) => {
-    const form = page.locator(".newsletter form").first();
-    const emailInput = form.locator('input[type="email"]');
-    const submitBtn = form.locator('button[type="submit"]');
-
-    await emailInput.fill("otro@ejemplo.com");
+    const { emailInput, submitBtn } = await fillEmail(page, "otro@ejemplo.com");
     await submitBtn.click();
-    // Immediately after clicking, the button should be disabled (pending transition)
-    // We check the final success state instead — the button disappears with the form
-    await expect(emailInput).not.toBeVisible({ timeout: 5000 });
+    // Immediately after clicking, the button should be disabled (pending transition).
+    // We check the final success state instead — the button disappears with the form.
+    await expect(emailInput).not.toBeVisible({ timeout: SUBMIT_TIMEOUT });
   });
 
   test("shows rate-limit error after too many attempts from the same IP", async ({ page }) => {
@@ -41,13 +59,14 @@ test.describe("newsletter signup", () => {
     // so we drive it to the limit.
     const trySubscribe = async (email: string) => {
       await page.goto("/");
-      const form = page.locator(".newsletter form").first();
-      await form.locator('input[type="email"]').fill(email);
-      await form.locator('button[type="submit"]').click();
+      const { submitBtn } = await fillEmail(page, email);
+      await submitBtn.click();
       // Wait for the server to respond before the next navigation
       await Promise.race([
-        page.locator(".newsletter .sent").waitFor({ timeout: 6000 }),
-        page.getByText(/demasiados intentos|intenta de nuevo|no pudimos/i).waitFor({ timeout: 6000 }),
+        page.locator(".newsletter .sent").waitFor({ timeout: SUBMIT_TIMEOUT }),
+        page
+          .getByText(/demasiados intentos|intenta de nuevo|no pudimos/i)
+          .waitFor({ timeout: SUBMIT_TIMEOUT }),
       ]).catch(() => {});
     };
 
@@ -58,6 +77,6 @@ test.describe("newsletter signup", () => {
     // At least the last attempt should show a rate-limit or generic error
     await expect(
       page.getByText(/demasiados intentos|intenta de nuevo|no pudimos/i),
-    ).toBeVisible({ timeout: 5000 });
+    ).toBeVisible({ timeout: SUBMIT_TIMEOUT });
   });
 });
