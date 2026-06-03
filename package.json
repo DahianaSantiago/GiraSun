@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
+    "test:unit": "vitest run src/lib/__tests__",
     "test:rules": "vitest run src/lib/firebase/__tests__/rules.test.ts",
     "firebase:emulators": "firebase emulators:start --only auth,firestore",
     "firebase:emulators:test": "firebase --config firebase.test.json emulators:start --only auth,firestore --project girasun-emulator",

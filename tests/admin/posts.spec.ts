@@ -58,6 +58,19 @@ test.describe("admin post editor — cuentos", () => {
       await expect(menu.getByRole("menuitem", { name: /guardar y publicar/i })).toBeVisible();
     });
 
+    test("no standalone publish button exists outside the menu", async ({ page }) => {
+      // Publishing now lives inside the Save dropdown; there should be no separate
+      // top-level Publicar button while the menu is closed.
+      await expect(page.getByRole("button", { name: /publicar/i })).toHaveCount(0);
+    });
+
+    test("save dropdown closes when clicking outside", async ({ page }) => {
+      await page.getByRole("button", { name: /^guardar$/i }).click();
+      await expect(page.getByRole("menu")).toBeVisible();
+      await page.getByRole("button", { name: /cerrar menú/i }).click();
+      await expect(page.getByRole("menu")).toHaveCount(0);
+    });
+
     // TODO: Chrome's CDP strips the Cookie header in route.continue() (forbidden header),
     // so the server action POST never sees the session cookie. Needs a proper fix.
     test.skip("'guardar y salir' navigates back to the list", async ({ page }) => {

@@ -13,6 +13,7 @@ import type { DraftFrontmatter, DraftType } from "@/lib/drafts";
 import { useRouter } from "next/navigation";
 import ImageUpload from "./ImageUpload";
 import { IMAGE_FILTERS, type ImageFilterKey } from "@/lib/image-filters";
+import { deriveExcerpt } from "@/lib/excerpt";
 
 const slugify = (s: string): string =>
   s
@@ -21,25 +22,6 @@ const slugify = (s: string): string =>
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-
-const EXCERPT_WORDS = 20;
-
-// The resumen is auto-generated from the story body: strip Markdown to plain
-// text and keep the first ~20 words, ending in an ellipsis. Recomputed on every
-// save so it always matches the current text.
-const deriveExcerpt = (markdown: string): string => {
-  const text = markdown
-    .replace(/```[\s\S]*?```/g, " ") // fenced code blocks
-    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // images
-    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links \u2192 their text
-    .replace(/<[^>]+>/g, " ") // stray HTML tags
-    .replace(/[#>*_`~]/g, " ") // markdown markers
-    .replace(/\s+/g, " ")
-    .trim();
-  if (!text) return "";
-  const words = text.split(" ").filter(Boolean);
-  return `${words.slice(0, EXCERPT_WORDS).join(" ")}\u2026`;
-};
 
 const SPANISH_MONTHS = [
   "enero",

@@ -31,6 +31,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Fast pure-logic tests (excerpt generation, friendly validation messages).
+      # No browser or emulator needed, so run them first to fail fast.
+      - name: Unit tests
+        run: pnpm test:unit
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium --with-deps
 
