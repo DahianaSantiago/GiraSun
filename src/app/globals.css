@@ -2874,6 +2874,19 @@ img {
   border-color: var(--accent);
 }
 
+/* Auto-generated resumen: read-only preview, styled like a quieter field. */
+.post-editor-excerpt-preview {
+  margin: 0;
+  width: 100%;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  background: var(--surface-2);
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius-s);
+  padding: 8px 12px;
+}
+
 .post-editor-main {
   background: var(--bg);
   border: 1px solid var(--rule);

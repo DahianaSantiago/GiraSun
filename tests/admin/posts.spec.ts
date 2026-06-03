@@ -40,8 +40,8 @@ test.describe("admin post editor — cuentos", () => {
       await expect(slugField).toHaveValue(/jardin-de-las-memorias/);
     });
 
-    test("excerpt textarea is present", async ({ page }) => {
-      await expect(page.locator("textarea")).toBeVisible();
+    test("excerpt is auto-generated (read-only preview present)", async ({ page }) => {
+      await expect(page.getByTestId("excerpt-preview")).toBeVisible();
     });
 
     test("save draft button is present and enabled", async ({ page }) => {

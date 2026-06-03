@@ -22,6 +22,25 @@ const slugify = (s: string): string =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+const EXCERPT_WORDS = 20;
+
+// The resumen is auto-generated from the story body: strip Markdown to plain
+// text and keep the first ~20 words, ending in an ellipsis. Recomputed on every
+// save so it always matches the current text.
+const deriveExcerpt = (markdown: string): string => {
+  const text = markdown
+    .replace(/```[\s\S]*?```/g, " ") // fenced code blocks
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links \u2192 their text
+    .replace(/<[^>]+>/g, " ") // stray HTML tags
+    .replace(/[#>*_`~]/g, " ") // markdown markers
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!text) return "";
+  const words = text.split(" ").filter(Boolean);
+  return `${words.slice(0, EXCERPT_WORDS).join(" ")}\u2026`;
+};
+
 const SPANISH_MONTHS = [
   "enero",
   "febrero",
@@ -98,7 +117,6 @@ export function PostEditor({
   const [date, setDate] = useState(
     initial?.frontmatter.date ?? new Date().toISOString().split("T")[0],
   );
-  const [excerpt, setExcerpt] = useState(initial?.frontmatter.excerpt ?? "");
   const [heroSrc, setHeroSrc] = useState(initial?.frontmatter.heroSrc ?? "");
   const [heroAlt, setHeroAlt] = useState(initial?.frontmatter.heroAlt ?? "");
   const [heroFilter, setHeroFilter] = useState<ImageFilterKey>(
@@ -142,7 +160,7 @@ export function PostEditor({
     date,
     dateLabel: formatSpanishDate(date),
     cat: defaults.cat,
-    excerpt: excerpt.trim(),
+    excerpt: deriveExcerpt(body),
     heroSrc: heroSrc.trim() || undefined,
     heroAlt: heroAlt.trim(),
     heroFilter: heroFilter !== "none" ? heroFilter : undefined,
@@ -293,13 +311,18 @@ export function PostEditor({
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </FormField>
 
-          <FormField label="Resumen">
-            <textarea
-              rows={3}
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="Una historia sobre las casas que recordamos antes de habitarlas..."
-            />
+          <FormField
+            label="Resumen"
+            hint="Se genera solo: las primeras 20 palabras del texto. Se actualiza al guardar."
+            as="div"
+          >
+            <p className="post-editor-excerpt-preview" data-testid="excerpt-preview">
+              {deriveExcerpt(body) || (
+                <span style={{ color: "var(--ink-muted)", fontStyle: "italic" }}>
+                  Empieza a escribir el cuento y el resumen aparecerá aquí.
+                </span>
+              )}
+            </p>
           </FormField>
 
           <FormField label="Imagen Destacada" as="div">
