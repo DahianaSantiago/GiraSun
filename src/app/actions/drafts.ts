@@ -66,6 +66,60 @@ const FrontmatterInput = z.object({
   sections: z.array(z.string().min(1).max(120)).max(20).optional(),
 });
 
+// Human-readable Spanish labels for each frontmatter field, used to turn raw Zod
+// issues into messages an author can actually act on.
+const FIELD_LABELS: Record<string, string> = {
+  title: "El título",
+  titleHTML: "El título con formato",
+  slug: "El slug (la URL)",
+  date: "La fecha",
+  dateLabel: "La fecha",
+  eyebrow: "El eyebrow",
+  cat: "La categoría",
+  tag: "El tag",
+  excerpt: "El resumen",
+  dek: "La bajada",
+  heroSrc: "La imagen destacada",
+  heroAlt: "El texto alternativo de la imagen",
+  heroFilter: "El filtro de imagen",
+  readingMinutes: "El tiempo de lectura",
+};
+
+/** Turns a Zod issue into a friendly, actionable Spanish message. */
+function friendlyIssue(issue: z.core.$ZodIssue): string {
+  const field = issue.path.join(".");
+  const label = FIELD_LABELS[field] ?? "Un campo";
+
+  // The resumen is auto-generated from the story body, so phrase its errors
+  // around the content rather than a field the author can no longer edit.
+  if (field === "excerpt") {
+    return "El cuento necesita algo más de contenido (el resumen se genera automáticamente a partir del texto).";
+  }
+
+  switch (issue.code) {
+    case "too_small": {
+      const min = Number((issue as { minimum?: number }).minimum ?? 0);
+      return min <= 1
+        ? `${label} es obligatorio.`
+        : `${label} debe tener al menos ${min} caracteres.`;
+    }
+    case "too_big": {
+      const max = Number((issue as { maximum?: number }).maximum ?? 0);
+      return `${label} no puede superar los ${max} caracteres.`;
+    }
+    case "invalid_type":
+      return `${label} es obligatorio.`;
+    case "invalid_format":
+      return field === "slug"
+        ? "El slug solo puede tener minúsculas, números y guiones."
+        : field === "date" || field === "dateLabel"
+          ? "La fecha debe tener el formato AAAA-MM-DD."
+          : `${label} tiene un formato inválido.`;
+    default:
+      return `${label} tiene un valor inválido.`;
+  }
+}
+
 export type DraftActionResult =
   | { ok: true; id: string }
   | { ok: false; error: string; detail?: string };
@@ -85,11 +139,10 @@ export async function saveDraftAction(input: {
   const parsed = FrontmatterInput.safeParse(input.frontmatter);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    const field = issue?.path.join(".") ?? "unknown";
     return {
       ok: false,
       error: "invalid-frontmatter",
-      detail: `Campo '${field}': ${issue?.message ?? "valor inválido"}`,
+      detail: issue ? friendlyIssue(issue) : "Hay un campo con un valor inválido.",
     };
   }
 

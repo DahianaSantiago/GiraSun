@@ -48,6 +48,20 @@ const DEFAULTS_BY_TYPE: Record<DraftType, { cat: string }> = {
   escrito: { cat: "Escrito" },
 };
 
+// Friendly Spanish copy for the error codes the actions return. Validation
+// errors already arrive with a human-readable `detail`, so we surface that
+// directly; the rest get a plain-language fallback.
+const ERROR_MESSAGES: Record<string, string> = {
+  "not-authenticated": "Tu sesión expiró. Vuelve a iniciar sesión e intenta de nuevo.",
+  "not-admin": "Tu cuenta no tiene permisos de administrador.",
+  "publish-failed": "No se pudo publicar. Revisa la conexión e intenta de nuevo.",
+};
+
+function describeError(result: { error: string; detail?: string }): string {
+  if (result.detail) return result.detail;
+  return ERROR_MESSAGES[result.error] ?? "Algo salió mal. Intenta de nuevo.";
+}
+
 const HelpIcon = () => (
   <svg
     width="13"
@@ -153,10 +167,7 @@ export function PostEditor({
         router.push(indexHref);
         router.refresh();
       } else {
-        setMessage({
-          kind: "error",
-          text: `No pude guardar: ${result.error}${result.detail ? ` — ${result.detail}` : ""}`,
-        });
+        setMessage({ kind: "error", text: `No pude guardar. ${describeError(result)}` });
       }
     });
   };
@@ -175,7 +186,7 @@ export function PostEditor({
       if (!saveResult.ok) {
         setMessage({
           kind: "error",
-          text: `No pude guardar antes de publicar: ${saveResult.error}`,
+          text: `No pude guardar antes de publicar. ${describeError(saveResult)}`,
         });
         return;
       }
@@ -192,10 +203,7 @@ export function PostEditor({
         router.push(indexHref);
         router.refresh();
       } else {
-        setMessage({
-          kind: "error",
-          text: `No pude publicar: ${result.error}${result.detail ? ` — ${result.detail}` : ""}`,
-        });
+        setMessage({ kind: "error", text: `No pude publicar. ${describeError(result)}` });
       }
     });
   };
