@@ -2722,9 +2722,72 @@ img {
   gap: 12px;
 }
 
+/* ── Save dropdown (split-style single button + menu) ───────── */
+.post-editor-save {
+  position: relative;
+}
+.post-editor-save > .post-editor-btn {
+  width: 100%;
+  justify-content: center;
+}
+/* Invisible full-screen layer to dismiss the menu on outside click. */
+.post-editor-save-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: default;
+}
+.post-editor-save-menu {
+  position: absolute;
+  z-index: 41;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-cta);
+  padding: 6px;
+  overflow: hidden;
+}
+.post-editor-save-menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-s);
+  padding: 9px 12px;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+.post-editor-save-menu button:hover {
+  background: var(--surface-2);
+}
+.post-editor-save-menu button span {
+  font-size: 14px;
+  font-weight: 600;
+}
+.post-editor-save-menu button small {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
 @media (max-width: 639px) {
   .post-editor-actions {
     width: 100%;
+  }
+  .post-editor-actions .post-editor-save {
+    flex: 1;
   }
   .post-editor-actions .post-editor-btn {
     flex: 1;

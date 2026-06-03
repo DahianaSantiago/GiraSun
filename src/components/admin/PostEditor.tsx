@@ -99,6 +99,23 @@ const HelpIcon = () => (
   </svg>
 );
 
+const Chevron = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ display: "block", marginLeft: 6 }}
+    aria-hidden="true"
+  >
+    <polyline points="6 9 12 15 18 9"></polyline>
+  </svg>
+);
+
 export function PostEditor({
   id,
   type,
@@ -151,6 +168,10 @@ export function PostEditor({
   const [message, setMessage] = useState<
     { kind: "success"; text: string; href?: string } | { kind: "error"; text: string } | null
   >(null);
+  // Track the draft id locally: a brand-new post has none until its first save,
+  // after which we keep editing (and can publish) the same draft without leaving.
+  const [currentId, setCurrentId] = useState<string | null>(id ?? null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const buildFrontmatter = (): DraftFrontmatter => ({
     type,
@@ -170,18 +191,24 @@ export function PostEditor({
     tag: initial?.frontmatter.tag,
   });
 
-  const onSave = () => {
-    setMessage(null);
+  const indexHref = type === "cuento" ? "/admin/cuentos" : "/admin/escritos";
+  const liveSegment = type === "cuento" ? "cuentos" : "escritos";
+
+  // Persist the current form as a draft, reusing the existing id (or creating a
+  // new one). Returns the action result so each menu action can decide where to go.
+  const persistDraft = async (): Promise<DraftActionResult> => {
     const fm = buildFrontmatter();
     setSlug(fm.slug);
+    return saveDraftAction({ id: currentId ?? undefined, frontmatter: fm, body });
+  };
+
+  // 1. Guardar y salir — save, then go back to the list.
+  const saveAndExit = () => {
+    setMenuOpen(false);
+    setMessage(null);
     startSave(async () => {
-      const result: DraftActionResult = await saveDraftAction({
-        id: id ?? undefined,
-        frontmatter: fm,
-        body,
-      });
+      const result = await persistDraft();
       if (result.ok) {
-        setMessage({ kind: "success", text: "Borrador guardado." });
         router.push(indexHref);
         router.refresh();
       } else {
@@ -190,17 +217,33 @@ export function PostEditor({
     });
   };
 
-  const onPublish = () => {
+  // 2. Guardar borrador — save and stay in the editor with a success message.
+  const saveDraftStay = () => {
+    setMenuOpen(false);
     setMessage(null);
-    const fm = buildFrontmatter();
-    startPublish(async () => {
-      // 1. Save latest changes first
-      const saveResult: DraftActionResult = await saveDraftAction({
-        id: id ?? undefined,
-        frontmatter: fm,
-        body,
-      });
+    startSave(async () => {
+      const wasNew = !currentId;
+      const result = await persistDraft();
+      if (result.ok) {
+        setCurrentId(result.id);
+        // Keep the URL in sync so a refresh lands on this draft's editor, without
+        // a client navigation that would unmount the editor and drop the message.
+        if (wasNew) {
+          window.history.replaceState(null, "", `${indexHref}/${result.id}/edit`);
+        }
+        setMessage({ kind: "success", text: "Borrador guardado." });
+      } else {
+        setMessage({ kind: "error", text: `No pude guardar. ${describeError(result)}` });
+      }
+    });
+  };
 
+  // 3. Guardar y publicar — save, then publish (the previous publish flow).
+  const saveAndPublish = () => {
+    setMenuOpen(false);
+    setMessage(null);
+    startPublish(async () => {
+      const saveResult = await persistDraft();
       if (!saveResult.ok) {
         setMessage({
           kind: "error",
@@ -208,16 +251,10 @@ export function PostEditor({
         });
         return;
       }
-
-      // 2. Publish using the ID (either the existing one or the one just created)
-      const finalId = id || saveResult.id;
-      const result: PublishResult = await publishDraftAction(finalId);
-
+      setCurrentId(saveResult.id);
+      const result: PublishResult = await publishDraftAction(saveResult.id);
       if (result.ok) {
-        setMessage({
-          kind: "success",
-          text: `¡Publicado con éxito!`,
-        });
+        setMessage({ kind: "success", text: "¡Publicado con éxito!" });
         router.push(indexHref);
         router.refresh();
       } else {
@@ -226,8 +263,7 @@ export function PostEditor({
     });
   };
 
-  const indexHref = type === "cuento" ? "/admin/cuentos" : "/admin/escritos";
-  const liveSegment = type === "cuento" ? "cuentos" : "escritos";
+  const busy = savePending || publishPending;
 
   return (
     <div className="post-editor">
@@ -236,23 +272,43 @@ export function PostEditor({
           ← Volver a la lista
         </Link>
         <div className="post-editor-actions">
-          <button
-            type="button"
-            className="post-editor-btn ghost"
-            disabled={savePending || publishPending}
-            onClick={onSave}
-          >
-            {savePending ? "Guardando..." : "Guardar borrador"}
-          </button>
-          <button
-            type="button"
-            className="post-editor-btn"
-            disabled={!id || publishPending || savePending}
-            onClick={onPublish}
-            title={!id ? "Guarda un borrador primero" : "Publicar"}
-          >
-            {publishPending ? "Publicando..." : "Publicar →"}
-          </button>
+          <div className="post-editor-save">
+            <button
+              type="button"
+              className="post-editor-btn"
+              disabled={busy}
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+            >
+              {publishPending ? "Publicando..." : savePending ? "Guardando..." : "Guardar"}
+              <Chevron />
+            </button>
+            {menuOpen ? (
+              <>
+                <button
+                  type="button"
+                  className="post-editor-save-backdrop"
+                  aria-label="Cerrar menú"
+                  onClick={() => setMenuOpen(false)}
+                />
+                <div className="post-editor-save-menu" role="menu">
+                  <button type="button" role="menuitem" onClick={saveAndExit}>
+                    <span>Guardar y salir</span>
+                    <small>Vuelve a la lista</small>
+                  </button>
+                  <button type="button" role="menuitem" onClick={saveDraftStay}>
+                    <span>Guardar borrador</span>
+                    <small>Sigue editando aquí</small>
+                  </button>
+                  <button type="button" role="menuitem" onClick={saveAndPublish}>
+                    <span>Guardar y publicar</span>
+                    <small>Publica el cambio</small>
+                  </button>
+                </div>
+              </>
+            ) : null}
+          </div>
         </div>
       </header>
 
@@ -264,7 +320,7 @@ export function PostEditor({
               ver commit
             </a>
           ) : null}
-          {message.kind === "success" && id && !message.href ? (
+          {message.kind === "success" && currentId && !message.href ? (
             <a href={`/${liveSegment}/${slug}`} target="_blank" rel="noreferrer">
               ver borrador en vivo (después de publicar)
             </a>
