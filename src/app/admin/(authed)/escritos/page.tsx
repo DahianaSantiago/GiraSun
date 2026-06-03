@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { listDrafts, type Draft } from "@/lib/drafts";
+import { DeletePostButton } from "@/components/admin/DeletePostButton";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Escritos" };
@@ -135,6 +136,7 @@ export default async function AdminEscritosPage() {
                         <EyeIcon />
                       </a>
                     ) : null}
+                    <DeletePostButton id={d.id} title={d.title} />
                   </td>
                 </tr>
               ))}

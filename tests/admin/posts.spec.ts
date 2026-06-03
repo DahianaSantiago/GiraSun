@@ -96,3 +96,69 @@ test.describe("admin post editor — escritos", () => {
     await expect(page.locator(".post-editor")).toBeVisible();
   });
 });
+
+test.describe("admin post list — delete", () => {
+  // demo-* project, matching playwright.config.ts TEST_PROJECT_ID.
+  const FIRESTORE = `http://${process.env.FIRESTORE_EMULATOR_HOST ?? "127.0.0.1:8380"}`;
+  const docUrl = (id: string) =>
+    `${FIRESTORE}/v1/projects/demo-girasun/databases/(default)/documents/posts/${id}`;
+
+  const TITLE = "Borrador para eliminar";
+  const DOC_ID = "cuento_borrador-para-eliminar";
+  // "owner" is the emulator's privileged token — it bypasses Firestore rules so
+  // the test can seed/clean up directly.
+  const ADMIN_HEADERS = { Authorization: "Bearer owner" };
+
+  // Seed a draft straight into the Firestore emulator so it shows up in the list.
+  test.beforeEach(async ({ request }) => {
+    await request.delete(docUrl(DOC_ID), { headers: ADMIN_HEADERS }).catch(() => {});
+    const res = await request.patch(docUrl(DOC_ID), {
+      headers: ADMIN_HEADERS,
+      data: {
+        fields: {
+          type: { stringValue: "cuento" },
+          title: { stringValue: TITLE },
+          slug: { stringValue: "borrador-para-eliminar" },
+          status: { stringValue: "draft" },
+          body: { stringValue: "Contenido de prueba." },
+          updatedAt: { timestampValue: "2026-06-02T00:00:00Z" },
+        },
+      },
+    });
+    expect(res.ok()).toBeTruthy();
+  });
+
+  test.afterEach(async ({ request }) => {
+    await request.delete(docUrl(DOC_ID), { headers: ADMIN_HEADERS }).catch(() => {});
+  });
+
+  test("each post row shows a delete button", async ({ page }) => {
+    await page.goto("/admin/cuentos");
+    const row = page.locator("tr", { hasText: TITLE });
+    await expect(row).toBeVisible();
+    await expect(
+      row.getByRole("button", { name: new RegExp(`eliminar ${TITLE}`, "i") }),
+    ).toBeVisible();
+  });
+
+  test("clicking delete (and confirming) removes the draft", async ({ page, request }) => {
+    page.on("dialog", (dialog) => dialog.accept());
+    await page.goto("/admin/cuentos");
+
+    const row = page.locator("tr", { hasText: TITLE });
+    await expect(row).toBeVisible();
+
+    await row.getByRole("button", { name: new RegExp(`eliminar ${TITLE}`, "i") }).click();
+
+    // The button → server action → Firestore: the seeded doc should be gone.
+    await expect
+      .poll(async () => (await request.get(docUrl(DOC_ID), { headers: ADMIN_HEADERS })).status(), {
+        timeout: 10_000,
+      })
+      .toBe(404);
+
+    // …and it's no longer in the (force-dynamic) list on a fresh load.
+    await page.reload();
+    await expect(page.locator("tr", { hasText: TITLE })).toHaveCount(0);
+  });
+});
