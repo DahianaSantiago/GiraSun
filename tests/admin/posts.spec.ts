@@ -40,29 +40,44 @@ test.describe("admin post editor — cuentos", () => {
       await expect(slugField).toHaveValue(/jardin-de-las-memorias/);
     });
 
-    test("excerpt textarea is present", async ({ page }) => {
-      await expect(page.locator("textarea")).toBeVisible();
+    test("excerpt is auto-generated (read-only preview present)", async ({ page }) => {
+      await expect(page.getByTestId("excerpt-preview")).toBeVisible();
     });
 
-    test("save draft button is present and enabled", async ({ page }) => {
-      const saveBtn = page.getByRole("button", { name: /guardar borrador/i });
+    test("save dropdown is present and enabled", async ({ page }) => {
+      const saveBtn = page.getByRole("button", { name: /^guardar$/i });
       await expect(saveBtn).toBeVisible();
       await expect(saveBtn).toBeEnabled();
     });
 
-    test("publish button is disabled before saving (no id yet)", async ({ page }) => {
-      const publishBtn = page.getByRole("button", { name: /publicar/i });
-      await expect(publishBtn).toBeDisabled();
+    test("save dropdown opens with the three options", async ({ page }) => {
+      await page.getByRole("button", { name: /^guardar$/i }).click();
+      const menu = page.getByRole("menu");
+      await expect(menu.getByRole("menuitem", { name: /guardar y salir/i })).toBeVisible();
+      await expect(menu.getByRole("menuitem", { name: /guardar borrador/i })).toBeVisible();
+      await expect(menu.getByRole("menuitem", { name: /guardar y publicar/i })).toBeVisible();
+    });
+
+    test("no standalone publish button exists outside the menu", async ({ page }) => {
+      // Publishing now lives inside the Save dropdown; there should be no separate
+      // top-level Publicar button while the menu is closed.
+      await expect(page.getByRole("button", { name: /publicar/i })).toHaveCount(0);
+    });
+
+    test("save dropdown closes when clicking outside", async ({ page }) => {
+      await page.getByRole("button", { name: /^guardar$/i }).click();
+      await expect(page.getByRole("menu")).toBeVisible();
+      await page.getByRole("button", { name: /cerrar menú/i }).click();
+      await expect(page.getByRole("menu")).toHaveCount(0);
     });
 
     // TODO: Chrome's CDP strips the Cookie header in route.continue() (forbidden header),
     // so the server action POST never sees the session cookie. Needs a proper fix.
-    test.skip("saving a draft navigates back to the list", async ({ page }) => {
+    test.skip("'guardar y salir' navigates back to the list", async ({ page }) => {
       await page.getByLabel("Título", { exact: true }).fill("Cuento de prueba E2E");
-      await page.locator("textarea").fill("Un resumen breve del cuento.");
 
-      const saveBtn = page.getByRole("button", { name: /guardar borrador/i });
-      await saveBtn.click();
+      await page.getByRole("button", { name: /^guardar$/i }).click();
+      await page.getByRole("menuitem", { name: /guardar y salir/i }).click();
 
       await expect(page).toHaveURL(/\/admin\/cuentos$/, { timeout: 10_000 });
     });

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/firebase/session";
 import { isAdmin } from "@/lib/firebase/admins";
 import { saveDraft, publishDraft, deleteDraft, type DraftFrontmatter } from "@/lib/drafts";
+import { friendlyIssue } from "@/lib/frontmatter-errors";
 
 async function requireAdmin(): Promise<{ email: string }> {
   const session = await getSession();
@@ -85,11 +86,10 @@ export async function saveDraftAction(input: {
   const parsed = FrontmatterInput.safeParse(input.frontmatter);
   if (!parsed.success) {
     const issue = parsed.error.issues[0];
-    const field = issue?.path.join(".") ?? "unknown";
     return {
       ok: false,
       error: "invalid-frontmatter",
-      detail: `Campo '${field}': ${issue?.message ?? "valor inválido"}`,
+      detail: issue ? friendlyIssue(issue) : "Hay un campo con un valor inválido.",
     };
   }
 
