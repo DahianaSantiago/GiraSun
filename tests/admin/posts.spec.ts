@@ -97,17 +97,17 @@ test.describe("admin post editor — escritos", () => {
   });
 });
 
-test.describe("admin post list — delete", () => {
-  // demo-* project, matching playwright.config.ts TEST_PROJECT_ID.
-  const FIRESTORE = `http://${process.env.FIRESTORE_EMULATOR_HOST ?? "127.0.0.1:8380"}`;
-  const docUrl = (id: string) =>
-    `${FIRESTORE}/v1/projects/demo-girasun/databases/(default)/documents/posts/${id}`;
+// Shared helpers for the delete-related describe blocks below.
+const FIRESTORE_BASE = `http://${process.env.FIRESTORE_EMULATOR_HOST ?? "127.0.0.1:8380"}`;
+const firestoreDocUrl = (id: string) =>
+  `${FIRESTORE_BASE}/v1/projects/demo-girasun/databases/(default)/documents/posts/${id}`;
+const EMULATOR_HEADERS = { Authorization: "Bearer owner" };
 
+test.describe("admin post list — delete draft", () => {
+  const docUrl = firestoreDocUrl;
   const TITLE = "Borrador para eliminar";
   const DOC_ID = "cuento_borrador-para-eliminar";
-  // "owner" is the emulator's privileged token — it bypasses Firestore rules so
-  // the test can seed/clean up directly.
-  const ADMIN_HEADERS = { Authorization: "Bearer owner" };
+  const ADMIN_HEADERS = EMULATOR_HEADERS;
 
   // Seed a draft straight into the Firestore emulator so it shows up in the list.
   test.beforeEach(async ({ request }) => {
@@ -160,5 +160,82 @@ test.describe("admin post list — delete", () => {
     // …and it's no longer in the (force-dynamic) list on a fresh load.
     await page.reload();
     await expect(page.locator("tr", { hasText: TITLE })).toHaveCount(0);
+  });
+});
+
+test.describe("admin post list — delete published post (un-publish)", () => {
+  const TITLE = "Publicado para eliminar";
+  const SLUG = "publicado-para-eliminar";
+  const DOC_ID = `cuento_${SLUG}`;
+
+  test.beforeEach(async ({ request }) => {
+    await request.delete(firestoreDocUrl(DOC_ID), { headers: EMULATOR_HEADERS }).catch(() => {});
+    const res = await request.patch(firestoreDocUrl(DOC_ID), {
+      headers: EMULATOR_HEADERS,
+      data: {
+        fields: {
+          type: { stringValue: "cuento" },
+          title: { stringValue: TITLE },
+          slug: { stringValue: SLUG },
+          status: { stringValue: "published" },
+          date: { stringValue: "2026-06-04" },
+          dateLabel: { stringValue: "4 junio, 2026" },
+          cat: { stringValue: "Cuento" },
+          heroAlt: { stringValue: "imagen decorativa" },
+          excerpt: { stringValue: "Cuento de prueba para validar el flujo de eliminación." },
+          readingMinutes: { integerValue: 1 },
+          body: { stringValue: "Contenido de prueba." },
+          publishedAt: { timestampValue: "2026-06-04T00:00:00Z" },
+          updatedAt: { timestampValue: "2026-06-04T00:00:00Z" },
+        },
+      },
+    });
+    expect(res.ok()).toBeTruthy();
+  });
+
+  test.afterEach(async ({ request }) => {
+    await request.delete(firestoreDocUrl(DOC_ID), { headers: EMULATOR_HEADERS }).catch(() => {});
+  });
+
+  test("delete button is visible on published posts", async ({ page }) => {
+    await page.goto("/admin/cuentos");
+    const row = page.locator("tr", { hasText: TITLE });
+    await expect(row).toBeVisible();
+    await expect(
+      row.getByRole("button", { name: new RegExp(`eliminar ${TITLE}`, "i") }),
+    ).toBeVisible();
+  });
+
+  test("deleting a published post removes it from Firestore, the admin list, and the public site", async ({
+    page,
+    request,
+  }) => {
+    page.on("dialog", (dialog) => dialog.accept());
+    await page.goto("/admin/cuentos");
+
+    const row = page.locator("tr", { hasText: TITLE });
+    await expect(row).toBeVisible();
+    await row.getByRole("button", { name: new RegExp(`eliminar ${TITLE}`, "i") }).click();
+
+    // 1. Firestore doc must be gone.
+    await expect
+      .poll(
+        async () =>
+          (await request.get(firestoreDocUrl(DOC_ID), { headers: EMULATOR_HEADERS })).status(),
+        { timeout: 10_000 },
+      )
+      .toBe(404);
+
+    // 2. Admin list no longer shows the post after reload.
+    await page.reload();
+    await expect(page.locator("tr", { hasText: TITLE })).toHaveCount(0);
+
+    // 3. Public listing page must not include the deleted post.
+    await page.goto("/cuentos");
+    await expect(page.locator("body")).not.toContainText(TITLE);
+
+    // 4. Public detail page must return 404 (Next.js notFound() + revalidatePath fired).
+    const response = await page.goto(`/cuentos/${SLUG}`);
+    expect(response?.status()).toBe(404);
   });
 });

@@ -4,7 +4,13 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/firebase/session";
 import { isAdmin } from "@/lib/firebase/admins";
-import { saveDraft, publishDraft, deleteDraft, type DraftFrontmatter } from "@/lib/drafts";
+import {
+  saveDraft,
+  publishDraft,
+  deleteDraft,
+  getDraft,
+  type DraftFrontmatter,
+} from "@/lib/drafts";
 import { friendlyIssue } from "@/lib/frontmatter-errors";
 
 async function requireAdmin(): Promise<{ email: string }> {
@@ -135,8 +141,27 @@ export async function deleteDraftAction(id: string): Promise<DraftActionResult> 
   } catch (err) {
     return { ok: false, error: (err as Error).message };
   }
-  await deleteDraft(id);
+
+  // Fetch before deleting so we know type/slug for public-page revalidation
+  const draft = await getDraft(id);
+
+  try {
+    await deleteDraft(id);
+  } catch (err) {
+    console.error("[delete] failed:", err);
+    return { ok: false, error: "delete-failed", detail: (err as Error).message };
+  }
+
   revalidatePath("/admin/cuentos");
   revalidatePath("/admin/escritos");
+
+  if (draft?.status === "published") {
+    const section = draft.type === "cuento" ? "cuentos" : "escritos";
+    revalidatePath(`/${section}`);
+    revalidatePath(`/${section}/${draft.slug}`);
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
+  }
+
   return { ok: true, id };
 }
