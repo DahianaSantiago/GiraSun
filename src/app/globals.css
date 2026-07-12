@@ -837,7 +837,7 @@ img {
 .hero-quote {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 22px;
+  font-size: clamp(15px, 4vw, 22px);
   line-height: 1.55;
   color: oklch(0.93 0.02 85 / 0.85);
   max-width: 460px;
