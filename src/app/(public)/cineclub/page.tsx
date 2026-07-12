@@ -27,7 +27,7 @@ export default function CineClubPage() {
           </h1>
           <p className="lede">
             Las películas se anuncian el día de la proyección. Aquí guardamos las que ya pasaron —
-            doce sesiones, doce noches con luz parpadeante.
+            29 ciclos, noventa noches con luz parpadeante.
           </p>
         </div>
       </section>
@@ -36,7 +36,7 @@ export default function CineClubPage() {
           eyebrow: "Archivo del CineClub",
           title: <>Todas las sesiones,&nbsp;una a una.</>,
           body: "El registro de lo que pusimos. Sin reseñas largas — solo el título, el año, la noche y un apunte breve.",
-          pill: "12 sesiones · desde 2025",
+          pill: "90 películas · 29 ciclos",
         }}
       />
     </>

@@ -11,7 +11,7 @@ const DEFAULT_INTRO = {
     </>
   ),
   body: "Las películas se anuncian el día de la proyección. Aquí guardamos las que ya pasaron — un archivo de noches con luz parpadeante.",
-  pill: "12 sesiones · desde 2025",
+  pill: "90 películas · 29 ciclos",
 };
 
 export async function CineBlock({
