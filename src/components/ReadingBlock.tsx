@@ -1,15 +1,9 @@
 import { getBooks, STATUS_LABELS, type Book } from "@/lib/content";
 
 const DEFAULT_INTRO = {
-  eyebrow: "Estantería viva",
-  title: (
-    <>
-      Lo que estoy leyendo
-      <br />
-      ahora mismo.
-    </>
-  ),
-  body: "Un registro honesto del club. Lo que tengo abierto sobre la mesa, lo que viene después, y las cosas que ya cerré pero siguen volviendo.",
+  eyebrow: "Club De Lectura",
+  title: <>Lo que hemos leído en el CDL.</>,
+  body: "Cada 15 días nos reunimos en un cafe de Medellín para leer, comer pizza, tomar cafe y ser felices. Y esto es lo que hemos leído en el club.",
   pill: "Actualizado el 3 mayo",
 };
 
