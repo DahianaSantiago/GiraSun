@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ImageSlot } from "./ImageSlot";
 import { SectionHead } from "./SectionHead";
 
 const QUILL_ICON = (
@@ -50,27 +49,24 @@ const CARDS = [
     icon: QUILL_ICON,
     eyebrow: "01 — Narrativa",
     title: "Cuento cuentos",
-    desc: "Escritos personales con narrativa de cuento. Mundos pequeños, personajes que respiran, finales que se quedan.",
+    desc: "Hay cosas que me han sucedido que he logrado convertir en un cuento. Cuento como acto de transformación y soberanía de mi historia.",
     cta: "Leer los cuentos",
-    placeholder: "Foto Cuentos",
   },
   {
     href: "/escritos",
     icon: PEN_ICON,
     eyebrow: "02 — Diario",
     title: "Escribo",
-    desc: "Anotaciones del cuaderno. Lugar y tiempo reales. Un diario abierto: lo que pasó, lo que sentí, lo que quise decir.",
+    desc: "Un diario abierto, conversaciones conmigo y con los otros. Lo que pasó, lo que sentí y lo que quise decir.",
     cta: "Entrar al diario",
-    placeholder: "Foto Escritos",
   },
   {
     href: "/club-de-lectura",
     icon: BOOK_ICON,
     eyebrow: "03 — Lecturas",
-    title: "Club de lectura",
-    desc: "Punto de encuentro y archivo. Lo que leemos, lo que leeremos, las conversaciones que dejamos al margen.",
+    title: "Clubs",
+    desc: "Hace 5 años me dio por crear un club de cine y un club de lectura. Acá pueden ver que hemos visto y que hemos leído.",
     cta: "Ver el archivo",
-    placeholder: "Foto Club",
   },
 ];
 
@@ -80,14 +76,12 @@ export function CategoryGrid() {
       <div className="container">
         <SectionHead
           eyebrow="Tres lugares"
-          titleHTML="Donde guardo lo que <em>escribo</em>, lo que <em>leo</em>, y lo que invento."
+          titleHTML="Donde guardo lo que <em>escribo</em>, lo que <em>leo</em> y las <em>pelis</em> que me veo."
           link={{ href: "/cuentos", label: "Ver todo" }}
         />
         <div className="cat-grid">
           {CARDS.map((c) => (
             <Link key={c.title} href={c.href} className="cat-card">
-              <ImageSlot placeholder={c.placeholder} style={{ position: "absolute", inset: 0 }} />
-              <div className="cat-bg-filter" />
               <div className="cat-content">
                 <div className="ico">{c.icon}</div>
                 <div className="cat-eyebrow">{c.eyebrow}</div>

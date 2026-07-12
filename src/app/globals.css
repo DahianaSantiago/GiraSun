@@ -941,17 +941,6 @@ img {
 .cat-card:hover {
   transform: translateY(-4px);
 }
-.cat-card .image-slot {
-  background: transparent;
-  border: none;
-}
-.cat-card .cat-bg-filter {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: none;
-}
 .cat-card .cat-content {
   position: relative;
   z-index: 2;
