@@ -28,7 +28,7 @@ export function Hero({
           priority
         />
         <div className="hero-bg-filter" />
-        <div className="container" style={{ padding: "62px 0", position: "relative", zIndex: 2 }}>
+        <div className="container" style={{ padding: "43px 0", position: "relative", zIndex: 2 }}>
           <div className="hero-eyebrow" style={{ justifyContent: "center" }}>
             {EYEBROW}
           </div>
