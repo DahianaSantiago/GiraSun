@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getBooks, STATUS_LABELS, type Book } from "@/lib/content";
 
 const DEFAULT_INTRO = {
@@ -11,10 +12,12 @@ export async function ReadingBlock({
   books,
   intro = DEFAULT_INTRO,
   background = "var(--bg-soft)",
+  viewAllHref,
 }: {
   books?: Book[];
   intro?: typeof DEFAULT_INTRO;
   background?: string;
+  viewAllHref?: string;
 }) {
   const list = books ?? (await getBooks());
   return (
@@ -27,18 +30,25 @@ export async function ReadingBlock({
             <p>{intro.body}</p>
             <div className="pill">{intro.pill}</div>
           </div>
-          <div className="reading-list">
-            {list.map((b) => (
-              <article className="reading-row" key={b.num}>
-                <div className="num">{b.num}</div>
-                <div className={`cover ${b.cover}`}>{b.title.slice(0, 18)}</div>
-                <div className="info">
-                  <h4 className="title">{b.title}</h4>
-                  <div className="author">{b.author}</div>
-                </div>
-                <div className={`status ${b.status}`}>{STATUS_LABELS[b.status]}</div>
-              </article>
-            ))}
+          <div className="reading-list-col">
+            <div className="reading-list">
+              {list.map((b) => (
+                <article className="reading-row" key={b.num}>
+                  <div className="num">{b.num}</div>
+                  <div className={`cover ${b.cover}`}>{b.title.slice(0, 18)}</div>
+                  <div className="info">
+                    <h4 className="title">{b.title}</h4>
+                    <div className="author">{b.author}</div>
+                  </div>
+                  <div className={`status ${b.status}`}>{STATUS_LABELS[b.status]}</div>
+                </article>
+              ))}
+            </div>
+            {viewAllHref ? (
+              <Link href={viewAllHref} className="reading-view-all">
+                Ver todos los libros
+              </Link>
+            ) : null}
           </div>
         </div>
       </div>
