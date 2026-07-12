@@ -35,6 +35,7 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
   const [sessionDate, setSessionDate] = useState(today);
   const [note, setNote] = useState("");
   const [cover, setCover] = useState<"warm" | "sage" | "blush">("warm");
+  const [ciclo, setCiclo] = useState("");
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<
     { kind: "success"; text: string } | { kind: "error"; text: string } | null
@@ -53,6 +54,7 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         sessionDate,
         note,
         cover,
+        ciclo,
       });
       if (result.ok) {
         router.push("/admin/cineclub");
@@ -82,6 +84,15 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         </Field>
         <Field label="Título">
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </Field>
+        <Field label="Ciclo">
+          <input
+            type="text"
+            value={ciclo}
+            onChange={(e) => setCiclo(e.target.value)}
+            placeholder="01 — Ciclo Kubrick"
+            required
+          />
         </Field>
         <Field label="Director">
           <input

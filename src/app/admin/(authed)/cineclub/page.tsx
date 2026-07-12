@@ -55,6 +55,7 @@ export default async function AdminCineClubPage() {
               <tr>
                 <th>Núm.</th>
                 <th>Título</th>
+                <th>Ciclo</th>
                 <th>Sesión</th>
                 <th></th>
               </tr>
@@ -64,6 +65,7 @@ export default async function AdminCineClubPage() {
                 <tr key={f.slug}>
                   <td className="mono-cell">{f.num}</td>
                   <td className="title-cell">{f.title}</td>
+                  <td className="muted-cell">{f.ciclo}</td>
                   <td className="muted-cell">{f.date}</td>
                   <td className="actions-cell">
                     <Link

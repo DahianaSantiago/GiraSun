@@ -62,6 +62,8 @@ const FilmFrontmatter = z.object({
     .optional(),
   note: z.string().min(1),
   cover: z.enum(["warm", "sage", "blush"]),
+  /** Ciclo temático al que pertenece la película, e.g. '01 — Ciclo Kubrick'. */
+  ciclo: z.string().min(1),
 });
 
 export type PostType = "cuento" | "escrito";
@@ -267,6 +269,7 @@ export async function getFilms(): Promise<Film[]> {
       sessionDate: data.sessionDate,
       note: data.note,
       cover: data.cover,
+      ciclo: data.ciclo,
       slug: doc.id,
     } as Film;
   });
@@ -286,6 +289,7 @@ export async function findFilmBySlug(slug: string): Promise<Film | undefined> {
     sessionDate: data.sessionDate,
     note: data.note,
     cover: data.cover,
+    ciclo: data.ciclo,
     slug: doc.id,
   } as Film;
 }

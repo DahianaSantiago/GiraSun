@@ -1223,6 +1223,13 @@ img {
 .reading-row .cover.warm {
   background: var(--bg-card-warm);
 }
+.reading-row .info .cycle-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: 4px;
+}
 .reading-row .info .title {
   font-family: var(--font-display);
   font-size: 22px;

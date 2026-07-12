@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getFilms, type Film } from "@/lib/content";
 
 const DEFAULT_INTRO = {
@@ -17,10 +18,12 @@ export async function CineBlock({
   films,
   intro = DEFAULT_INTRO,
   background = "var(--bg)",
+  viewAllHref,
 }: {
   films?: Film[];
   intro?: typeof DEFAULT_INTRO;
   background?: string;
+  viewAllHref?: string;
 }) {
   const list = films ?? (await getFilms());
   return (
@@ -33,34 +36,42 @@ export async function CineBlock({
             <p>{intro.body}</p>
             <div className="pill">{intro.pill}</div>
           </div>
-          <div className="reading-list">
-            {list.map((f) => (
-              <article className="reading-row" key={f.num}>
-                <div className="num">{f.num}</div>
-                <div className={`cover ${f.cover}`} style={{ fontStyle: "italic" }}>
-                  {f.title.slice(0, 18)}
-                </div>
-                <div className="info">
-                  <h4 className="title">
-                    {f.title}{" "}
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: 13,
-                        color: "var(--ink-muted)",
-                        letterSpacing: "0.04em",
-                      }}
-                    >
-                      · {f.year}
-                    </span>
-                  </h4>
-                  <div className="author">
-                    {f.director} — <em style={{ color: "var(--ink-muted)" }}>{f.note}</em>
+          <div className="reading-list-col">
+            <div className="reading-list">
+              {list.map((f) => (
+                <article className="reading-row" key={f.num}>
+                  <div className="num">{f.num}</div>
+                  <div className={`cover ${f.cover}`} style={{ fontStyle: "italic" }}>
+                    {f.title.slice(0, 18)}
                   </div>
-                </div>
-                <div className="status dated">{f.date}</div>
-              </article>
-            ))}
+                  <div className="info">
+                    <div className="cycle-label">{f.ciclo}</div>
+                    <h4 className="title">
+                      {f.title}{" "}
+                      <span
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: 13,
+                          color: "var(--ink-muted)",
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        · {f.year}
+                      </span>
+                    </h4>
+                    <div className="author">
+                      {f.director} — <em style={{ color: "var(--ink-muted)" }}>{f.note}</em>
+                    </div>
+                  </div>
+                  <div className="status dated">{f.date}</div>
+                </article>
+              ))}
+            </div>
+            {viewAllHref ? (
+              <Link href={viewAllHref} className="reading-view-all">
+                Ver todas las películas
+              </Link>
+            ) : null}
           </div>
         </div>
       </div>

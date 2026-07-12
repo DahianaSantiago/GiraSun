@@ -43,6 +43,7 @@ const FilmInput = z.object({
     .or(z.literal("").transform(() => undefined)),
   note: z.string().trim().min(1).max(200),
   cover: z.enum(["warm", "sage", "blush"]),
+  ciclo: z.string().trim().min(1).max(80),
 });
 
 export type CommitResult = { ok: true } | { ok: false; error: string; detail?: string };

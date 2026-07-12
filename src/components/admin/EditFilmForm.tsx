@@ -37,6 +37,7 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
   );
   const [note, setNote] = useState(initial.note);
   const [cover, setCover] = useState<Film["cover"]>(initial.cover);
+  const [ciclo, setCiclo] = useState(initial.ciclo);
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<
     { kind: "success"; text: string } | { kind: "error"; text: string } | null
@@ -55,6 +56,7 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
         sessionDate,
         note,
         cover,
+        ciclo,
       });
       if (result.ok) {
         router.push("/admin/cineclub");
@@ -78,6 +80,15 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
         </Field>
         <Field label="Título">
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+        </Field>
+        <Field label="Ciclo">
+          <input
+            type="text"
+            value={ciclo}
+            onChange={(e) => setCiclo(e.target.value)}
+            placeholder="01 — Ciclo Kubrick"
+            required
+          />
         </Field>
         <Field label="Director">
           <input
