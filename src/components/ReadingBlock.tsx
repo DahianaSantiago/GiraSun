@@ -3,7 +3,7 @@ import { getBooks, STATUS_LABELS, type Book } from "@/lib/content";
 const DEFAULT_INTRO = {
   eyebrow: "Club De Lectura",
   title: <>Lo que hemos leído en el CDL.</>,
-  body: "Cada 15 días nos reunimos en un cafe de Medellín para leer, comer pizza, tomar cafe y ser felices. Y esto es lo que hemos leído en el club.",
+  body: "Cada 15 días nos reunimos en un cafe de Medellín para leer, comer pizza, tomar cafe y ser felices. Esto es lo que hemos leído en el club.",
   pill: "Actualizado el 3 mayo",
 };
 

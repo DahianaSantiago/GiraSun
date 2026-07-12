@@ -949,18 +949,6 @@ img {
   flex-direction: column;
   flex: 1;
 }
-.cat-card .ico {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in oklab, var(--ink) 35%, transparent);
-  display: grid;
-  place-items: center;
-  background: color-mix(in oklab, var(--ink) 8%, transparent);
-  color: var(--ink);
-  margin-bottom: 26px;
-  backdrop-filter: blur(4px);
-}
 .cat-card .cat-eyebrow {
   font-size: 11px;
   letter-spacing: 0.22em;
