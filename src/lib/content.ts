@@ -242,6 +242,13 @@ export async function findBookBySlug(slug: string): Promise<Book | undefined> {
   } as Book;
 }
 
+/** Most recent `updatedAt` across the whole books collection. */
+export async function getBooksLastUpdated(): Promise<Date | undefined> {
+  const snap = await getServerDb().collection("books").orderBy("updatedAt", "desc").limit(1).get();
+  const ts = snap.docs[0]?.data().updatedAt;
+  return ts?.toDate ? ts.toDate() : undefined;
+}
+
 // ---------------------------------------------------------------------------
 // Films (CineClub)
 // ---------------------------------------------------------------------------

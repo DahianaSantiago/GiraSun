@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getBooks, STATUS_LABELS, type Book } from "@/lib/content";
+import { getBooks, getBooksLastUpdated, STATUS_LABELS, type Book } from "@/lib/content";
 
 const DEFAULT_INTRO = {
   eyebrow: "Club De Lectura",
@@ -8,9 +8,28 @@ const DEFAULT_INTRO = {
   pill: "Actualizado el 3 mayo",
 };
 
+const MESES = [
+  "enero",
+  "febrero",
+  "marzo",
+  "abril",
+  "mayo",
+  "junio",
+  "julio",
+  "agosto",
+  "septiembre",
+  "octubre",
+  "noviembre",
+  "diciembre",
+];
+
+function formatLastUpdated(date: Date): string {
+  return `Actualizado el ${date.getDate()} de ${MESES[date.getMonth()]} del ${date.getFullYear()}`;
+}
+
 export async function ReadingBlock({
   books,
-  intro = DEFAULT_INTRO,
+  intro,
   background = "var(--bg-soft)",
   viewAllHref,
 }: {
@@ -19,16 +38,23 @@ export async function ReadingBlock({
   background?: string;
   viewAllHref?: string;
 }) {
-  const list = books ?? (await getBooks());
+  const [list, lastUpdated] = await Promise.all([
+    books ? Promise.resolve(books) : getBooks(),
+    intro ? Promise.resolve(undefined) : getBooksLastUpdated(),
+  ]);
+  const resolvedIntro =
+    intro ??
+    (lastUpdated ? { ...DEFAULT_INTRO, pill: formatLastUpdated(lastUpdated) } : DEFAULT_INTRO);
+
   return (
     <section className="reading-block" style={{ background }}>
       <div className="container">
         <div className="reading-grid">
           <div className="reading-side">
-            <div className="section-eyebrow">{intro.eyebrow}</div>
-            <h3>{intro.title}</h3>
-            <p>{intro.body}</p>
-            <div className="pill">{intro.pill}</div>
+            <div className="section-eyebrow">{resolvedIntro.eyebrow}</div>
+            <h3>{resolvedIntro.title}</h3>
+            <p>{resolvedIntro.body}</p>
+            <div className="pill">{resolvedIntro.pill}</div>
           </div>
           <div className="reading-list-col">
             <div className="reading-list">
