@@ -935,7 +935,7 @@ img {
   transition: transform 0.3s ease;
   cursor: pointer;
   isolation: isolate;
-  background: var(--accent-soft);
+  background: var(--bg-card-warm);
   color: var(--ink);
 }
 .cat-card:hover {
