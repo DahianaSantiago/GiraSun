@@ -122,6 +122,9 @@ export async function publishDraftAction(id: string): Promise<PublishResult> {
     revalidatePath("/admin/escritos");
     revalidatePath("/cuentos");
     revalidatePath("/escritos");
+    // The home features the latest post and the sitemap lists it; both are prerendered.
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
     return { ok: true, ...result };
   } catch (err) {
     console.error("[publish] failed:", err);
@@ -135,8 +138,24 @@ export async function deleteDraftAction(id: string): Promise<DraftActionResult> 
   } catch (err) {
     return { ok: false, error: (err as Error).message };
   }
-  await deleteDraft(id);
+
+  try {
+    await deleteDraft(id);
+  } catch (err) {
+    console.error("[delete] failed:", err);
+    return { ok: false, error: "delete-failed", detail: (err as Error).message };
+  }
+
+  // The admin lists are force-dynamic, but the public listings, the home and the
+  // sitemap are prerendered: without this they keep serving the deleted post until
+  // the next deploy. The post's detail page reads the session cookie, so it renders
+  // per request and 404s on its own.
   revalidatePath("/admin/cuentos");
   revalidatePath("/admin/escritos");
+  revalidatePath("/cuentos");
+  revalidatePath("/escritos");
+  revalidatePath("/");
+  revalidatePath("/sitemap.xml");
+
   return { ok: true, id };
 }

@@ -2595,6 +2595,23 @@ img {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
+/* Reset for icon buttons rendered as <button> (default actions are <a>). */
+button.icon-btn {
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+button.icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Destructive variant (delete). */
+.icon-btn.danger:hover {
+  color: oklch(0.55 0.18 25);
+  border-color: oklch(0.55 0.18 25);
+  background: oklch(0.55 0.18 25 / 0.08);
+}
 
 .status-pill {
   display: inline-block;
