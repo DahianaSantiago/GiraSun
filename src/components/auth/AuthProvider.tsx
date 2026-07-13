@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import {
   signInWithPopup,
   GoogleAuthProvider,
@@ -45,13 +45,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // The session cookie outlives the client SDK's own persistence (IndexedDB, which
+  // browsers can evict — Safari's ITP does so after 7 days, and it is unavailable in
+  // some private modes). Dropping the cookie just because the SDK restored no user
+  // would log out someone whose cookie is still valid, so only clear it on a real
+  // sign-out: a transition from a signed-in user to none.
+  const hadUser = useRef(false);
+
   useEffect(() => {
     const auth = getClientAuth();
     return onAuthStateChanged(auth, async (u) => {
       setUser(u);
       setLoading(false);
+      const wasSignedIn = hadUser.current;
+      hadUser.current = u !== null;
       // We sync here to keep the cookie alive on refresh
-      await syncSession(u);
+      if (u || wasSignedIn) await syncSession(u);
     });
   }, []);
 
