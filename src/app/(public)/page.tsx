@@ -14,12 +14,13 @@ export default async function HomePage() {
   const films = await getFilms();
   const seenCycles = new Set<string>();
   const latestFilms = [];
-  for (const f of films) {
+  for (let idx = films.length - 1; idx >= 0; idx--) {
+    const f = films[idx];
     if (!seenCycles.has(f.ciclo)) {
       if (seenCycles.size === 2) break;
       seenCycles.add(f.ciclo);
     }
-    latestFilms.push(f);
+    latestFilms.unshift(f);
   }
 
   return (

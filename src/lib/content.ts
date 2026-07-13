@@ -257,7 +257,7 @@ export async function getBooksLastUpdated(): Promise<Date | undefined> {
 
 export async function getFilms(): Promise<Film[]> {
   const db = getServerDb();
-  const snap = await db.collection("films").orderBy("num", "desc").get();
+  const snap = await db.collection("films").orderBy("num", "asc").get();
   return snap.docs.map((doc) => {
     const data = doc.data();
     return {
