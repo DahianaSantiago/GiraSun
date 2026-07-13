@@ -30,11 +30,17 @@ export function DeletePostButton({ id, title }: { id: string; title: string }) {
   const onDelete = () => {
     if (!window.confirm(`¿Eliminar "${title}"? Esta acción no se puede deshacer.`)) return;
     startTransition(async () => {
-      const res = await deleteDraftAction(id);
-      if (res.ok) {
-        router.refresh();
-      } else {
-        window.alert(`No se pudo eliminar: ${res.detail ?? res.error}`);
+      try {
+        const res = await deleteDraftAction(id);
+        if (res.ok) {
+          router.refresh();
+        } else {
+          window.alert(`No se pudo eliminar: ${res.detail ?? res.error}`);
+        }
+      } catch (err) {
+        // Without this, a rejected server action is swallowed by the transition
+        // and the row just silently stays put.
+        window.alert(`No se pudo eliminar: ${(err as Error).message}`);
       }
     });
   };
