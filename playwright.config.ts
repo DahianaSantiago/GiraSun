@@ -60,6 +60,9 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       env: EMULATOR_ENV,
+      // Surface server-side logs (e.g. failing server actions) in the CI output.
+      stdout: "pipe",
+      stderr: "pipe",
     },
   ],
 });

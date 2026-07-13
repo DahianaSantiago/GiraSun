@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 test.describe("admin post editor — cuentos", () => {
   test("cuentos index renders", async ({ page }) => {
@@ -103,6 +103,18 @@ const firestoreDocUrl = (id: string) =>
   `${FIRESTORE_BASE}/v1/projects/demo-girasun/databases/(default)/documents/posts/${id}`;
 const EMULATOR_HEADERS = { Authorization: "Bearer owner" };
 
+// The delete button asks for confirmation with window.confirm and reports failures
+// with window.alert. Accepting both blindly hides a failed delete behind the poll
+// timeout below, so collect the alerts and let the assertions report them.
+function acceptConfirmCollectingAlerts(page: Page): string[] {
+  const alerts: string[] = [];
+  page.on("dialog", (dialog) => {
+    if (dialog.type() === "alert") alerts.push(dialog.message());
+    void dialog.accept();
+  });
+  return alerts;
+}
+
 test.describe("admin post list — delete draft", () => {
   const docUrl = firestoreDocUrl;
   const TITLE = "Borrador para eliminar";
@@ -142,7 +154,7 @@ test.describe("admin post list — delete draft", () => {
   });
 
   test("clicking delete (and confirming) removes the draft", async ({ page, request }) => {
-    page.on("dialog", (dialog) => dialog.accept());
+    const alerts = acceptConfirmCollectingAlerts(page);
     await page.goto("/admin/cuentos");
 
     const row = page.locator("tr", { hasText: TITLE });
@@ -152,9 +164,11 @@ test.describe("admin post list — delete draft", () => {
 
     // The button → server action → Firestore: the seeded doc should be gone.
     await expect
-      .poll(async () => (await request.get(docUrl(DOC_ID), { headers: ADMIN_HEADERS })).status(), {
-        timeout: 10_000,
-      })
+      .poll(
+        async () =>
+          alerts[0] ?? (await request.get(docUrl(DOC_ID), { headers: ADMIN_HEADERS })).status(),
+        { timeout: 10_000 },
+      )
       .toBe(404);
 
     // …and it's no longer in the (force-dynamic) list on a fresh load.
@@ -210,7 +224,7 @@ test.describe("admin post list — delete published post (un-publish)", () => {
     page,
     request,
   }) => {
-    page.on("dialog", (dialog) => dialog.accept());
+    const alerts = acceptConfirmCollectingAlerts(page);
     await page.goto("/admin/cuentos");
 
     const row = page.locator("tr", { hasText: TITLE });
@@ -221,6 +235,7 @@ test.describe("admin post list — delete published post (un-publish)", () => {
     await expect
       .poll(
         async () =>
+          alerts[0] ??
           (await request.get(firestoreDocUrl(DOC_ID), { headers: EMULATOR_HEADERS })).status(),
         { timeout: 10_000 },
       )
@@ -230,11 +245,16 @@ test.describe("admin post list — delete published post (un-publish)", () => {
     await page.reload();
     await expect(page.locator("tr", { hasText: TITLE })).toHaveCount(0);
 
+    // Steps 3 and 4 are a smoke test, not a guard against the stale-cache bug that
+    // deleteDraftAction's revalidatePath calls exist to fix: this suite runs against
+    // `next dev`, where pages are always rendered on demand and never cached. Only a
+    // production build can serve a deleted post from the prerendered listing.
+
     // 3. Public listing page must not include the deleted post.
     await page.goto("/cuentos");
     await expect(page.locator("body")).not.toContainText(TITLE);
 
-    // 4. Public detail page must return 404 (Next.js notFound() + revalidatePath fired).
+    // 4. Public detail page must return 404 (Next.js notFound()).
     const response = await page.goto(`/cuentos/${SLUG}`);
     expect(response?.status()).toBe(404);
   });
