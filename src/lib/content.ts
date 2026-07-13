@@ -275,6 +275,13 @@ export async function getFilms(): Promise<Film[]> {
   });
 }
 
+/** Total film count and distinct cycle count across the whole collection. */
+export async function getFilmsStats(): Promise<{ total: number; cycles: number }> {
+  const snap = await getServerDb().collection("films").get();
+  const cycles = new Set(snap.docs.map((doc) => doc.data().ciclo));
+  return { total: snap.size, cycles: cycles.size };
+}
+
 /** Slug = the document ID. */
 export async function findFilmBySlug(slug: string): Promise<Film | undefined> {
   const doc = await getServerDb().collection("films").doc(slug).get();

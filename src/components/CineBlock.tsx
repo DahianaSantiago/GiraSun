@@ -1,22 +1,21 @@
 import Link from "next/link";
-import { getFilms, type Film } from "@/lib/content";
+import { getFilms, getFilmsStats, type Film } from "@/lib/content";
 
 const DEFAULT_INTRO = {
-  eyebrow: "Sesión continua",
+  eyebrow: "Cine Club",
   title: (
     <>
-      Lo que vimos juntos
+      Lo que hemos visto
       <br />
       en el CineClub.
     </>
   ),
-  body: "Las películas se anuncian el día de la proyección. Aquí guardamos las que ya pasaron — un archivo de noches con luz parpadeante.",
-  pill: "90 películas · 29 ciclos",
+  body: "Cada 15 días nos reunimos en un bar de Medellín llamado Pa' Bravo Yo (Cris, si lees esto, gracias por ser hogar para el CineClub): vemos pelis, tomamos pola y al final hacemos un círculo de palabra en torno a la peli.",
 };
 
 export async function CineBlock({
   films,
-  intro = DEFAULT_INTRO,
+  intro,
   background = "var(--bg)",
   viewAllHref,
 }: {
@@ -25,16 +24,22 @@ export async function CineBlock({
   background?: string;
   viewAllHref?: string;
 }) {
-  const list = films ?? (await getFilms());
+  const [list, stats] = await Promise.all([
+    films ? Promise.resolve(films) : getFilms(),
+    getFilmsStats(),
+  ]);
+  const resolvedIntro = intro ?? DEFAULT_INTRO;
+  const pill = `${stats.total} películas · ${stats.cycles} ciclos`;
+
   return (
     <section className="reading-block" style={{ background }}>
       <div className="container">
         <div className="reading-grid">
           <div className="reading-side">
-            <div className="section-eyebrow">{intro.eyebrow}</div>
-            <h3>{intro.title}</h3>
-            <p>{intro.body}</p>
-            <div className="pill">{intro.pill}</div>
+            <div className="section-eyebrow">{resolvedIntro.eyebrow}</div>
+            <h3>{resolvedIntro.title}</h3>
+            <p>{resolvedIntro.body}</p>
+            <div className="pill">{pill}</div>
           </div>
           <div className="reading-list-col">
             <div className="reading-list">

@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://girasun.com"),
   title: {
-    default: "GiraSun · diario literario",
+    default: "GiraSun",
     template: "%s · GiraSun",
   },
   description:
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_ES",
     siteName: "GiraSun",
-    title: "GiraSun · diario literario",
+    title: "GiraSun",
     description: "Cuentos, escritos, club de lectura y CineClub.",
   },
 };

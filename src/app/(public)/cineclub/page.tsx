@@ -36,7 +36,6 @@ export default function CineClubPage() {
           eyebrow: "Archivo del CineClub",
           title: <>Todas las sesiones,&nbsp;una a una.</>,
           body: "El registro de lo que pusimos. Sin reseñas largas — solo el título, el año, la noche y un apunte breve.",
-          pill: "90 películas · 29 ciclos",
         }}
       />
     </>

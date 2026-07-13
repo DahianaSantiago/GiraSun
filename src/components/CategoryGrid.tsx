@@ -18,7 +18,7 @@ const CARDS = [
   },
   {
     href: "/club-de-lectura",
-    eyebrow: "LOS CLUBS",
+    eyebrow: "03 — Comunidad",
     title: "Clubs",
     desc: "Hace 5 años me dio por crear un club de cine y un club de lectura. Acá pueden ver que hemos visto y que hemos leído.",
     cta: "Ver el archivo",

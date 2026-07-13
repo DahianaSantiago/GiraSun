@@ -930,7 +930,7 @@ img {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-m);
-  min-height: 440px;
+  min-height: 320px;
   display: flex;
   transition: transform 0.3s ease;
   cursor: pointer;
