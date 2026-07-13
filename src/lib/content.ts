@@ -60,8 +60,9 @@ const FilmFrontmatter = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional(),
-  note: z.string().min(1),
   cover: z.enum(["warm", "sage", "blush"]),
+  /** Ciclo temático al que pertenece la película, e.g. '01 — Ciclo Kubrick'. */
+  ciclo: z.string().min(1),
 });
 
 export type PostType = "cuento" | "escrito";
@@ -242,13 +243,20 @@ export async function findBookBySlug(slug: string): Promise<Book | undefined> {
   } as Book;
 }
 
+/** Most recent `updatedAt` across the whole books collection. */
+export async function getBooksLastUpdated(): Promise<Date | undefined> {
+  const snap = await getServerDb().collection("books").orderBy("updatedAt", "desc").limit(1).get();
+  const ts = snap.docs[0]?.data().updatedAt;
+  return ts?.toDate ? ts.toDate() : undefined;
+}
+
 // ---------------------------------------------------------------------------
 // Films (CineClub)
 // ---------------------------------------------------------------------------
 
 export async function getFilms(): Promise<Film[]> {
   const db = getServerDb();
-  const snap = await db.collection("films").orderBy("num", "desc").get();
+  const snap = await db.collection("films").orderBy("num", "asc").get();
   return snap.docs.map((doc) => {
     const data = doc.data();
     return {
@@ -258,11 +266,18 @@ export async function getFilms(): Promise<Film[]> {
       year: data.year,
       date: data.date,
       sessionDate: data.sessionDate,
-      note: data.note,
       cover: data.cover,
+      ciclo: data.ciclo,
       slug: doc.id,
     } as Film;
   });
+}
+
+/** Total film count and distinct cycle count across the whole collection. */
+export async function getFilmsStats(): Promise<{ total: number; cycles: number }> {
+  const snap = await getServerDb().collection("films").get();
+  const cycles = new Set(snap.docs.map((doc) => doc.data().ciclo));
+  return { total: snap.size, cycles: cycles.size };
 }
 
 /** Slug = the document ID. */
@@ -277,8 +292,8 @@ export async function findFilmBySlug(slug: string): Promise<Film | undefined> {
     year: data.year,
     date: data.date,
     sessionDate: data.sessionDate,
-    note: data.note,
     cover: data.cover,
+    ciclo: data.ciclo,
     slug: doc.id,
   } as Film;
 }

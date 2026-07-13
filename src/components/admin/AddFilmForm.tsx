@@ -33,8 +33,8 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
   const [director, setDirector] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [sessionDate, setSessionDate] = useState(today);
-  const [note, setNote] = useState("");
   const [cover, setCover] = useState<"warm" | "sage" | "blush">("warm");
+  const [ciclo, setCiclo] = useState("");
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState<
     { kind: "success"; text: string } | { kind: "error"; text: string } | null
@@ -51,8 +51,8 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         year,
         date: formatSpanishDate(sessionDate),
         sessionDate,
-        note,
         cover,
+        ciclo,
       });
       if (result.ok) {
         router.push("/admin/cineclub");
@@ -83,6 +83,15 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         <Field label="Título">
           <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </Field>
+        <Field label="Ciclo">
+          <input
+            type="text"
+            value={ciclo}
+            onChange={(e) => setCiclo(e.target.value)}
+            placeholder="01 — Ciclo Kubrick"
+            required
+          />
+        </Field>
         <Field label="Director">
           <input
             type="text"
@@ -109,15 +118,6 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
             <option value="sage">Sage</option>
             <option value="blush">Blush</option>
           </select>
-        </Field>
-        <Field label="Apunte (una línea)">
-          <input
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="El desierto, el rojo, el silencio."
-            required
-          />
         </Field>
       </div>
       <button type="submit" className="post-editor-btn" disabled={pending}>

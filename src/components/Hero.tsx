@@ -4,8 +4,12 @@ import { ImageSlot } from "./ImageSlot";
 type HeroVariant = "split" | "centered" | "fullbleed";
 
 const EYEBROW = "Diario personal";
-const QUOTE =
-  "Tú eres un girasol, pero cuando caminas te vuelves sol, y entonces yo, sin remedio, me convierto en girasol.";
+const QUOTE = (
+  <>
+    Tú eres un girasol, pero cuando caminas te vuelves sol,
+    <br />y entonces yo, sin remedio, me convierto en girasol.
+  </>
+);
 
 export function Hero({
   variant = "split",
@@ -28,14 +32,14 @@ export function Hero({
           priority
         />
         <div className="hero-bg-filter" />
-        <div className="container" style={{ padding: "110px 0", position: "relative", zIndex: 2 }}>
+        <div className="container" style={{ padding: "43px 0", position: "relative", zIndex: 2 }}>
           <div className="hero-eyebrow" style={{ justifyContent: "center" }}>
             {EYEBROW}
           </div>
           <h1 className="hero-title" style={{ margin: "0 auto 24px", maxWidth: "14ch" }}>
             Gira<em>Sun</em>
           </h1>
-          <p className="hero-quote" style={{ margin: "0 auto" }}>
+          <p className="hero-quote" style={{ margin: "0 auto", maxWidth: "640px" }}>
             {QUOTE}
           </p>
         </div>

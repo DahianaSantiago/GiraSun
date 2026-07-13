@@ -36,7 +36,7 @@ export default function ClubDeLecturaPage() {
           eyebrow: "Estantería completa",
           title: <>Todos los libros del club.</>,
           body: "Una pila honesta de lecturas — sin recomendaciones obligadas, sin estrellas. Solo lo que leemos despacio, juntas.",
-          pill: "6 libros · actualizado este mes",
+          pill: "25 libros · actualizado este mes",
         }}
       />
     </>
