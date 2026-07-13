@@ -60,7 +60,6 @@ const FilmFrontmatter = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional(),
-  note: z.string().min(1),
   cover: z.enum(["warm", "sage", "blush"]),
   /** Ciclo temático al que pertenece la película, e.g. '01 — Ciclo Kubrick'. */
   ciclo: z.string().min(1),
@@ -267,7 +266,6 @@ export async function getFilms(): Promise<Film[]> {
       year: data.year,
       date: data.date,
       sessionDate: data.sessionDate,
-      note: data.note,
       cover: data.cover,
       ciclo: data.ciclo,
       slug: doc.id,
@@ -294,7 +292,6 @@ export async function findFilmBySlug(slug: string): Promise<Film | undefined> {
     year: data.year,
     date: data.date,
     sessionDate: data.sessionDate,
-    note: data.note,
     cover: data.cover,
     ciclo: data.ciclo,
     slug: doc.id,

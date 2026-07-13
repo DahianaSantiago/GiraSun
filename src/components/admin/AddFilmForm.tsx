@@ -33,7 +33,6 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
   const [director, setDirector] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [sessionDate, setSessionDate] = useState(today);
-  const [note, setNote] = useState("");
   const [cover, setCover] = useState<"warm" | "sage" | "blush">("warm");
   const [ciclo, setCiclo] = useState("");
   const [pending, startTransition] = useTransition();
@@ -52,7 +51,6 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
         year,
         date: formatSpanishDate(sessionDate),
         sessionDate,
-        note,
         cover,
         ciclo,
       });
@@ -120,15 +118,6 @@ export function AddFilmForm({ existingCount }: { existingCount: number }) {
             <option value="sage">Sage</option>
             <option value="blush">Blush</option>
           </select>
-        </Field>
-        <Field label="Apunte (una línea)">
-          <input
-            type="text"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="El desierto, el rojo, el silencio."
-            required
-          />
         </Field>
       </div>
       <button type="submit" className="post-editor-btn" disabled={pending}>

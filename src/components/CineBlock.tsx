@@ -64,9 +64,7 @@ export async function CineBlock({
                         · {f.year}
                       </span>
                     </h4>
-                    <div className="author">
-                      {f.director} — <em style={{ color: "var(--ink-muted)" }}>{f.note}</em>
-                    </div>
+                    <div className="author">{f.director}</div>
                   </div>
                   <div className="status dated">{f.date}</div>
                 </article>

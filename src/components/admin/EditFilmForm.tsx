@@ -35,7 +35,6 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
   const [sessionDate, setSessionDate] = useState(
     initial.sessionDate ?? new Date().toISOString().slice(0, 10),
   );
-  const [note, setNote] = useState(initial.note);
   const [cover, setCover] = useState<Film["cover"]>(initial.cover);
   const [ciclo, setCiclo] = useState(initial.ciclo);
   const [pending, startTransition] = useTransition();
@@ -54,7 +53,6 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
         year,
         date: formatSpanishDate(sessionDate),
         sessionDate,
-        note,
         cover,
         ciclo,
       });
@@ -116,9 +114,6 @@ export function EditFilmForm({ slug, initial }: { slug: string; initial: Film })
             <option value="sage">Sage</option>
             <option value="blush">Blush</option>
           </select>
-        </Field>
-        <Field label="Apunte">
-          <input type="text" value={note} onChange={(e) => setNote(e.target.value)} required />
         </Field>
       </div>
       <button type="submit" className="post-editor-btn" disabled={pending}>
