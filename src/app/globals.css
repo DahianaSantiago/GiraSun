@@ -932,7 +932,7 @@ img {
 .cat-card {
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-m);
+  border-radius: 22px;
   min-height: 340px;
   display: flex;
   align-items: center;
