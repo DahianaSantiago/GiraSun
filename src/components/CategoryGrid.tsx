@@ -1,28 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SectionHead } from "./SectionHead";
 
+// Una sola foto compartida; cada tarjeta muestra un encuadre distinto
+// vía la clase cat-crop-* (object-position / zoom en globals.css).
 const CARDS = [
-  {
-    href: "/cuentos",
-    eyebrow: "01 — Narrativa",
-    title: "Cuento cuentos",
-    desc: "Hay cosas que me han sucedido que he logrado convertir en un cuento. Cuento como acto de transformación y soberanía de mi historia.",
-    cta: "Leer los cuentos",
-  },
-  {
-    href: "/escritos",
-    eyebrow: "02 — Diario",
-    title: "Escribo",
-    desc: "Un diario abierto, conversaciones conmigo y con los otros. Lo que pasó, lo que sentí y lo que quise decir.",
-    cta: "Entrar al diario",
-  },
-  {
-    href: "/club-de-lectura",
-    eyebrow: "03 — Comunidad",
-    title: "Clubs",
-    desc: "Hace 5 años me dio por crear un club de cine y un club de lectura. Acá pueden ver que hemos visto y que hemos leído.",
-    cta: "Ver el archivo",
-  },
+  { href: "/cuentos", title: "Cuentos", crop: "cat-crop-cuentos" },
+  { href: "/escritos", title: "Escritos", crop: "cat-crop-escritos" },
+  { href: "/club-de-lectura", title: "Clubs", crop: "cat-crop-clubs" },
 ];
 
 export function CategoryGrid() {
@@ -37,13 +22,15 @@ export function CategoryGrid() {
         <div className="cat-grid">
           {CARDS.map((c) => (
             <Link key={c.title} href={c.href} className="cat-card">
-              <div className="cat-content">
-                <div className="cat-eyebrow">{c.eyebrow}</div>
-                <h3>{c.title}</h3>
-                <div className="rule" />
-                <p>{c.desc}</p>
-                <span className="cta">{c.cta}</span>
-              </div>
+              <Image
+                src="/images/girasol.jpg"
+                alt=""
+                fill
+                sizes="(min-width: 900px) 33vw, 100vw"
+                className={`cat-photo ${c.crop}`}
+              />
+              <div className="cat-veil" aria-hidden="true" />
+              <h3 className="cat-title">{c.title}</h3>
             </Link>
           ))}
         </div>
