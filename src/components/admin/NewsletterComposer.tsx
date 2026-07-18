@@ -96,16 +96,22 @@ export function NewsletterComposer({
           <h2 className="admin-page-h2">Historial</h2>
           <div className="mod-list">
             {history.map((s) => (
-              <div key={s.id} className="mod-card">
-                <div className="mod-card-meta">
-                  <span className="mod-author">{s.subject}</span>
-                  <span className="mod-date">{formatCommentDate(s.sentAt)}</span>
-                </div>
-                <p className="mod-body" style={{ marginBottom: 0 }}>
-                  {s.recipientCount} destinatario{s.recipientCount === 1 ? "" : "s"} · enviado por{" "}
-                  {s.sentBy}
-                </p>
-              </div>
+              <details key={s.id} className="mod-card newsletter-history-item">
+                <summary className="newsletter-history-summary">
+                  <div className="mod-card-meta">
+                    <span className="mod-author">{s.subject}</span>
+                    <span className="mod-date">{formatCommentDate(s.sentAt)}</span>
+                  </div>
+                  <p className="mod-body" style={{ marginBottom: 0 }}>
+                    {s.recipientCount} destinatario{s.recipientCount === 1 ? "" : "s"} · enviado por{" "}
+                    {s.sentBy}
+                  </p>
+                </summary>
+                <div
+                  className="newsletter-history-body"
+                  dangerouslySetInnerHTML={{ __html: s.bodyHTML }}
+                />
+              </details>
             ))}
           </div>
         </section>

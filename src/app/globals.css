@@ -3725,6 +3725,39 @@ button.icon-btn:disabled {
 .newsletter-history {
   margin-top: 8px;
 }
+.newsletter-history-summary {
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  padding-right: 28px;
+}
+.newsletter-history-summary::-webkit-details-marker {
+  display: none;
+}
+.newsletter-history-summary::after {
+  content: "▾";
+  position: absolute;
+  right: 4px;
+  top: 2px;
+  color: var(--ink-muted);
+  transition: transform 0.2s ease;
+}
+.newsletter-history-item[open] .newsletter-history-summary::after {
+  transform: rotate(180deg);
+}
+.newsletter-history-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+.newsletter-history-body p {
+  margin: 0 0 0.8em;
+}
+.newsletter-history-body p:last-child {
+  margin-bottom: 0;
+}
 
 /* ── Admin config ───────────────────────────────────── */
 .config-section {
