@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { SectionHead } from "./SectionHead";
 
 // Una sola foto compartida; cada tarjeta muestra un encuadre distinto
@@ -22,13 +21,7 @@ export function CategoryGrid() {
         <div className="cat-grid">
           {CARDS.map((c) => (
             <Link key={c.title} href={c.href} className="cat-card">
-              <Image
-                src="/images/girasol.jpg"
-                alt=""
-                fill
-                sizes="(min-width: 900px) 33vw, 100vw"
-                className={`cat-photo ${c.crop}`}
-              />
+              <div className={`cat-photo ${c.crop}`} aria-hidden="true" />
               <div className="cat-veil" aria-hidden="true" />
               <h3 className="cat-title">{c.title}</h3>
             </Link>

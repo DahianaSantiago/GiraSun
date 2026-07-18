@@ -942,27 +942,30 @@ img {
   background: var(--bg-card-warm);
 }
 .cat-card .cat-photo {
-  object-fit: cover;
+  position: absolute;
+  inset: 0;
   z-index: 0;
-  transform: scale(var(--crop-zoom, 1));
+  background-image: url("/images/girasol.jpg");
+  background-repeat: no-repeat;
   transition: transform 0.6s ease;
 }
 .cat-card:hover .cat-photo {
-  transform: scale(calc(var(--crop-zoom, 1) * 1.05));
+  transform: scale(1.04);
 }
-/* Encuadres: la foto es vertical (736×1308); cada tarjeta muestra
- * una franja distinta — cabeza de la flor, pétalos abajo, primer plano. */
+/* Encuadres: la foto es vertical (736×1308); cada tarjeta hace zoom a una
+ * zona distinta para que no se lean como una sola imagen continua —
+ * la cara de la flor, el tallo con hojas, y la sombra sobre el papel. */
 .cat-crop-cuentos {
-  --crop-zoom: 1;
-  object-position: 50% 12%;
+  background-size: 200% auto;
+  background-position: 45% 28%;
 }
 .cat-crop-escritos {
-  --crop-zoom: 1;
-  object-position: 50% 96%;
+  background-size: 230% auto;
+  background-position: 18% 66%;
 }
 .cat-crop-clubs {
-  --crop-zoom: 1.25;
-  object-position: 50% 42%;
+  background-size: 210% auto;
+  background-position: 88% 88%;
 }
 .cat-card .cat-veil {
   position: absolute;
