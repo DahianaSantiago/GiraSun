@@ -37,24 +37,13 @@ export function Newsletter({ source = "home" }: { source?: string }) {
       <div className="container">
         <div className="newsletter">
           <div>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.28em",
-                textTransform: "uppercase",
-                color: "oklch(0.85 0.02 85 / 0.6)",
-                marginBottom: 14,
-                position: "relative",
-              }}
-            >
-              Cartas para quien lee despacio
-            </div>
+            <div className="newsletter-eyebrow">Cartas para quien lee despacio</div>
             <h3>
               Una carta cada luna llena.
               <br />
               <em>Sin prisas, sin algoritmos.</em>
             </h3>
-            <p style={{ marginTop: 18 }}>
+            <p>
               Pensamientos sueltos, lo que estoy escribiendo, qué libros me están atravesando este
               mes. Llega a tu correo cuando hay algo que vale la pena contar — nunca antes.
             </p>
@@ -84,16 +73,7 @@ export function Newsletter({ source = "home" }: { source?: string }) {
               </form>
             )}
             {state === "error" && errorMsg ? (
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "oklch(0.95 0.04 30 / 0.9)",
-                  marginTop: 10,
-                  position: "relative",
-                }}
-              >
-                {errorMsg}
-              </div>
+              <div className="newsletter-error">{errorMsg}</div>
             ) : null}
             <div className="check">
               <span className="brand-dot"></span>

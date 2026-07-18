@@ -30,7 +30,7 @@ function formatLastUpdated(date: Date): string {
 export async function ReadingBlock({
   books,
   intro,
-  background = "var(--bg-soft)",
+  background = "var(--bg-card-warm)",
   viewAllHref,
 }: {
   books?: Book[];

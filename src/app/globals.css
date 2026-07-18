@@ -614,10 +614,11 @@ img {
 }
 
 /* =========================================================================
- * Footer.
+ * Footer — dark band closing the page, echoing the hero.
  * ========================================================================= */
 .footer {
-  border-top: 1px solid var(--rule);
+  background: var(--bg-deep);
+  color: oklch(0.92 0.015 85);
   padding: 60px 0 36px;
   margin-top: 80px;
 }
@@ -632,7 +633,7 @@ img {
   font-family: var(--font-display);
   font-style: italic;
   font-size: 28px;
-  color: var(--ink);
+  color: oklch(0.96 0.01 85);
   letter-spacing: -0.01em;
 }
 .footer-sig small {
@@ -642,7 +643,7 @@ img {
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ink-muted);
+  color: oklch(0.88 0.015 85 / 0.6);
   margin-top: 8px;
 }
 .footer-social {
@@ -651,7 +652,7 @@ img {
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: oklch(0.92 0.015 85 / 0.85);
 }
 .footer-social a {
   display: inline-flex;
@@ -660,11 +661,11 @@ img {
   transition: color 0.2s;
 }
 .footer-social a:hover {
-  color: var(--accent-ink);
+  color: var(--accent);
 }
 .footer-copy {
   font-size: 11px;
-  color: var(--ink-muted);
+  color: oklch(0.88 0.015 85 / 0.55);
   letter-spacing: 0.04em;
 }
 
@@ -919,90 +920,78 @@ img {
 }
 
 /* =========================================================================
- * Category grid — three photo-bg cards.
+ * Category grid — three cards sharing one sunflower photo, each with its
+ * own crop (object-position / zoom), white serif title centered on top.
+ * Mobile-first: single column; three columns from 900px up.
  * ========================================================================= */
 .cat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: 22px;
 }
 .cat-card {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-m);
-  min-height: 320px;
+  min-height: 340px;
   display: flex;
-  transition: transform 0.3s ease;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   isolation: isolate;
   background: var(--bg-card-warm);
-  color: var(--ink);
 }
-.cat-card:hover {
-  transform: translateY(-4px);
+.cat-card .cat-photo {
+  object-fit: cover;
+  z-index: 0;
+  transform: scale(var(--crop-zoom, 1));
+  transition: transform 0.6s ease;
 }
-.cat-card .cat-content {
+.cat-card:hover .cat-photo {
+  transform: scale(calc(var(--crop-zoom, 1) * 1.05));
+}
+/* Encuadres: la foto es vertical (736×1308); cada tarjeta muestra
+ * una franja distinta — cabeza de la flor, pétalos abajo, primer plano. */
+.cat-crop-cuentos {
+  --crop-zoom: 1;
+  object-position: 50% 12%;
+}
+.cat-crop-escritos {
+  --crop-zoom: 1;
+  object-position: 50% 96%;
+}
+.cat-crop-clubs {
+  --crop-zoom: 1.25;
+  object-position: 50% 42%;
+}
+.cat-card .cat-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(oklch(0.2 0.02 60 / 0.25), oklch(0.2 0.02 60 / 0.45));
+  transition: background 0.3s ease;
+}
+.cat-card:hover .cat-veil {
+  background: linear-gradient(oklch(0.2 0.02 60 / 0.18), oklch(0.2 0.02 60 / 0.38));
+}
+.cat-card .cat-title {
   position: relative;
   z-index: 2;
-  padding: 36px 32px 32px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-.cat-card .cat-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  margin-bottom: 10px;
-}
-.cat-card h3 {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 38px;
+  font-weight: 500;
+  font-size: clamp(36px, 5vw, 44px);
   line-height: 1;
-  letter-spacing: -0.02em;
-  margin: 0 0 14px;
-  color: var(--ink);
-}
-.cat-card .rule {
-  width: 32px;
-  height: 1px;
-  background: var(--accent-ink);
-  margin-bottom: 16px;
-}
-.cat-card p {
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--ink-muted);
+  letter-spacing: 0.01em;
   margin: 0;
-  max-width: 22ch;
+  color: oklch(0.98 0.008 85);
+  text-shadow: 0 1px 18px oklch(0.2 0.02 60 / 0.45);
 }
-.cat-card .cta {
-  margin-top: auto;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--accent-ink);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding-top: 24px;
-}
-.cat-card .cta::after {
-  content: "→";
-  transition: transform 0.2s;
-}
-.cat-card:hover .cta::after {
-  transform: translateX(4px);
-}
-@media (max-width: 900px) {
-  .cat-grid {
-    grid-template-columns: 1fr;
-  }
+@media (min-width: 900px) {
   .cat-card {
-    min-height: 280px;
-    margin: 0 10%;
+    min-height: 400px;
+  }
+  .cat-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1281,16 +1270,18 @@ img {
 }
 
 /* =========================================================================
- * Newsletter panel — dark ink with sunflower glow.
+ * Newsletter panel — warm beige with sunflower glow.
+ * Mobile-first: single column, stacked full-width input + button;
+ * from 640px the form becomes the horizontal pill, from 900px two columns.
  * ========================================================================= */
 .newsletter {
-  background: var(--ink);
-  color: oklch(0.95 0.015 85);
+  background: var(--bg-card-warm);
+  color: var(--ink);
   border-radius: var(--radius-l);
-  padding: 64px;
+  padding: 36px 24px;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 48px;
+  grid-template-columns: 1fr;
+  gap: 28px;
   align-items: center;
   position: relative;
   overflow: hidden;
@@ -1307,7 +1298,16 @@ img {
     color-mix(in oklab, var(--accent) 70%, transparent) 0%,
     transparent 70%
   );
-  opacity: 0.25;
+  opacity: 0.35;
+  pointer-events: none;
+}
+.newsletter-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: 14px;
+  position: relative;
 }
 .newsletter h3 {
   font-family: var(--font-display);
@@ -1320,42 +1320,45 @@ img {
 }
 .newsletter h3 em {
   font-style: italic;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .newsletter p {
-  color: oklch(0.85 0.01 85 / 0.8);
+  color: var(--ink-soft);
   font-size: 14px;
-  margin: 0;
+  margin: 18px 0 0;
   max-width: 38ch;
   position: relative;
 }
 .newsletter form {
   display: flex;
-  gap: 8px;
-  background: oklch(0.97 0.01 85 / 0.08);
-  border: 1px solid oklch(0.95 0.02 85 / 0.15);
-  border-radius: 999px;
-  padding: 6px;
+  flex-direction: column;
+  gap: 10px;
   position: relative;
 }
 .newsletter input {
-  flex: 1;
-  background: transparent;
-  border: 0;
+  width: 100%;
+  min-height: 48px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
   outline: 0;
-  color: inherit;
-  padding: 12px 16px;
+  color: var(--ink);
+  padding: 12px 18px;
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
+}
+.newsletter input:focus-visible {
+  border-color: var(--accent-ink);
 }
 .newsletter input::placeholder {
-  color: oklch(0.85 0.01 85 / 0.5);
+  color: var(--ink-muted);
 }
 .newsletter button {
+  min-height: 48px;
   background: var(--accent);
   color: oklch(0.2 0.02 60);
   border: 0;
-  padding: 0 22px;
+  padding: 12px 22px;
   border-radius: 999px;
   font-size: 12px;
   letter-spacing: 0.16em;
@@ -1367,9 +1370,19 @@ img {
 .newsletter button:hover {
   transform: translateY(-1px);
 }
+.newsletter button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.newsletter-error {
+  font-size: 12px;
+  color: oklch(0.45 0.16 28);
+  margin-top: 10px;
+  position: relative;
+}
 .newsletter .check {
   font-size: 12px;
-  color: oklch(0.85 0.01 85 / 0.6);
+  color: var(--ink-muted);
   margin-top: 14px;
   display: flex;
   gap: 8px;
@@ -1378,16 +1391,46 @@ img {
 }
 .newsletter .sent {
   padding: 18px 22px;
-  border: 1px solid oklch(0.95 0.02 85 / 0.2);
+  border: 1px solid var(--rule);
+  background: var(--bg);
   border-radius: 999px;
   font-size: 14px;
   text-align: center;
   position: relative;
 }
-@media (max-width: 900px) {
+@media (min-width: 640px) {
   .newsletter {
-    grid-template-columns: 1fr;
-    padding: 36px;
+    padding: 48px;
+  }
+  .newsletter form {
+    flex-direction: row;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 6px;
+  }
+  .newsletter input {
+    flex: 1;
+    width: auto;
+    min-height: 44px;
+    background: transparent;
+    border: 0;
+    font-size: 14px;
+  }
+  .newsletter input:focus-visible {
+    border-color: transparent;
+  }
+  .newsletter button {
+    min-height: 44px;
+    padding: 0 22px;
+  }
+}
+@media (min-width: 900px) {
+  .newsletter {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 48px;
+    padding: 64px;
   }
 }
 
