@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ImageSlot } from "@/components/ImageSlot";
+import { getAboutPage } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Sobre mí",
@@ -12,7 +13,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SobreMiPage() {
+export default async function SobreMiPage() {
+  const about = await getAboutPage();
+
   return (
     <>
       <section className="page-head">
@@ -22,13 +25,10 @@ export default function SobreMiPage() {
             Sobre quien escribe
             <span className="line" />
           </div>
-          <h1>
-            Sobre <em>mí</em>
-          </h1>
-          <p className="lede">
-            Una mesa que mira al sur, dos plantas que sobreviven a mi olvido, y un cuaderno abierto
-            casi siempre.
-          </p>
+          {/* El título viene del admin y admite énfasis con <em>, igual que el
+              titleHTML de los posts (contenido de confianza del Admin SDK). */}
+          <h1 dangerouslySetInnerHTML={{ __html: about.title }} />
+          <p className="lede">{about.lede}</p>
         </div>
       </section>
 
@@ -36,39 +36,18 @@ export default function SobreMiPage() {
         <div className="container">
           <div className="about-strip">
             <div className="photo">
-              <ImageSlot placeholder="Retrato" style={{ position: "absolute", inset: 0 }} />
+              <ImageSlot
+                src={about.photoSrc || undefined}
+                alt={about.photoAlt}
+                placeholder="Retrato"
+                style={{ position: "absolute", inset: 0 }}
+              />
             </div>
             <div>
-              <div className="long-prose">
-                <p>
-                  Soy Dahiana Santiago. Escribo desde Medellín, casi siempre por la mañana — la luz
-                  de las seis se porta bien con las palabras. GiraSun nació como un cuaderno privado
-                  y, sin querer, terminó siendo público. Lo dejo así porque hay frases que
-                  encuentran su sitio cuando alguien las lee despacio.
-                </p>
-                <p>
-                  Aquí guardo cuentos cortos, anotaciones del diario, lo que leemos en el club, y
-                  las películas del CineClub que ya pasaron. No me interesan los algoritmos. Me
-                  interesa que vuelvas alguna noche y encuentres algo que te haga compañía.
-                </p>
-                <h2>Qué vas a encontrar</h2>
-                <p>
-                  Cuentos personales con narrativa de cuento. Anotaciones del diario, sin edulcorar.
-                  Una estantería viva con lo que leo y lo que vendrá. Y, una vez al mes, una carta
-                  breve para quien la quiera abrir.
-                </p>
-                <h2>Cómo escribirme</h2>
-                <p>
-                  Si algo te detuvo, te tocó, o te recordó a alguien — escríbeme a{" "}
-                  <a
-                    href="mailto:hola@girasun.com"
-                    style={{ color: "var(--accent-ink)", borderBottom: "1px solid var(--accent)" }}
-                  >
-                    hola@girasun.com
-                  </a>
-                  . Leo todos los correos. Contesto los que puedo, despacio.
-                </p>
-              </div>
+              {/* HTML generado por TipTap en el admin — mismo mecanismo de
+                  confianza que el titleHTML de los posts (solo escribe el
+                  Admin SDK tras requireAdmin). */}
+              <div className="long-prose" dangerouslySetInnerHTML={{ __html: about.bodyHTML }} />
               <div className="sig">— GiraSun</div>
             </div>
           </div>

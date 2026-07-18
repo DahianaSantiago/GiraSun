@@ -5,7 +5,7 @@ rules_version = '2';
 // =============================================================================
 //
 // Default deny. Only the paths explicitly allowlisted below permit access.
-// All admin writes (subscribers, admins, newsletterSends) go through the
+// All admin writes (subscribers, admins, newsletter_sends) go through the
 // Next.js server using the Admin SDK, which bypasses these rules entirely —
 // these rules only govern client-side reads/writes from authenticated users.
 //
@@ -119,11 +119,21 @@ service cloud.firestore {
     }
 
     // -------------------------------------------------------------------------
-    // /newsletterSends/{sendId}
+    // /newsletter_sends/{sendId}
     //   Audit trail of newsletter sends. Admin SDK writes only.
     // -------------------------------------------------------------------------
-    match /newsletterSends/{sendId} {
+    match /newsletter_sends/{sendId} {
       allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // /settings/{settingId}
+    //   Site-wide editable content (about-home, about-page). Public read;
+    //   writes only via the Admin SDK from server actions (bypasses rules).
+    // -------------------------------------------------------------------------
+    match /settings/{settingId} {
+      allow read: if true;
       allow write: if false;
     }
 
