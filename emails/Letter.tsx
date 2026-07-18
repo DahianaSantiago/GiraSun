@@ -63,8 +63,9 @@ export function LetterEmail({ subject, bodyHTML, unsubscribeUrl }: LetterEmailPr
               lineHeight: 1.7,
               color: ink,
             }}
-            dangerouslySetInnerHTML={{ __html: bodyHTML }}
-          />
+          >
+            <div dangerouslySetInnerHTML={{ __html: bodyHTML }} />
+          </Section>
 
           <Hr
             style={{
