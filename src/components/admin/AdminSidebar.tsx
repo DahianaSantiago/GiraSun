@@ -14,6 +14,7 @@ const SECTIONS = [
       { href: "/admin/escritos", label: "Escritos" },
       { href: "/admin/club-de-lectura", label: "Club de lectura" },
       { href: "/admin/cineclub", label: "CineClub" },
+      { href: "/admin/sobre-mi", label: "Sobre mí" },
     ],
   },
   {

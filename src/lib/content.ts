@@ -251,6 +251,104 @@ export async function getBooksLastUpdated(): Promise<Date | undefined> {
 }
 
 // ---------------------------------------------------------------------------
+// About ("Sobre mí": portada + página)
+// ---------------------------------------------------------------------------
+
+export type AboutHome = {
+  /** Frase-título del bloque de portada. */
+  title: string;
+  /** Párrafo de texto plano. */
+  body: string;
+  photoSrc: string;
+  photoAlt: string;
+};
+
+export type AboutPage = {
+  /** Título de la página; admite énfasis con <em>. */
+  title: string;
+  lede: string;
+  /** Cuerpo en HTML (generado por TipTap en el admin). */
+  bodyHTML: string;
+  /** Fuente Markdown del cuerpo, para reabrir el editor del admin. */
+  body: string;
+  photoSrc: string;
+  photoAlt: string;
+};
+
+/**
+ * Contenido por defecto: reproduce el texto que estaba hardcodeado en los
+ * componentes públicos, de modo que el sitio no cambia visualmente hasta que
+ * el admin guarde por primera vez (el primer guardado crea los docs en
+ * `settings`).
+ */
+export const ABOUT_HOME_FALLBACK: AboutHome = {
+  title:
+    "Escribo desde una mesa que mira al sur. Tengo más cuadernos que paciencia, y casi siempre un libro a medias.",
+  body: "GiraSun es mi rincón quieto del internet — un cuaderno abierto donde guardo cuentos, anotaciones y lecturas. Si llegaste hasta aquí, gracias por leer despacio. Las palabras crecen mejor cuando alguien las mira con cuidado.",
+  photoSrc: "",
+  photoAlt: "",
+};
+
+export const ABOUT_PAGE_FALLBACK: AboutPage = {
+  title: "Sobre <em>mí</em>",
+  lede: "Una mesa que mira al sur, dos plantas que sobreviven a mi olvido, y un cuaderno abierto casi siempre.",
+  bodyHTML: [
+    "<p>Soy Dahiana Santiago. Escribo desde Medellín, casi siempre por la mañana — la luz de las seis se porta bien con las palabras. GiraSun nació como un cuaderno privado y, sin querer, terminó siendo público. Lo dejo así porque hay frases que encuentran su sitio cuando alguien las lee despacio.</p>",
+    "<p>Aquí guardo cuentos cortos, anotaciones del diario, lo que leemos en el club, y las películas del CineClub que ya pasaron. No me interesan los algoritmos. Me interesa que vuelvas alguna noche y encuentres algo que te haga compañía.</p>",
+    "<h2>Qué vas a encontrar</h2>",
+    "<p>Cuentos personales con narrativa de cuento. Anotaciones del diario, sin edulcorar. Una estantería viva con lo que leo y lo que vendrá. Y, una vez al mes, una carta breve para quien la quiera abrir.</p>",
+    "<h2>Cómo escribirme</h2>",
+    '<p>Si algo te detuvo, te tocó, o te recordó a alguien — escríbeme a <a href="mailto:hola@girasun.com" style="color: var(--accent-ink); border-bottom: 1px solid var(--accent)">hola@girasun.com</a>. Leo todos los correos. Contesto los que puedo, despacio.</p>',
+  ].join("\n"),
+  body: [
+    "Soy Dahiana Santiago. Escribo desde Medellín, casi siempre por la mañana — la luz de las seis se porta bien con las palabras. GiraSun nació como un cuaderno privado y, sin querer, terminó siendo público. Lo dejo así porque hay frases que encuentran su sitio cuando alguien las lee despacio.",
+    "",
+    "Aquí guardo cuentos cortos, anotaciones del diario, lo que leemos en el club, y las películas del CineClub que ya pasaron. No me interesan los algoritmos. Me interesa que vuelvas alguna noche y encuentres algo que te haga compañía.",
+    "",
+    "## Qué vas a encontrar",
+    "",
+    "Cuentos personales con narrativa de cuento. Anotaciones del diario, sin edulcorar. Una estantería viva con lo que leo y lo que vendrá. Y, una vez al mes, una carta breve para quien la quiera abrir.",
+    "",
+    "## Cómo escribirme",
+    "",
+    "Si algo te detuvo, te tocó, o te recordó a alguien — escríbeme a [hola@girasun.com](mailto:hola@girasun.com). Leo todos los correos. Contesto los que puedo, despacio.",
+  ].join("\n"),
+  photoSrc: "",
+  photoAlt: "",
+};
+
+/** Doc field when it's a non-empty string; fallback otherwise. */
+function stringOr(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.trim() !== "" ? value : fallback;
+}
+
+/** `settings/about-home` con fallback campo a campo al contenido original. */
+export async function getAboutHome(): Promise<AboutHome> {
+  const doc = await getServerDb().collection("settings").doc("about-home").get();
+  const d: Record<string, unknown> = doc.data() ?? {};
+  return {
+    title: stringOr(d.title, ABOUT_HOME_FALLBACK.title),
+    body: stringOr(d.body, ABOUT_HOME_FALLBACK.body),
+    photoSrc: stringOr(d.photoSrc, ABOUT_HOME_FALLBACK.photoSrc),
+    photoAlt: stringOr(d.photoAlt, ABOUT_HOME_FALLBACK.photoAlt),
+  };
+}
+
+/** `settings/about-page` con fallback campo a campo al contenido original. */
+export async function getAboutPage(): Promise<AboutPage> {
+  const doc = await getServerDb().collection("settings").doc("about-page").get();
+  const d: Record<string, unknown> = doc.data() ?? {};
+  return {
+    title: stringOr(d.title, ABOUT_PAGE_FALLBACK.title),
+    lede: stringOr(d.lede, ABOUT_PAGE_FALLBACK.lede),
+    bodyHTML: stringOr(d.bodyHTML, ABOUT_PAGE_FALLBACK.bodyHTML),
+    body: stringOr(d.body, ABOUT_PAGE_FALLBACK.body),
+    photoSrc: stringOr(d.photoSrc, ABOUT_PAGE_FALLBACK.photoSrc),
+    photoAlt: stringOr(d.photoAlt, ABOUT_PAGE_FALLBACK.photoAlt),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Films (CineClub)
 // ---------------------------------------------------------------------------
 
