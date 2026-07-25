@@ -933,7 +933,7 @@ img {
   position: relative;
   overflow: hidden;
   border-radius: 22px;
-  min-height: 340px;
+  min-height: 272px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -982,7 +982,7 @@ img {
   z-index: 2;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(36px, 5vw, 44px);
+  font-size: clamp(29px, 4vw, 35px);
   line-height: 1;
   letter-spacing: 0.01em;
   margin: 0;
@@ -991,7 +991,7 @@ img {
 }
 @media (min-width: 900px) {
   .cat-card {
-    min-height: 400px;
+    min-height: 320px;
   }
   .cat-grid {
     grid-template-columns: repeat(3, 1fr);
