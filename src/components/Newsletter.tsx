@@ -37,7 +37,7 @@ export function Newsletter({ source = "home" }: { source?: string }) {
       <div className="container">
         <div className="newsletter">
           <div>
-            <div className="newsletter-eyebrow">Cartas para quien lee despacio</div>
+            <div className="newsletter-eyebrow">Newsletter</div>
             <h3>
               Una carta cada luna llena.
               <br />
