@@ -44,9 +44,9 @@ export function Newsletter({ source = "home" }: { source?: string }) {
               <em>Sin spam.</em>
             </h3>
             <p>
-              Cartas de amor, pensamientos, reflexiones, meditaciones, libros que me están
-              atravesando en el mes o las pelis favoritas de la semana. Llega a tu correo el tres de
-              cada mes.
+              Cartas de amor, pensamientos, reflexiones, poemas, meditaciones, libros que me están
+              atravesando en el mes o las pelis favoritas de la semana. También te aviso cuando sea
+              luna llena para que salgas y la mires.
             </p>
           </div>
           <div>
