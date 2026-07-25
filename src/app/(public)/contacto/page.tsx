@@ -62,8 +62,8 @@ export default function ContactoPage() {
             </p>
             <h2>Newsletter</h2>
             <p>
-              Si te gustaría recibir una sola carta al mes — sin spam, sin algoritmos — el
-              formulario está en la página principal. Te puedes ir cuando quieras.
+              Si te gustaría recibir una carta (poema, texto, reflexión o lo que sea que salga ese
+              mes) te puedes suscribir en el formulario de la página principal. TQM.
             </p>
           </div>
         </div>
