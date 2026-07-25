@@ -9,19 +9,10 @@ import { getBooks, getFilms } from "@/lib/content";
 
 export default async function HomePage() {
   const books = await getBooks();
-  const latestBooks = books.slice(-5);
+  const latestBooks = books.slice(-3);
 
   const films = await getFilms();
-  const seenCycles = new Set<string>();
-  const latestFilms = [];
-  for (let idx = films.length - 1; idx >= 0; idx--) {
-    const f = films[idx];
-    if (!seenCycles.has(f.ciclo)) {
-      if (seenCycles.size === 2) break;
-      seenCycles.add(f.ciclo);
-    }
-    latestFilms.unshift(f);
-  }
+  const latestFilms = films.slice(-3);
 
   return (
     <>
