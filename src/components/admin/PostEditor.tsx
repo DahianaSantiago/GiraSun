@@ -109,6 +109,8 @@ export function PostEditor({
 }) {
   const router = useRouter();
   const defaults = DEFAULTS_BY_TYPE[type];
+  // Los cuentos son solo texto: no tienen imagen destacada ni subida de fotos.
+  const supportsHero = type !== "cuento";
 
   const [title, setTitle] = useState(initial?.frontmatter.title ?? "");
   const [titleHTML, setTitleHTML] = useState(initial?.frontmatter.titleHTML ?? "");
@@ -164,9 +166,9 @@ export function PostEditor({
     dateLabel: formatSpanishDate(date),
     cat: defaults.cat,
     excerpt: deriveExcerpt(body),
-    heroSrc: heroSrc.trim() || undefined,
-    heroAlt: heroAlt.trim(),
-    heroFilter: heroFilter !== "none" ? heroFilter : undefined,
+    heroSrc: supportsHero ? heroSrc.trim() || undefined : undefined,
+    heroAlt: supportsHero ? heroAlt.trim() : "",
+    heroFilter: supportsHero && heroFilter !== "none" ? heroFilter : undefined,
     readingMinutes: calculateReadingMinutes(body),
     featured: featured || undefined,
     eyebrow: initial?.frontmatter.eyebrow,
@@ -363,26 +365,28 @@ export function PostEditor({
             </p>
           </FormField>
 
-          <FormField label="Imagen Destacada" as="div">
-            <ImageUpload
-              currentSrc={heroSrc}
-              currentAlt={heroAlt}
-              onImageChange={(url, alt) => {
-                setHeroSrc(url);
-                setHeroAlt(alt);
-              }}
-              onClear={() => {
-                setHeroSrc("");
-                setHeroAlt("");
-                setHeroFilter("none");
-              }}
-              filterCss={heroFilter !== "none" ? IMAGE_FILTERS[heroFilter].css : undefined}
-              pathPrefix={type === "cuento" ? "cuentos" : "escritos"}
-              slug={slug || slugify(title)}
-            />
-          </FormField>
+          {supportsHero && (
+            <FormField label="Imagen Destacada" as="div">
+              <ImageUpload
+                currentSrc={heroSrc}
+                currentAlt={heroAlt}
+                onImageChange={(url, alt) => {
+                  setHeroSrc(url);
+                  setHeroAlt(alt);
+                }}
+                onClear={() => {
+                  setHeroSrc("");
+                  setHeroAlt("");
+                  setHeroFilter("none");
+                }}
+                filterCss={heroFilter !== "none" ? IMAGE_FILTERS[heroFilter].css : undefined}
+                pathPrefix="escritos"
+                slug={slug || slugify(title)}
+              />
+            </FormField>
+          )}
 
-          {heroSrc && (
+          {supportsHero && heroSrc && (
             <FormField label="Filtro de imagen" as="div">
               <div className="filter-picker">
                 {(

@@ -22,15 +22,18 @@ export async function FeaturedStory({ post }: { post?: Post }) {
           link={{ href, label: "Leer el cuento" }}
         />
         <div className="featured">
-          <div className="featured-img">
-            <ImageSlot
-              src={featured.heroSrc}
-              alt={featured.heroAlt}
-              placeholder="Imagen del cuento destacado"
-              style={{ position: "absolute", inset: 0 }}
-              filter={resolveFilter(featured.heroFilter)}
-            />
-          </div>
+          {/* Los cuentos son solo texto: no llevan imagen. */}
+          {featured.type === "cuento" ? null : (
+            <div className="featured-img">
+              <ImageSlot
+                src={featured.heroSrc}
+                alt={featured.heroAlt}
+                placeholder="Imagen del escrito destacado"
+                style={{ position: "absolute", inset: 0 }}
+                filter={resolveFilter(featured.heroFilter)}
+              />
+            </div>
+          )}
           <div className="featured-body">
             <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
             {featured.titleHTML ? (

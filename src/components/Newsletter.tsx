@@ -41,11 +41,12 @@ export function Newsletter({ source = "home" }: { source?: string }) {
             <h3>
               Una carta cada luna llena.
               <br />
-              <em>Sin prisas, sin algoritmos.</em>
+              <em>Sin spam.</em>
             </h3>
             <p>
-              Pensamientos sueltos, lo que estoy escribiendo, qué libros me están atravesando este
-              mes. Llega a tu correo cuando hay algo que vale la pena contar — nunca antes.
+              Cartas de amor, pensamientos, reflexiones, meditaciones, libros que me están
+              atravesando en el mes o las pelis favoritas de la semana. Llega a tu correo el tres de
+              cada mes.
             </p>
           </div>
           <div>

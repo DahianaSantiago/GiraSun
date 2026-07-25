@@ -15,7 +15,7 @@ const SEARCH_ICON = (
 
 const LINKS: Array<{ href: string; label: string; key: NavSection }> = [
   { href: "/", label: "Inicio", key: "home" },
-  { href: "/cuentos", label: "Cuento cuentos", key: "cuentos" },
+  { href: "/cuentos", label: "Cuentos", key: "cuentos" },
   { href: "/escritos", label: "Escritos", key: "escritos" },
   { href: "/club-de-lectura", label: "Club de lectura", key: "club" },
   { href: "/cineclub", label: "CineClub", key: "cine" },
