@@ -41,7 +41,7 @@ export function Newsletter({ source = "home" }: { source?: string }) {
             <h3>
               Una carta cada luna llena.
               <br />
-              <em>Sin spam.</em>
+              <em>Con mucho love.</em>
             </h3>
             <p>
               Cartas de amor, pensamientos, reflexiones, poemas, meditaciones, libros que me están
