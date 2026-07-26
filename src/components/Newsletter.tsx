@@ -37,15 +37,16 @@ export function Newsletter({ source = "home" }: { source?: string }) {
       <div className="container">
         <div className="newsletter">
           <div>
-            <div className="newsletter-eyebrow">Cartas para quien lee despacio</div>
+            <div className="newsletter-eyebrow">Newsletter</div>
             <h3>
               Una carta cada luna llena.
               <br />
-              <em>Sin prisas, sin algoritmos.</em>
+              <em>Con mucho love.</em>
             </h3>
             <p>
-              Pensamientos sueltos, lo que estoy escribiendo, qué libros me están atravesando este
-              mes. Llega a tu correo cuando hay algo que vale la pena contar — nunca antes.
+              Cartas de amor, pensamientos, reflexiones, poemas, meditaciones, libros que me están
+              atravesando en el mes o las pelis favoritas de la semana. También te aviso cuando sea
+              luna llena para que salgas y la mires.
             </p>
           </div>
           <div>

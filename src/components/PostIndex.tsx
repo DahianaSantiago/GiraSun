@@ -26,10 +26,13 @@ export function PostIndex({
   posts,
   pageHead,
   decoPlaceholder,
+  showImages = true,
 }: {
   posts: Post[];
-  pageHead: { eyebrow: string; titleHTML: string; lede: string };
-  decoPlaceholder: string;
+  pageHead: { eyebrow?: string; titleHTML: string; lede?: string };
+  decoPlaceholder?: string;
+  /** Cuentos are text-only: no decorative head image and no card thumbnails. */
+  showImages?: boolean;
 }) {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [sort, setSort] = useState<"recent" | "old" | "popular">("recent");
@@ -49,16 +52,20 @@ export function PostIndex({
     <>
       <section className="page-head">
         <div className="container" style={{ position: "relative" }}>
-          <div className="deco">
-            <ImageSlot placeholder={decoPlaceholder} style={{ position: "absolute", inset: 0 }} />
-          </div>
-          <div className="ornament">
-            <span className="line" />
-            {pageHead.eyebrow}
-            <span className="line" />
-          </div>
+          {showImages ? (
+            <div className="deco">
+              <ImageSlot placeholder={decoPlaceholder} style={{ position: "absolute", inset: 0 }} />
+            </div>
+          ) : null}
+          {pageHead.eyebrow ? (
+            <div className="ornament">
+              <span className="line" />
+              {pageHead.eyebrow}
+              <span className="line" />
+            </div>
+          ) : null}
           <h1 dangerouslySetInnerHTML={{ __html: pageHead.titleHTML }} />
-          <p className="lede">{pageHead.lede}</p>
+          {pageHead.lede ? <p className="lede">{pageHead.lede}</p> : null}
         </div>
       </section>
 
@@ -106,17 +113,20 @@ export function PostIndex({
               <div className="stories-grid">
                 {featured ? (
                   <Link href={hrefFor(featured.type, featured.slug)} className="story-card feature">
-                    <div className="thumb">
-                      <span className="featured-pill">Destacado</span>
-                      <ImageSlot
-                        src={featured.heroSrc}
-                        alt={featured.heroAlt}
-                        placeholder="Foto destacada"
-                        style={{ position: "absolute", inset: 0 }}
-                        filter={resolveFilter(featured.heroFilter)}
-                      />
-                    </div>
+                    {showImages ? (
+                      <div className="thumb">
+                        <span className="featured-pill">Destacado</span>
+                        <ImageSlot
+                          src={featured.heroSrc}
+                          alt={featured.heroAlt}
+                          placeholder="Imagen"
+                          style={{ position: "absolute", inset: 0 }}
+                          filter={resolveFilter(featured.heroFilter)}
+                        />
+                      </div>
+                    ) : null}
                     <div className="body">
+                      {showImages ? null : <span className="featured-pill inline">Destacado</span>}
                       <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
                       {featured.titleHTML ? (
                         <h3 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
@@ -142,15 +152,17 @@ export function PostIndex({
                 <div className="stories-side">
                   {secondary.map((p) => (
                     <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-card">
-                      <div className="thumb">
-                        <ImageSlot
-                          src={p.heroSrc}
-                          alt={p.heroAlt}
-                          placeholder="Imagen"
-                          style={{ position: "absolute", inset: 0 }}
-                          filter={resolveFilter(p.heroFilter)}
-                        />
-                      </div>
+                      {showImages ? (
+                        <div className="thumb">
+                          <ImageSlot
+                            src={p.heroSrc}
+                            alt={p.heroAlt}
+                            placeholder="Imagen"
+                            style={{ position: "absolute", inset: 0 }}
+                            filter={resolveFilter(p.heroFilter)}
+                          />
+                        </div>
+                      ) : null}
                       <div className="body">
                         <div className="featured-tag">{p.readingMinutes} min de lectura</div>
                         {p.titleHTML ? (
@@ -183,15 +195,17 @@ export function PostIndex({
                   <div className="stories-tertiary">
                     {tertiary.map((p) => (
                       <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-card">
-                        <div className="thumb">
-                          <ImageSlot
-                            src={p.heroSrc}
-                            alt={p.heroAlt}
-                            placeholder="Imagen"
-                            style={{ position: "absolute", inset: 0 }}
-                            filter={resolveFilter(p.heroFilter)}
-                          />
-                        </div>
+                        {showImages ? (
+                          <div className="thumb">
+                            <ImageSlot
+                              src={p.heroSrc}
+                              alt={p.heroAlt}
+                              placeholder="Imagen"
+                              style={{ position: "absolute", inset: 0 }}
+                              filter={resolveFilter(p.heroFilter)}
+                            />
+                          </div>
+                        ) : null}
                         <div className="body">
                           <div className="featured-tag">{p.readingMinutes} min de lectura</div>
                           {p.titleHTML ? (

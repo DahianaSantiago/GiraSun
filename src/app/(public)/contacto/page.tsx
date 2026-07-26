@@ -25,8 +25,9 @@ export default function ContactoPage() {
             Escri<em>bir</em>nos
           </h1>
           <p className="lede">
-            Si una palabra te detuvo, si te recordó a alguien, o si simplemente quieres saludar —
-            aquí estoy.
+            Si algo de lo que leíste te movilizó, te atravesó o simplemente quieres saludar me
+            puedes escribir con toda confianza. Sin miedo. Siempre que quieras ser leída o leído acá
+            estaré para hacerlo.
           </p>
         </div>
       </section>
@@ -34,10 +35,7 @@ export default function ContactoPage() {
       <section className="section section-tight" style={{ paddingTop: 0 }}>
         <div className="container">
           <div className="long-prose">
-            <p>
-              La forma más segura de llegarme es por correo. Le contesto a casi todos — a veces
-              tardo, pero llego.
-            </p>
+            <p>La forma más fácil es por correo.</p>
             <p>
               <strong style={{ fontWeight: 500 }}>Email · </strong>
               <a
@@ -51,22 +49,21 @@ export default function ContactoPage() {
                 hola@girasun.com
               </a>
             </p>
-            <h2>¿De qué me podés escribir?</h2>
+            <h2>¿De qué me puedes escribir?</h2>
             <p>
-              De cualquier cosa que te haya pasado al leer algo aquí. De un libro que te gustaría
-              proponer al club. De una película para una próxima sesión del CineClub. De un encargo
-              de escritura. De algo que te pasó hoy y que tenías que contarle a alguien.
+              La verdad, de cualquier cosa que te haya pasado al leer algo de este blog, también si
+              tienes un libro recomendado para el club de lectura o si quieres proponer una peli
+              para el CineClub.
             </p>
             <h2>Otros lugares</h2>
             <p>
-              Estoy en Instagram (sin mucha frecuencia), en Goodreads (con la sinceridad rara que
-              dan los libros), y en Letterboxd para el archivo del CineClub. Los enlaces están en el
-              pie de página.
+              Estoy en Instagram, en Goodreads, y en Letterboxd para el archivo del CineClub con
+              reseñas super nadaqueverientas. Los enlaces están al final de página.
             </p>
             <h2>Newsletter</h2>
             <p>
-              Si te gustaría recibir una sola carta al mes — sin spam, sin algoritmos — el
-              formulario está en la página principal. Te puedes ir cuando quieras.
+              Si te gustaría recibir una carta (poema, texto, reflexión o lo que sea que salga ese
+              mes) te puedes suscribir en el formulario de la página principal. TQM.
             </p>
           </div>
         </div>

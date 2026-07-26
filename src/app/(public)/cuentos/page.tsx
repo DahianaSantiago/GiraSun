@@ -4,11 +4,10 @@ import { getPostsByType } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Cuento cuentos",
-  description:
-    "Mundos pequeños, personajes que respiran, finales que se quedan. Cuentos breves de Dahiana Santiago.",
+  description: "Cuentos breves de Dahiana Santiago.",
   openGraph: {
     title: "Cuento cuentos · GiraSun",
-    description: "Mundos pequeños, personajes que respiran, finales que se quedan.",
+    description: "Cuentos breves de Dahiana Santiago.",
     url: "https://girasun.com/cuentos",
   },
 };
@@ -18,11 +17,9 @@ export default async function CuentosPage() {
   return (
     <PostIndex
       posts={posts}
-      decoPlaceholder="Foto decorativa — cuentos"
+      showImages={false}
       pageHead={{
-        eyebrow: "Archivo de cuentos",
         titleHTML: "Cuento <em>cuentos</em>",
-        lede: "Mundos pequeños, personajes que respiran, finales que se quedan. Lee despacio.",
       }}
     />
   );

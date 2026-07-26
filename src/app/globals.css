@@ -1653,6 +1653,19 @@ img {
   border-radius: 999px;
   z-index: 2;
 }
+/* Cards sin thumbnail (cuentos): el pill vive dentro del cuerpo. */
+.story-card .featured-pill.inline {
+  position: static;
+  align-self: flex-start;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  padding: 6px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
 .story-card .body {
   padding: 24px 26px 28px;
   display: flex;

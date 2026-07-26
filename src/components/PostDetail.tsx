@@ -82,16 +82,19 @@ export function PostDetail({
         </aside>
 
         <main className="detail-main">
-          <div className="hero-photo">
-            <ImageSlot
-              src={post.heroSrc}
-              alt={post.heroAlt}
-              placeholder="Imagen del cuento"
-              style={{ position: "absolute", inset: 0 }}
-              filter={resolveFilter(post.heroFilter)}
-              priority
-            />
-          </div>
+          {/* Los cuentos son solo texto: no llevan imagen de cabecera. */}
+          {post.type === "cuento" ? null : (
+            <div className="hero-photo">
+              <ImageSlot
+                src={post.heroSrc}
+                alt={post.heroAlt}
+                placeholder="Imagen del escrito"
+                style={{ position: "absolute", inset: 0 }}
+                filter={resolveFilter(post.heroFilter)}
+                priority
+              />
+            </div>
+          )}
           <article className="prose">{body}</article>
 
           {next ? (
