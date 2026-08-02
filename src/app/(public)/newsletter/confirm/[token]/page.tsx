@@ -1,3 +1,7 @@
+// Legacy double opt-in landing page. Subscribing is single opt-in now, so no new
+// confirm links are ever minted — this route only exists so the confirm emails
+// sent before the switch still land somewhere sensible. Safe to delete once
+// those are stale.
 import type { Metadata } from "next";
 import Link from "next/link";
 import { confirmSubscriber } from "@/lib/newsletter";
@@ -115,8 +119,8 @@ export default async function ConfirmPage({ params }: { params: Params }) {
             maxWidth: "44ch",
           }}
         >
-          Tal vez expiró, o tal vez te suscribiste hace un rato y los enlaces se rotaron. Vuelve a
-          la página principal y suscríbete de nuevo — no pasa nada.
+          Tal vez ya lo usaste, o tal vez te suscribiste de nuevo y este enlace quedó atrás. Vuelve
+          a la página principal y suscríbete — ahora es solo dejar tu correo, sin pasos extra.
         </p>
         <Link className="hero-cta" href="/#newsletter">
           Suscribirme de nuevo →

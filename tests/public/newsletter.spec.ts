@@ -30,11 +30,16 @@ test.describe("newsletter signup", () => {
     await page.goto("/");
   });
 
-  test("accepts a valid email and shows pending confirmation message", async ({ page }) => {
+  test("accepts a valid email and confirms the subscription right away", async ({ page }) => {
     const { emailInput, submitBtn } = await fillEmail(page, "lector@ejemplo.com");
     await submitBtn.click();
-    // Should show success/pending state — not stay on the idle form
+    // Should show the success state — not stay on the idle form
     await expect(emailInput).not.toBeVisible({ timeout: SUBMIT_TIMEOUT });
+    // Single opt-in: the message says they're in, never that they must confirm.
+    // Matches both the fresh and the already-subscribed wording.
+    const sent = page.locator(".newsletter .sent").first();
+    await expect(sent).toContainText(/en la lista/i, { timeout: SUBMIT_TIMEOUT });
+    await expect(sent).not.toContainText(/confirma/i);
   });
 
   test("shows an error for an invalid email", async ({ page }) => {

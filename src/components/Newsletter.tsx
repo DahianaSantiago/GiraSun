@@ -54,7 +54,7 @@ export function Newsletter({ source = "home" }: { source?: string }) {
               <div className="sent">
                 {state === "already-subscribed"
                   ? "Ya estabas en la lista. Nos escribiremos pronto. ✿"
-                  : "Revisa tu correo y confirma. Nos escribiremos pronto. ✿"}
+                  : "Listo, ya estás en la lista. Nos escribiremos pronto. ✿"}
               </div>
             ) : (
               <form onSubmit={onSubmit} aria-label="Suscribirse al newsletter">

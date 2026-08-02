@@ -1,25 +1,32 @@
 // Newsletter subscriber lifecycle. All Firestore writes use the Admin SDK;
 // the public form goes through a server action that calls into here.
 //
-// Double opt-in flow:
-//   1. User submits email → status='pending', confirmToken minted, email sent.
-//   2. User clicks the confirm link → status='confirmed', confirmedAt set.
-//   3. User clicks an unsubscribe link → status='unsubscribed', unsubscribedAt set.
+// Single opt-in flow:
+//   1. User submits email → status='confirmed', welcome email sent. Done —
+//      there is no extra step for them to take.
+//   2. User clicks an unsubscribe link → status='unsubscribed', unsubscribedAt set.
+//
+// 'pending' and confirmToken are legacy: they only appear on docs created under
+// the old double opt-in flow. confirmSubscriber() still honours those tokens so
+// confirm emails already sitting in inboxes keep working, but nothing mints new
+// ones.
 //
 // Doc id is the lowercased email so a re-submission updates the same doc and
-// we can never have two pending subscriptions for the same address.
+// we can never have two subscriptions for the same address.
 
 import "server-only";
 import { randomBytes } from "node:crypto";
 import { Timestamp, FieldValue, type DocumentData } from "firebase-admin/firestore";
 import { getServerDb } from "./firebase/server";
 
+/** 'pending' is legacy — kept so docs from the old double opt-in flow still read. */
 export type SubscriberStatus = "pending" | "confirmed" | "unsubscribed";
 
 export type Subscriber = {
   email: string;
   status: SubscriberStatus;
-  confirmToken: string;
+  /** Legacy double opt-in token. Null on everything created since single opt-in. */
+  confirmToken: string | null;
   unsubToken: string;
   source: string;
   createdAt: number;
@@ -36,7 +43,7 @@ const newToken = (): string => randomBytes(TOKEN_BYTES).toString("hex");
 const fromDoc = (data: DocumentData): Subscriber => ({
   email: data.email,
   status: data.status,
-  confirmToken: data.confirmToken,
+  confirmToken: data.confirmToken ?? null,
   unsubToken: data.unsubToken,
   source: data.source ?? "home",
   createdAt: data.createdAt instanceof Timestamp ? data.createdAt.toMillis() : 0,
@@ -45,18 +52,20 @@ const fromDoc = (data: DocumentData): Subscriber => ({
 });
 
 /**
- * Create or refresh a pending subscriber for the given email. Returns the
- * resulting subscriber (existing if already confirmed). Idempotent:
- *   - First time: creates pending doc, returns 'created'.
- *   - Pending re-submission: rotates the confirmToken (new email link), returns 'pending'.
- *   - Already confirmed: returns 'already-confirmed' with the existing doc.
- *   - Previously unsubscribed: re-opens as pending, fresh tokens.
+ * Subscribe an email immediately — no confirmation step. Returns the resulting
+ * subscriber. Idempotent:
+ *   - First time: creates a confirmed doc, returns 'created'.
+ *   - Already confirmed: returns 'already-confirmed' with the existing doc untouched.
+ *   - Previously unsubscribed, or legacy pending: confirms it now, returns 'resubscribed'.
+ *
+ * The unsubToken is preserved across re-subscriptions so unsubscribe links from
+ * older letters keep working.
  */
-export async function upsertPendingSubscriber(
+export async function upsertConfirmedSubscriber(
   email: string,
   source = "home",
 ): Promise<{
-  state: "created" | "pending" | "already-confirmed" | "reopened";
+  state: "created" | "already-confirmed" | "resubscribed";
   subscriber: Subscriber;
 }> {
   const db = getServerDb();
@@ -71,12 +80,12 @@ export async function upsertPendingSubscriber(
 
   const next: Subscriber = {
     email: id,
-    status: "pending",
-    confirmToken: newToken(),
+    status: "confirmed",
+    confirmToken: null,
     unsubToken: existing?.unsubToken ?? newToken(),
     source,
     createdAt: existing?.createdAt ?? Date.now(),
-    confirmedAt: null,
+    confirmedAt: Date.now(),
     unsubscribedAt: null,
   };
 
@@ -84,22 +93,27 @@ export async function upsertPendingSubscriber(
     {
       email: next.email,
       status: next.status,
-      confirmToken: next.confirmToken,
       unsubToken: next.unsubToken,
       source: next.source,
-      createdAt: existing ? existing.createdAt : FieldValue.serverTimestamp(),
-      confirmedAt: null,
+      // merge:false rewrites the doc, so createdAt has to be restated as a
+      // Timestamp — writing the raw millis would read back as 0 and break the
+      // createdAt ordering the admin list relies on.
+      createdAt: existing?.createdAt
+        ? Timestamp.fromMillis(existing.createdAt)
+        : FieldValue.serverTimestamp(),
+      confirmedAt: FieldValue.serverTimestamp(),
       unsubscribedAt: null,
     },
     { merge: false },
   );
 
-  if (!existing) return { state: "created", subscriber: next };
-  if (existing.status === "unsubscribed") return { state: "reopened", subscriber: next };
-  return { state: "pending", subscriber: next };
+  return { state: existing ? "resubscribed" : "created", subscriber: next };
 }
 
-/** Confirm a pending subscriber via their confirmToken. */
+/**
+ * Legacy: confirm a pending subscriber via their confirmToken. Single opt-in no
+ * longer mints these, but confirm emails sent before the switch still link here.
+ */
 export async function confirmSubscriber(
   token: string,
 ): Promise<

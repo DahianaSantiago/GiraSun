@@ -13,7 +13,7 @@ export function WelcomeEmail({ unsubscribeUrl }: WelcomeEmailProps) {
   return (
     <Html lang="es">
       <Head />
-      <Preview>Gracias. Nos escribiremos pronto. ✿</Preview>
+      <Preview>Ya estás en la lista. Nos escribiremos pronto. ✿</Preview>
       <Body
         style={{
           margin: 0,
@@ -53,12 +53,13 @@ export function WelcomeEmail({ unsubscribeUrl }: WelcomeEmailProps) {
               margin: "0 0 18px",
             }}
           >
-            Gracias por confirmar.
+            Ya estás en la lista.
           </Text>
 
           <Text style={{ fontSize: 15, lineHeight: 1.6, color: inkSoft, margin: "0 0 16px" }}>
-            Te llegará una sola carta al mes, escrita en luna llena. Pensamientos sueltos, lo que
-            estoy escribiendo, qué libros me están atravesando este mes. Sin algoritmos, sin
+            No tienes que hacer nada más — este es el único correo que te pide algo, y no te pide
+            nada. Te llegará una sola carta al mes, escrita en luna llena. Pensamientos sueltos, lo
+            que estoy escribiendo, qué libros me están atravesando este mes. Sin algoritmos, sin
             urgencia.
           </Text>
 
