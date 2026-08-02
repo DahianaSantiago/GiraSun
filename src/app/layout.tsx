@@ -33,6 +33,19 @@ export const metadata: Metadata = {
     title: "GiraSun",
     description: "Cuentos, escritos, club de lectura y CineClub.",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "GiraSun",
+    description: "Cuentos, escritos, club de lectura y CineClub.",
+  },
+  // Name under the icon when the site is saved to an iOS home screen, and the
+  // title Safari shows in the share sheet. Without it iOS falls back to the
+  // full <title>, which grows to "Cuentos · GiraSun" on inner pages.
+  appleWebApp: {
+    capable: true,
+    title: "GiraSun",
+    statusBarStyle: "default",
+  },
 };
 
 /**
