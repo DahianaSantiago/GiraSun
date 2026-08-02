@@ -16,7 +16,7 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#fbf6e8",
     icons: [
       // Both are generated routes: icon.tsx (32px gold dot) and apple-icon.tsx
-      // (180px sunflower). Chrome picks whichever fits the surface.
+      // (180px brand photo). Chrome picks whichever fits the surface.
       { src: "/icon", sizes: "32x32", type: "image/png" },
       { src: "/apple-icon", sizes: "180x180", type: "image/png" },
     ],
