@@ -1,9 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ImageSlot } from "./ImageSlot";
 import { LikeButton } from "./LikeButton";
+import { LikeProvider } from "./LikeProvider";
 import type { Post } from "@/lib/content";
-import { resolveFilter } from "@/lib/image-filters";
 
 const SHARE_ICON = (
   <svg
@@ -20,6 +19,7 @@ const SHARE_ICON = (
     <path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" />
   </svg>
 );
+
 export function PostDetail({
   post,
   body,
@@ -37,109 +37,106 @@ export function PostDetail({
   const indexLabel = post.type === "cuento" ? "los cuentos" : "los escritos";
 
   return (
-    <div className="container">
-      <div className="detail-grid">
-        <aside className="detail-side">
-          <Link className="back" href={indexHref}>
-            ← Volver a {indexLabel}
-          </Link>
-          <div className="cat">{post.readingMinutes} min de lectura</div>
-          {post.titleHTML ? (
-            <h1 dangerouslySetInnerHTML={{ __html: post.titleHTML }} />
-          ) : (
-            <h1>{post.title}</h1>
-          )}
-          <div
-            className="byline"
-            style={{ justifyContent: "flex-start", paddingLeft: 0, paddingRight: 0 }}
-          >
+    <LikeProvider
+      postType={post.type}
+      postSlug={post.slug}
+      initialCount={likeCount}
+      initialLiked={initialLiked}
+    >
+      <div className="container">
+        <div className="detail-grid">
+          <aside className="detail-side">
+            <Link className="back" href={indexHref}>
+              ← Volver a {indexLabel}
+            </Link>
+            <div className="cat">{post.readingMinutes} min de lectura</div>
+            {post.titleHTML ? (
+              <h1 dangerouslySetInnerHTML={{ __html: post.titleHTML }} />
+            ) : (
+              <h1>{post.title}</h1>
+            )}
             <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "var(--ink-muted)",
-              }}
+              className="byline"
+              style={{ justifyContent: "flex-start", paddingLeft: 0, paddingRight: 0 }}
             >
-              {post.dateLabel} · {post.cat}
+              <div
+                style={{
+                  fontSize: 11,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "var(--ink-muted)",
+                }}
+              >
+                {post.dateLabel} · {post.cat}
+              </div>
             </div>
-          </div>
 
-          <div
-            className="actions"
-            style={{ display: "flex", gap: 8, marginBottom: 36, alignItems: "center" }}
-          >
-            <LikeButton
-              postType={post.type}
-              postSlug={post.slug}
-              initialCount={likeCount}
-              initialLiked={initialLiked}
-            />
-            <button type="button" aria-label="Compartir" disabled style={{ opacity: 0.6 }}>
-              {SHARE_ICON}
-            </button>
-          </div>
-        </aside>
-
-        <main className="detail-main">
-          {/* Los cuentos son solo texto: no llevan imagen de cabecera. */}
-          {post.type === "cuento" ? null : (
-            <div className="hero-photo">
-              <ImageSlot
-                src={post.heroSrc}
-                alt={post.heroAlt}
-                placeholder="Imagen del escrito"
-                style={{ position: "absolute", inset: 0 }}
-                filter={resolveFilter(post.heroFilter)}
-                priority
-              />
-            </div>
-          )}
-          <article className="prose">{body}</article>
-
-          {next ? (
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "40px 0 0",
-                borderTop: "1px solid var(--rule)",
-                marginTop: 60,
-                gap: 24,
-                flexWrap: "wrap",
-              }}
+              className="actions"
+              style={{ display: "flex", gap: 8, marginBottom: 36, alignItems: "center" }}
             >
-              <div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    letterSpacing: "0.22em",
-                    textTransform: "uppercase",
-                    color: "var(--ink-muted)",
-                  }}
-                >
-                  Siguiente
+              <LikeButton />
+              <button type="button" aria-label="Compartir" disabled style={{ opacity: 0.6 }}>
+                {SHARE_ICON}
+              </button>
+            </div>
+          </aside>
+
+          <main className="detail-main">
+            {/* Cuentos y escritos son solo texto: no llevan imagen de cabecera. */}
+            <article className="prose">{body}</article>
+
+            {/* Segundo botón, justo al terminar de leer: a esta altura el de
+                arriba ya quedó fuera de pantalla. */}
+            <div className="post-end-like">
+              <span>¿Te gustó? Déjale un corazón.</span>
+              <LikeButton />
+            </div>
+
+            {next ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "40px 0 0",
+                  borderTop: "1px solid var(--rule)",
+                  marginTop: 60,
+                  gap: 24,
+                  flexWrap: "wrap",
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      letterSpacing: "0.22em",
+                      textTransform: "uppercase",
+                      color: "var(--ink-muted)",
+                    }}
+                  >
+                    Siguiente
+                  </div>
+                  <Link
+                    href={next.href}
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      fontSize: 28,
+                      marginTop: 6,
+                      display: "block",
+                    }}
+                  >
+                    {next.title} →
+                  </Link>
                 </div>
-                <Link
-                  href={next.href}
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    fontSize: 28,
-                    marginTop: 6,
-                    display: "block",
-                  }}
-                >
-                  {next.title} →
+                <Link className="hero-cta" href={indexHref}>
+                  Ver todos los {post.type === "cuento" ? "cuentos" : "escritos"}
                 </Link>
               </div>
-              <Link className="hero-cta" href={indexHref}>
-                Ver todos los {post.type === "cuento" ? "cuentos" : "escritos"}
-              </Link>
-            </div>
-          ) : null}
-        </main>
+            ) : null}
+          </main>
+        </div>
       </div>
-    </div>
+    </LikeProvider>
   );
 }
