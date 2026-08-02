@@ -27,9 +27,11 @@ export async function toggleLikeAction(input: { postType: PostType; postSlug: st
     session.uid,
   );
 
-  // Revalidate the post detail page so the like count refreshes for SSR clients.
+  // Revalidate the post detail page so the like count refreshes for SSR clients,
+  // y también el listado, que muestra los corazones de cada tarjeta.
   const segment = parsed.data.postType === "cuento" ? "cuentos" : "escritos";
   revalidatePath(`/${segment}/${parsed.data.postSlug}`);
+  revalidatePath(`/${segment}`);
 
   return { ok: true as const, liked, count };
 }

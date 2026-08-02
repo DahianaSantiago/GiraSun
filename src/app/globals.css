@@ -1700,6 +1700,46 @@ img {
   line-height: 1.6;
   margin: 0 0 18px;
 }
+/* Cierre del texto: el botón de me gusta al terminar de leer. */
+.post-end-like {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 44px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+.post-end-like > span {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink-soft);
+}
+
+/* Pie de tarjeta: fecha a la izquierda, corazones pegados a la derecha. */
+.card-meta {
+  margin-top: auto;
+  padding-top: 18px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card-meta .card-likes {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  letter-spacing: 0.06em;
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+
 .story-card .by {
   font-size: 11px;
   letter-spacing: 0.18em;

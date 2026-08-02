@@ -19,6 +19,21 @@ export async function getLikeCount(postType: PostType, postSlug: string): Promis
   return snap.data().count;
 }
 
+/**
+ * Like counts for several posts of the same type, keyed by slug. Used by the
+ * listing pages. Son agregaciones `count()`, no lecturas de los documentos, así
+ * que el coste va con el número de posts y no con el de likes acumulados.
+ */
+export async function getLikeCounts(
+  postType: PostType,
+  postSlugs: string[],
+): Promise<Record<string, number>> {
+  const entries = await Promise.all(
+    postSlugs.map(async (slug) => [slug, await getLikeCount(postType, slug)] as const),
+  );
+  return Object.fromEntries(entries);
+}
+
 /** True if the user has already liked this post. */
 export async function hasLiked(
   postType: PostType,

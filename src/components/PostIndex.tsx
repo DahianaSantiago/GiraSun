@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { HeartIcon } from "./HeartIcon";
 import type { Post, PostType } from "@/lib/content";
 
 type FilterKey = "all" | "short" | "long";
@@ -20,14 +21,43 @@ const matchesFilter = (post: Post, key: FilterKey): boolean => {
 const hrefFor = (type: PostType, slug: string) =>
   `/${type === "cuento" ? "cuentos" : "escritos"}/${slug}`;
 
+/**
+ * Pie de la tarjeta: fecha y categoría a la izquierda, corazones a la derecha.
+ * El corazón es solo lectura — la tarjeta entera ya es un enlace, así que aquí
+ * no cabe un botón.
+ */
+function CardMeta({ post, likes }: { post: Post; likes: number }) {
+  return (
+    <div className="card-meta">
+      <span>
+        {post.dateLabel} · {post.cat}
+      </span>
+      <span
+        className="card-likes"
+        title={`${likes} me gusta`}
+        aria-label={`${likes} me gusta`}
+        role="img"
+      >
+        <HeartIcon size={12} filled />
+        <span>{likes}</span>
+      </span>
+    </div>
+  );
+}
+
 /** Cuentos y escritos son solo texto: sin imagen decorativa ni miniaturas en las tarjetas. */
 export function PostIndex({
   posts,
   pageHead,
+  likeCounts,
 }: {
   posts: Post[];
   pageHead: { eyebrow?: string; titleHTML: string; lede?: string };
+  /** Me gusta por slug. Un post sin entrada cuenta como 0. */
+  likeCounts: Record<string, number>;
 }) {
+  const likesOf = (post: Post) => likeCounts[post.slug] ?? 0;
+
   const [filter, setFilter] = useState<FilterKey>("all");
   const [sort, setSort] = useState<"recent" | "old" | "popular">("recent");
 
@@ -111,18 +141,7 @@ export function PostIndex({
                         <h3>{featured.title}</h3>
                       )}
                       <p className="featured-excerpt">{featured.excerpt}</p>
-                      <div
-                        style={{
-                          marginTop: "auto",
-                          paddingTop: 18,
-                          fontSize: 11,
-                          letterSpacing: "0.18em",
-                          textTransform: "uppercase",
-                          color: "var(--ink-muted)",
-                        }}
-                      >
-                        {featured.dateLabel} · {featured.cat}
-                      </div>
+                      <CardMeta post={featured} likes={likesOf(featured)} />
                     </div>
                   </Link>
                 ) : null}
@@ -137,18 +156,7 @@ export function PostIndex({
                           <h3>{p.title}</h3>
                         )}
                         <p className="featured-excerpt">{p.excerpt}</p>
-                        <div
-                          style={{
-                            marginTop: "auto",
-                            paddingTop: 18,
-                            fontSize: 11,
-                            letterSpacing: "0.18em",
-                            textTransform: "uppercase",
-                            color: "var(--ink-muted)",
-                          }}
-                        >
-                          {p.dateLabel} · {p.cat}
-                        </div>
+                        <CardMeta post={p} likes={likesOf(p)} />
                       </div>
                     </Link>
                   ))}
@@ -169,18 +177,7 @@ export function PostIndex({
                             <h3>{p.title}</h3>
                           )}
                           <p className="featured-excerpt">{p.excerpt}</p>
-                          <div
-                            style={{
-                              marginTop: "auto",
-                              paddingTop: 18,
-                              fontSize: 11,
-                              letterSpacing: "0.18em",
-                              textTransform: "uppercase",
-                              color: "var(--ink-muted)",
-                            }}
-                          >
-                            {p.dateLabel} · {p.cat}
-                          </div>
+                          <CardMeta post={p} likes={likesOf(p)} />
                         </div>
                       </Link>
                     ))}

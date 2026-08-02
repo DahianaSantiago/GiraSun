@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PostIndex } from "@/components/PostIndex";
 import { getPostsByType } from "@/lib/content";
+import { getLikeCounts } from "@/lib/firebase/likes";
 
 export const metadata: Metadata = {
   title: "Escritos",
@@ -15,9 +16,14 @@ export const metadata: Metadata = {
 
 export default async function EscritosIndexPage() {
   const posts = await getPostsByType("escrito");
+  const likeCounts = await getLikeCounts(
+    "escrito",
+    posts.map((p) => p.slug),
+  );
   return (
     <PostIndex
       posts={posts}
+      likeCounts={likeCounts}
       pageHead={{
         eyebrow: "Archivo del diario",
         titleHTML: "Escri<em>tos</em>",
