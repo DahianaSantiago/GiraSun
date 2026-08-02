@@ -2,23 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { LikeButton } from "./LikeButton";
 import { LikeProvider } from "./LikeProvider";
+import { ShareButton } from "./ShareButton";
 import type { Post } from "@/lib/content";
-
-const SHARE_ICON = (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <circle cx="18" cy="5" r="3" />
-    <circle cx="6" cy="12" r="3" />
-    <circle cx="18" cy="19" r="3" />
-    <path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" />
-  </svg>
-);
 
 export function PostDetail({
   post,
@@ -76,9 +61,7 @@ export function PostDetail({
               style={{ display: "flex", gap: 8, marginBottom: 36, alignItems: "center" }}
             >
               <LikeButton />
-              <button type="button" aria-label="Compartir" disabled style={{ opacity: 0.6 }}>
-                {SHARE_ICON}
-              </button>
+              <ShareButton title={`${post.title} · GiraSun`} text={post.excerpt} />
             </div>
           </aside>
 
