@@ -16,6 +16,7 @@ import { LetterEmail } from "../../../emails/Letter";
 import { getSession } from "@/lib/firebase/session";
 import { isAdmin } from "@/lib/firebase/admins";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { SITE_URL } from "@/lib/site-url";
 
 async function requireAdmin() {
   const session = await getSession();
@@ -27,8 +28,6 @@ const Input = z.object({
   email: z.string().trim().toLowerCase().email().max(254),
   source: z.string().max(40).optional(),
 });
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://girasun.com";
 
 const unsubscribeUrl = (token: string) => `${SITE_URL}/newsletter/unsubscribe/${token}`;
 

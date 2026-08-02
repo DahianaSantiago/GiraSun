@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Contacto · GiraSun",
     description: "Escríbeme a hola@girasun.com.",
-    url: "https://girasun.com/contacto",
+    url: "/contacto",
   },
 };
 

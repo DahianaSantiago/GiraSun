@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Escritos · GiraSun",
     description: "Anotaciones del cuaderno. Lugar y tiempo reales.",
-    url: "https://girasun.com/escritos",
+    url: "/escritos",
   },
 };
 

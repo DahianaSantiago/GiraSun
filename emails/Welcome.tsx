@@ -1,4 +1,5 @@
 import { Body, Container, Head, Hr, Html, Link, Preview, Text } from "@react-email/components";
+import { SITE_URL } from "@/lib/site-url";
 
 const linen = "#fbf6e8";
 const ink = "#322c20";
@@ -65,8 +66,8 @@ export function WelcomeEmail({ unsubscribeUrl }: WelcomeEmailProps) {
 
           <Text style={{ fontSize: 15, lineHeight: 1.6, color: inkSoft, margin: "0 0 16px" }}>
             Mientras tanto, si quieres leer algo despacio, hay cuentos y escritos esperándote en
-            <Link href="https://girasun.com/cuentos" style={{ color: accent, marginLeft: 4 }}>
-              girasun.com/cuentos
+            <Link href={`${SITE_URL}/cuentos`} style={{ color: accent, marginLeft: 4 }}>
+              {`${SITE_URL.replace(/^https?:\/\//, "")}/cuentos`}
             </Link>
             .
           </Text>

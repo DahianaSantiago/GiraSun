@@ -1,6 +1,5 @@
 import type { Post } from "./content";
-
-const SITE_URL = "https://girasun.com";
+import { SITE_URL } from "./site-url";
 
 export function postUrl(post: Post): string {
   const segment = post.type === "cuento" ? "cuentos" : "escritos";

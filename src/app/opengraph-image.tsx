@@ -6,6 +6,7 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { SITE_URL } from "@/lib/site-url";
 
 export const alt = "GiraSun — diario literario de Dahiana Santiago";
 export const size = { width: 1200, height: 630 };
@@ -73,7 +74,7 @@ export default async function OpengraphImage() {
             style={{ display: "flex", width: 14, height: 14, borderRadius: 7, background: accent }}
           />
           <div style={{ fontSize: 24, letterSpacing: 3, color: inkSoft, marginLeft: 14 }}>
-            girasun.com
+            {SITE_URL.replace(/^https?:\/\//, "")}
           </div>
         </div>
       </div>

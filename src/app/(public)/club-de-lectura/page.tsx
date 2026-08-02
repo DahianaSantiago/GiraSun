@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Club de lectura · GiraSun",
     description: "Estantería viva — lo que leemos, lo que leeremos, lo que dejamos al margen.",
-    url: "https://girasun.com/club-de-lectura",
+    url: "/club-de-lectura",
   },
 };
 
