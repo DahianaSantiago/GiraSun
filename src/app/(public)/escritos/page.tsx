@@ -18,7 +18,6 @@ export default async function EscritosIndexPage() {
   return (
     <PostIndex
       posts={posts}
-      decoPlaceholder="Foto decorativa — escritos"
       pageHead={{
         eyebrow: "Archivo del diario",
         titleHTML: "Escri<em>tos</em>",

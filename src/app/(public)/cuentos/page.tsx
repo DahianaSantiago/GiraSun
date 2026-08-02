@@ -17,7 +17,6 @@ export default async function CuentosPage() {
   return (
     <PostIndex
       posts={posts}
-      showImages={false}
       pageHead={{
         titleHTML: "Cuento <em>cuentos</em>",
       }}

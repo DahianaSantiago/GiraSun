@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { ImageSlot } from "./ImageSlot";
 import { SectionHead } from "./SectionHead";
 import { getAllPosts, type Post } from "@/lib/content";
-import { resolveFilter } from "@/lib/image-filters";
 
 const FALLBACK_QUOTE =
   "«Había una ventana que daba al verano y otra que daba al miedo. Yo elegí la que tenía cortinas blancas, y aún así, soñé con la otra durante meses.»";
@@ -22,18 +20,7 @@ export async function FeaturedStory({ post }: { post?: Post }) {
           link={{ href, label: "Leer el cuento" }}
         />
         <div className="featured">
-          {/* Los cuentos son solo texto: no llevan imagen. */}
-          {featured.type === "cuento" ? null : (
-            <div className="featured-img">
-              <ImageSlot
-                src={featured.heroSrc}
-                alt={featured.heroAlt}
-                placeholder="Imagen del escrito destacado"
-                style={{ position: "absolute", inset: 0 }}
-                filter={resolveFilter(featured.heroFilter)}
-              />
-            </div>
-          )}
+          {/* Cuentos y escritos son solo texto: no llevan imagen. */}
           <div className="featured-body">
             <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
             {featured.titleHTML ? (

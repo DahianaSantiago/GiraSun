@@ -2,9 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ImageSlot } from "./ImageSlot";
 import type { Post, PostType } from "@/lib/content";
-import { resolveFilter } from "@/lib/image-filters";
 
 type FilterKey = "all" | "short" | "long";
 const FILTERS: Array<{ key: FilterKey; label: string }> = [
@@ -22,17 +20,13 @@ const matchesFilter = (post: Post, key: FilterKey): boolean => {
 const hrefFor = (type: PostType, slug: string) =>
   `/${type === "cuento" ? "cuentos" : "escritos"}/${slug}`;
 
+/** Cuentos y escritos son solo texto: sin imagen decorativa ni miniaturas en las tarjetas. */
 export function PostIndex({
   posts,
   pageHead,
-  decoPlaceholder,
-  showImages = true,
 }: {
   posts: Post[];
   pageHead: { eyebrow?: string; titleHTML: string; lede?: string };
-  decoPlaceholder?: string;
-  /** Cuentos are text-only: no decorative head image and no card thumbnails. */
-  showImages?: boolean;
 }) {
   const [filter, setFilter] = useState<FilterKey>("all");
   const [sort, setSort] = useState<"recent" | "old" | "popular">("recent");
@@ -52,11 +46,6 @@ export function PostIndex({
     <>
       <section className="page-head">
         <div className="container" style={{ position: "relative" }}>
-          {showImages ? (
-            <div className="deco">
-              <ImageSlot placeholder={decoPlaceholder} style={{ position: "absolute", inset: 0 }} />
-            </div>
-          ) : null}
           {pageHead.eyebrow ? (
             <div className="ornament">
               <span className="line" />
@@ -113,20 +102,8 @@ export function PostIndex({
               <div className="stories-grid">
                 {featured ? (
                   <Link href={hrefFor(featured.type, featured.slug)} className="story-card feature">
-                    {showImages ? (
-                      <div className="thumb">
-                        <span className="featured-pill">Destacado</span>
-                        <ImageSlot
-                          src={featured.heroSrc}
-                          alt={featured.heroAlt}
-                          placeholder="Imagen"
-                          style={{ position: "absolute", inset: 0 }}
-                          filter={resolveFilter(featured.heroFilter)}
-                        />
-                      </div>
-                    ) : null}
                     <div className="body">
-                      {showImages ? null : <span className="featured-pill inline">Destacado</span>}
+                      <span className="featured-pill inline">Destacado</span>
                       <div className="featured-tag">{featured.readingMinutes} min de lectura</div>
                       {featured.titleHTML ? (
                         <h3 dangerouslySetInnerHTML={{ __html: featured.titleHTML }} />
@@ -152,17 +129,6 @@ export function PostIndex({
                 <div className="stories-side">
                   {secondary.map((p) => (
                     <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-card">
-                      {showImages ? (
-                        <div className="thumb">
-                          <ImageSlot
-                            src={p.heroSrc}
-                            alt={p.heroAlt}
-                            placeholder="Imagen"
-                            style={{ position: "absolute", inset: 0 }}
-                            filter={resolveFilter(p.heroFilter)}
-                          />
-                        </div>
-                      ) : null}
                       <div className="body">
                         <div className="featured-tag">{p.readingMinutes} min de lectura</div>
                         {p.titleHTML ? (
@@ -195,17 +161,6 @@ export function PostIndex({
                   <div className="stories-tertiary">
                     {tertiary.map((p) => (
                       <Link key={p.slug} href={hrefFor(p.type, p.slug)} className="story-card">
-                        {showImages ? (
-                          <div className="thumb">
-                            <ImageSlot
-                              src={p.heroSrc}
-                              alt={p.heroAlt}
-                              placeholder="Imagen"
-                              style={{ position: "absolute", inset: 0 }}
-                              filter={resolveFilter(p.heroFilter)}
-                            />
-                          </div>
-                        ) : null}
                         <div className="body">
                           <div className="featured-tag">{p.readingMinutes} min de lectura</div>
                           {p.titleHTML ? (

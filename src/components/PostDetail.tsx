@@ -1,9 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ImageSlot } from "./ImageSlot";
 import { LikeButton } from "./LikeButton";
 import type { Post } from "@/lib/content";
-import { resolveFilter } from "@/lib/image-filters";
 
 const SHARE_ICON = (
   <svg
@@ -82,19 +80,7 @@ export function PostDetail({
         </aside>
 
         <main className="detail-main">
-          {/* Los cuentos son solo texto: no llevan imagen de cabecera. */}
-          {post.type === "cuento" ? null : (
-            <div className="hero-photo">
-              <ImageSlot
-                src={post.heroSrc}
-                alt={post.heroAlt}
-                placeholder="Imagen del escrito"
-                style={{ position: "absolute", inset: 0 }}
-                filter={resolveFilter(post.heroFilter)}
-                priority
-              />
-            </div>
-          )}
+          {/* Cuentos y escritos son solo texto: no llevan imagen de cabecera. */}
           <article className="prose">{body}</article>
 
           {next ? (
