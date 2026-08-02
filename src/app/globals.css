@@ -1682,17 +1682,20 @@ img {
   color: var(--accent-ink);
   margin-bottom: 10px;
 }
+/* Título de la tarjeta: algo más grande y en negrita, para que se despegue
+ * del resumen. Cormorant Garamond es una tipografía muy fina, así que aquí
+ * el 700 se lee como una negrita discreta y no como un bloque. */
 .story-card h3 {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(22px, 2vw, 32px);
+  font-weight: 700;
+  font-size: clamp(25px, 2.3vw, 36px);
   line-height: 1.1;
   letter-spacing: -0.015em;
   margin: 0 0 12px;
   text-wrap: balance;
 }
 .story-card.feature h3 {
-  font-size: clamp(34px, 3.4vw, 48px);
+  font-size: clamp(37px, 3.6vw, 52px);
 }
 .story-card .excerpt {
   font-size: 14px;
@@ -1945,12 +1948,17 @@ img {
 .detail-main .prose p {
   margin: 0 0 1.4em;
 }
+/* Capitular de dos renglones. Las medidas salen de las métricas reales de
+ * Cormorant Garamond (alto de mayúscula 0.63 em, ascendente 0.92, descendente
+ * 0.29) para que la letra se apoye en la línea base del segundo renglón y su
+ * parte alta cuadre con la del texto, en vez de quedar colgando.
+ * En em, para que siga cuadrando si cambia el tamaño del cuerpo. */
 .detail-main .prose p:first-of-type::first-letter {
   font-family: var(--font-display);
   float: left;
-  font-size: 64px;
-  line-height: 0.85;
-  padding: 8px 12px 0 0;
+  font-size: 3.94em;
+  line-height: 0.865;
+  padding: 0 12px 0 0;
   color: var(--accent-ink);
   font-style: italic;
 }
