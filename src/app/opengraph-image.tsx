@@ -1,6 +1,6 @@
 // The card apps show when someone shares girasun.com — WhatsApp, iMessage,
 // Telegram, X, Facebook, Slack. Without an og:image the link renders as a bare
-// line of text; with it, the sunflower and the wordmark travel with the link.
+// line of text; with it, the brand photo and the wordmark travel with the link.
 //
 // twitter-image.tsx re-exports this module so both previews stay identical.
 import { ImageResponse } from "next/og";
@@ -20,7 +20,7 @@ export default async function OpengraphImage() {
   // Paths stay inline and literal: routed through a helper, the bundler can't
   // trace them statically and ends up tracing the whole project into the build.
   const [photo, cormorant, cormorantItalic] = await Promise.all([
-    readFile(join(process.cwd(), "public/images/girasol.jpg"), "base64"),
+    readFile(join(process.cwd(), "public/images/marca-lectora.jpg"), "base64"),
     readFile(join(process.cwd(), "public/fonts/CormorantGaramond-Medium.ttf")),
     readFile(join(process.cwd(), "public/fonts/CormorantGaramond-MediumItalic.ttf")),
   ]);
@@ -78,17 +78,26 @@ export default async function OpengraphImage() {
         </div>
       </div>
 
-      {/* Photo panel. 736×1308 scaled to 560 wide is 995 tall; the offsets crop
-          it into the 460×630 panel with the flower head near the middle. */}
-      <div style={{ display: "flex", position: "relative", width: 460, overflow: "hidden" }}>
+      {/* Photo panel. The square photo is scaled to the panel height (630) and
+          pulled left so the 460-wide column keeps the reader, the gold sun and
+          the book she's holding. */}
+      <div
+        style={{
+          display: "flex",
+          position: "relative",
+          width: 460,
+          overflow: "hidden",
+          background: "#1c1a17",
+        }}
+      >
         {/* Plain <img>: ImageResponse renders through satori, which has no
             next/image runtime. */}
         <img
           src={`data:image/jpeg;base64,${photo}`}
           alt=""
-          width={560}
-          height={995}
-          style={{ position: "absolute", top: -141, left: -60 }}
+          width={630}
+          height={630}
+          style={{ position: "absolute", top: 0, left: -140 }}
         />
       </div>
     </div>,
