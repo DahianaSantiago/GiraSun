@@ -84,10 +84,12 @@ export default async function AdminDashboardPage() {
           hint={data.hiddenComments > 0 ? `${data.hiddenComments} ocultos` : "todos visibles"}
           href="/admin/comentarios"
         />
+        {/* 'pending' can only come from the old double opt-in flow, and the next
+            send promotes those docs — nobody is waiting on a click any more. */}
         <Card
           label="Suscriptores"
           value={data.subscribers}
-          hint={data.pendingSubs > 0 ? `${data.pendingSubs} sin confirmar` : "todos confirmados"}
+          hint={data.pendingSubs > 0 ? `${data.pendingSubs} del flujo antiguo` : "todos activos"}
           href="/admin/suscriptores"
         />
       </section>

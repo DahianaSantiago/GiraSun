@@ -7,6 +7,7 @@ import { WelcomeEmail } from "../../../emails/Welcome";
 import { sendEmail } from "@/lib/email";
 import {
   upsertConfirmedSubscriber,
+  confirmLegacyPendingSubscribers,
   adminUnsubscribe,
   listAllSubscribers,
   recordNewsletterSend,
@@ -85,6 +86,15 @@ export async function sendNewsletterAction(input: { subject: string; bodyHTML: s
   try {
     await requireAdmin();
     const session = await getSession();
+
+    // Anyone still 'pending' subscribed under the old double opt-in flow and
+    // never clicked. Single opt-in counts them as subscribed, so promote them
+    // here rather than skipping them on every send, forever.
+    const promoted = await confirmLegacyPendingSubscribers();
+    if (promoted > 0) {
+      console.info(`[newsletter] promoted ${promoted} legacy pending subscriber(s) to confirmed.`);
+    }
+
     const confirmed = (await listAllSubscribers()).filter((s) => s.status === "confirmed");
     if (confirmed.length === 0) {
       return { ok: false as const, error: "no-recipients" };

@@ -9,7 +9,8 @@
 // 'pending' and confirmToken are legacy: they only appear on docs created under
 // the old double opt-in flow. confirmSubscriber() still honours those tokens so
 // confirm emails already sitting in inboxes keep working, but nothing mints new
-// ones.
+// ones. confirmLegacyPendingSubscribers() drains what's left of that state so no
+// one who already gave us their address stays stuck waiting on a click.
 //
 // Doc id is the lowercased email so a re-submission updates the same doc and
 // we can never have two subscriptions for the same address.
@@ -134,6 +135,41 @@ export async function confirmSubscriber(
     confirmedAt: FieldValue.serverTimestamp(),
   });
   return { ok: true, email: data.email };
+}
+
+/**
+ * Promote every leftover 'pending' doc to 'confirmed' and return how many moved.
+ *
+ * Under single opt-in, handing over the address *is* the subscription. A
+ * 'pending' doc therefore means someone subscribed under the old flow and was
+ * then asked for a click they never owed us — and since sends only go to
+ * 'confirmed', they would never receive a single letter. This drains that state.
+ *
+ * Idempotent: a no-op read once nothing is pending. 'unsubscribed' docs are
+ * never touched — leaving the list is a deliberate choice and stays honoured.
+ */
+export async function confirmLegacyPendingSubscribers(): Promise<number> {
+  const db = getServerDb();
+  const snap = await db.collection("subscribers").where("status", "==", "pending").get();
+  if (snap.empty) return 0;
+
+  // Firestore caps a write batch at 500 operations.
+  const CHUNK = 400;
+  for (let i = 0; i < snap.docs.length; i += CHUNK) {
+    const batch = db.batch();
+    for (const doc of snap.docs.slice(i, i + CHUNK)) {
+      batch.update(doc.ref, {
+        status: "confirmed",
+        // The token is dead weight now: it can no longer be minted, and the
+        // legacy confirm route reads 'already-confirmed' from the status.
+        confirmToken: FieldValue.delete(),
+        confirmedAt: FieldValue.serverTimestamp(),
+      });
+    }
+    await batch.commit();
+  }
+
+  return snap.docs.length;
 }
 
 /** Admin read: all subscribers sorted by createdAt desc, limit 1000. */
