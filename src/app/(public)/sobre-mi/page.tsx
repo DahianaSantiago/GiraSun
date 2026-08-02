@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Sobre mí · GiraSun",
     description: "Escribo desde una mesa que mira al sur. Casi siempre un libro a medias.",
-    url: "https://girasun.com/sobre-mi",
+    url: "/sobre-mi",
   },
 };
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CineClub · GiraSun",
     description: "Sesión continua — un archivo de noches con luz parpadeante.",
-    url: "https://girasun.com/cineclub",
+    url: "/cineclub",
   },
 };
 

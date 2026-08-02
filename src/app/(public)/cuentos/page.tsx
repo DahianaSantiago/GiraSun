@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Cuento cuentos · GiraSun",
     description: "Cuentos breves de Dahiana Santiago.",
-    url: "https://girasun.com/cuentos",
+    url: "/cuentos",
   },
 };
 

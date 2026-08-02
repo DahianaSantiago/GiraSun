@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { SITE_URL } from "@/lib/site-url";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,7 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://girasun.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "GiraSun",
     template: "%s · GiraSun",
