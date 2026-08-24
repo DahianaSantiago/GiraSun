@@ -2,7 +2,14 @@ import { expect, test } from "@playwright/test";
 
 // The rest of the public project starts with the gate already marked as seen
 // (see playwright.config.ts). These tests want the genuine first-visit state.
-test.use({ storageState: { cookies: [], origins: [] } });
+//
+// The newsletter rate limit is keyed on x-forwarded-for and allows 5 subscribes
+// per hour, and tests/public/newsletter.spec.ts deliberately exhausts that
+// budget. Claiming a distinct IP keeps this file out of that bucket.
+test.use({
+  storageState: { cookies: [], origins: [] },
+  extraHTTPHeaders: { "x-forwarded-for": "203.0.113.7" },
+});
 
 // The gate opens 8s into the first visit, and the first server action call in
 // `next dev` compiles on demand. Both need room.
