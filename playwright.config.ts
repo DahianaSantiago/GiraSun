@@ -37,7 +37,27 @@ export default defineConfig({
 
   projects: [
     { name: "setup", testMatch: /auth\.setup\.ts/, use: { ...devices["Desktop Chrome"] } },
-    { name: "public", testMatch: /tests\/public\/.*/, use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "public",
+      testMatch: /tests\/public\/.*/,
+      use: {
+        ...devices["Desktop Chrome"],
+        // The first-visit subscribe gate opens a few seconds in and covers the
+        // page, which would steal clicks from every other public test. Start
+        // each context with it already marked as seen; tests that need it (see
+        // tests/public/subscribe-gate.spec.ts) opt back in with an empty
+        // storageState.
+        storageState: {
+          cookies: [],
+          origins: [
+            {
+              origin: BASE_URL,
+              localStorage: [{ name: "girasun:subscribe-gate", value: "dismissed" }],
+            },
+          ],
+        },
+      },
+    },
     {
       name: "admin",
       testMatch: /tests\/admin\/.*/,

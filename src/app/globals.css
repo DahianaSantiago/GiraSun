@@ -3876,3 +3876,231 @@ button.icon-btn:disabled {
   line-height: 1.5;
   margin: 0;
 }
+
+/* =========================================================================
+ * First-visit subscribe gate — the newsletter panel, condensed into a modal.
+ * Rendered by <SubscribeGate /> in the (public) layout; see that component
+ * for when it opens and how the dismissal is remembered.
+ * ========================================================================= */
+.gate-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: color-mix(in oklab, var(--ink) 60%, transparent);
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  overflow-y: auto;
+  animation: gate-fade 0.3s ease both;
+}
+.gate {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: var(--bg-card-warm);
+  color: var(--ink);
+  border-radius: var(--radius-l);
+  padding: 44px 32px 30px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -20px oklch(0.15 0.02 70 / 0.4);
+  animation: gate-rise 0.4s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+.gate::before {
+  content: "";
+  position: absolute;
+  right: -20%;
+  top: -60%;
+  width: 80%;
+  height: 200%;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    color-mix(in oklab, var(--accent) 70%, transparent) 0%,
+    transparent 70%
+  );
+  opacity: 0.35;
+  pointer-events: none;
+}
+.gate > * {
+  position: relative;
+}
+.gate-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--ink-muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.gate-close:hover {
+  color: var(--ink);
+}
+.gate-eyebrow {
+  font-size: var(--fs-eyebrow);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: 12px;
+}
+.gate h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(30px, 7vw, 40px);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  margin: 0 0 14px;
+}
+.gate h2 em {
+  font-style: italic;
+  color: var(--accent-ink);
+}
+.gate p {
+  color: var(--ink-soft);
+  font-size: var(--fs-body);
+  line-height: var(--leading-body);
+  margin: 0 0 22px;
+}
+.gate form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gate input {
+  width: 100%;
+  min-height: 48px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-pill);
+  outline: 0;
+  color: var(--ink);
+  padding: 12px 18px;
+  font: inherit;
+  font-size: 16px;
+}
+.gate input:focus-visible {
+  border-color: var(--accent-ink);
+}
+.gate input::placeholder {
+  color: var(--ink-muted);
+}
+.gate form button {
+  min-height: 48px;
+  background: var(--accent);
+  color: var(--on-accent);
+  border: 0;
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.gate form button:hover {
+  transform: translateY(-1px);
+}
+.gate form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+.gate-sent {
+  padding: 18px 22px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-body);
+  text-align: center;
+}
+.gate-error {
+  font-size: var(--fs-meta);
+  color: oklch(0.45 0.16 28);
+  margin-top: 10px;
+}
+.gate-skip {
+  display: block;
+  margin: 16px auto 0;
+  background: transparent;
+  border: 0;
+  color: var(--ink-muted);
+  font-size: var(--fs-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.gate-skip:hover {
+  color: var(--ink-soft);
+}
+.gate-check {
+  font-size: var(--fs-meta);
+  color: var(--ink-muted);
+  margin-top: 18px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+@media (min-width: 640px) {
+  .gate {
+    padding: 48px 44px 34px;
+  }
+  .gate form {
+    flex-direction: row;
+    gap: 8px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-pill);
+    padding: 6px;
+  }
+  .gate input {
+    flex: 1;
+    width: auto;
+    min-height: 44px;
+    background: transparent;
+    border: 0;
+    font-size: 14px;
+  }
+  .gate input:focus-visible {
+    border-color: transparent;
+  }
+  .gate form button {
+    min-height: 44px;
+    padding: 0 22px;
+  }
+}
+@keyframes gate-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes gate-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-backdrop,
+  .gate {
+    animation: none;
+  }
+  .gate form button:hover {
+    transform: none;
+  }
+}
