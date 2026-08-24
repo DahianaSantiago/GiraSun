@@ -11,7 +11,7 @@ test.use({
   extraHTTPHeaders: { "x-forwarded-for": "203.0.113.7" },
 });
 
-// The gate opens 8s into the first visit, and the first server action call in
+// The gate opens 6s into the first visit, and the first server action call in
 // `next dev` compiles on demand. Both need room.
 const GATE_TIMEOUT = 20000;
 const SUBMIT_TIMEOUT = 15000;

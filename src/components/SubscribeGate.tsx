@@ -15,7 +15,7 @@ import { subscribeAction } from "@/app/actions/newsletter";
  */
 
 const STORAGE_KEY = "girasun:subscribe-gate";
-const OPEN_DELAY_MS = 8000;
+const OPEN_DELAY_MS = 6000;
 const CLOSE_AFTER_SUCCESS_MS = 2600;
 
 type Outcome = "subscribed" | "dismissed";
